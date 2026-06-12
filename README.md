@@ -13,11 +13,11 @@
   <img src="https://img.shields.io/badge/Docker-111827?style=for-the-badge&logo=docker&logoColor=2496ED" height="25" alt="Docker"/>
   <img src="https://img.shields.io/badge/Nginx-111827?style=for-the-badge&logo=nginx&logoColor=009639" height="25" alt="Nginx"/>
   <img src="https://img.shields.io/badge/HTML5-111827?style=for-the-badge&logo=html5&logoColor=E34F26" height="25" alt="HTML5"/>
-  <img src="https://img.shields.io/badge/-CSS-111827?style=flat-square&logo=css&logoColor=663399" height="25" alt="CSS3"/>
+  <img src="https://img.shields.io/badge/-CSS3-111827?style=flat-square&logo=css&logoColor=663399" height="25" alt="CSS3"/>
   <img src="https://img.shields.io/badge/JavaScript-111827?style=for-the-badge&logo=javascript&logoColor=F7DF1E" height="25" alt="JavaScript"/> <br>
   <img src="https://img.shields.io/badge/Git-111827?style=for-the-badge&logo=git&logoColor=F05032" height="25" alt="Git"/>
   <img src="https://img.shields.io/badge/GitHub-111827?style=for-the-badge&logo=github&logoColor=white" height="25" alt="GitHub"/>
-  <img src="https://img.shields.io/badge/GitHub_Desktop-111827?style=for-the-badge&logo=github&logoColor=purple" height="25" alt="GitHub"/>
+  <img src="https://img.shields.io/badge/GitHub_Desktop-111827?style=for-the-badge&logo=github&logoColor=purple" height="25" alt="GitHub Desktop"/>
 </p>
 
 <h2 align="center">🏰 Arquitetura do Projeto</h2>
@@ -61,7 +61,7 @@ Bolao-Copa-26⚽/
 └── README.md <img src="https://img.shields.io/badge/-Markdown-111827?style=flat&logo=markdown&logoColor=white" height="18"/>
 </pre>
 
-<h2 align="center">🗄️ Modelos de Dados</h2>
+<h2 align="center">🎲 Modelos de Dados</h2>
 
 | Modelo | Tabela | Descrição |
 |---|---|---|
@@ -125,7 +125,7 @@ Camada de **mapeamento objeto-relacional (ORM)**. Define as tabelas do banco de 
 
 <h2 align="center">🖥️ Frontend<br>
 <img src="https://img.shields.io/badge/HTML5-111827?style=flat&logo=html5&logoColor=E34F26" height="18"/>
-<img src="https://img.shields.io/badge/-CSS3-111827?style=flat&logo=css3&logoColor=1572B6" height="18"/>
+<img src="https://img.shields.io/badge/-CSS-111827?style=flat-square&logo=css&logoColor=663399" height="18"/>
 <img src="https://img.shields.io/badge/-JavaScript-111827?style=flat&logo=javascript&logoColor=F7DF1E" height="18"/>
 <img src="https://img.shields.io/badge/-Nginx-111827?style=flat&logo=nginx&logoColor=009639" height="18"/>
 </h2>
@@ -163,15 +163,10 @@ Serve os arquivos estáticos do frontend via Nginx Alpine e faz proxy reverso da
 
 > Se nenhum participante acertar o placar exato de um jogo, o jogo é neutro — ninguém ganha nem perde.
 
-<h2 align="center">🕹️ Como Rodar</h2>
+<h2 align="center">🕹️ Como Rodar <br>
+<img src="https://img.shields.io/badge/-🕹️%20Terminal-020617?style=flat-square" alt="Terminal"></h2>
 
-Clone o repositório:
-
-```bash
-git clone https://github.com/wqiluc/Bolao-Copa-26
-```
-
-<h3 align="center">Rodar com Docker (recomendado) <br>
+<h3 align="center">Rodar com Docker<br>
 <img src="https://img.shields.io/badge/-Docker-111827?style=flat-square&logo=docker&logoColor=2496ed"/>
 <img src="https://img.shields.io/badge/-PostgreSQL-111827?style=flat-square&logo=postgresql&logoColor=white"/>
 <img src="https://img.shields.io/badge/-Nginx-111827?style=flat-square&logo=nginx&logoColor=009639"/>
@@ -202,7 +197,7 @@ docker compose down
 docker compose down -v
 ```
 
-| Serviço | URL |
+| Serviço 🔑 | URL 🔗 |
 |---|---|
 | **Frontend** | http://localhost:3000 |
 | **API (Swagger)** | http://localhost:8000/docs |
@@ -243,11 +238,11 @@ docker system prune -f --volumes
 
 <h2 align="center">🔑 Versões Necessárias:</h2>
 <p align="center">
-  <img src="https://img.shields.io/badge/Python-3.12-3776AB?style=for-the-badge&logo=python&logoColor=3776AB"/>
+  <img src="https://img.shields.io/badge/Python-3.12+-3776AB?style=for-the-badge&logo=python&logoColor=3776AB"/>
   <img src="https://img.shields.io/badge/FastAPI-0.115.0-009688?style=for-the-badge&logo=fastapi&logoColor=009688"/>
   <img src="https://img.shields.io/badge/SQLAlchemy-2.0.35-D71F00?style=for-the-badge&logo=sqlalchemy&logoColor=D71F00"/>
   <img src="https://img.shields.io/badge/Pydantic-2.9.2-E92063?style=for-the-badge&logo=pydantic&logoColor=E92063"/>
-  <img src="https://img.shields.io/badge/PostgreSQL-16-336791?style=for-the-badge&logo=postgresql&logoColor=white"/>
+  <img src="https://img.shields.io/badge/PostgreSQL-16+-336791?style=for-the-badge&logo=postgresql&logoColor=white"/>
   <img src="https://img.shields.io/badge/Uvicorn-0.30.6-499848?style=for-the-badge&logo=gunicorn&logoColor=499848"/>
   <img src="https://img.shields.io/badge/Docker-Engine-2496ED?style=for-the-badge&logo=docker&logoColor=2496ED"/>
   <img src="https://img.shields.io/badge/Nginx-Alpine-009639?style=for-the-badge&logo=nginx&logoColor=009639"/>
