@@ -1,6 +1,7 @@
 const API = 'http://localhost:8000/api';
 
-const DATAS_FASE = {
+const DATAS_FASE = 
+{
   grupos:  { inicio: '11/Jun', fim: '27/Jun' },
   '16avas': { inicio: '28/Jun', fim: '03/Jul' },
   '8avas':  { inicio: '04/Jul', fim: '07/Jul' },
@@ -14,26 +15,42 @@ let idJogoResultado = null, idJogoAposta = null, idJogoTimes = null;
 let idApostaEditando = null;
 let termoBusca = '';
 
-async function api(caminho, metodo = 'GET', corpo = null) {
+async function api(caminho, metodo = 'GET', corpo = null) 
+{
   const opts = { method: metodo, headers: { 'Content-Type': 'application/json' } };
-  if (corpo) opts.body = JSON.stringify(corpo);
+
+  if (corpo)
+    {
+      opts.body = JSON.stringify(corpo);
+    }
+
   const r = await fetch(API + caminho, opts);
-  if (!r.ok) {
+
+  if (!r.ok) 
+    {
     const err = await r.json().catch(() => ({}));
     throw new Error(err.detail || r.statusText);
   }
-  if (r.status === 204) return null;
+
+  if (r.status === 204) 
+    {
+      return null;
+    }
+
   return r.json();
 }
 
-function toast(msg, erro = false) {
+function toast(msg, erro = false) 
+{
   const el = document.getElementById('toast');
   el.textContent = msg;
   el.className = 'toast show' + (erro ? ' error' : '');
   setTimeout(() => el.className = 'toast', 3000);
 }
 
-function mostrarAba(id) {
+
+function mostrarAba(id) 
+{
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
   document.getElementById(id).classList.add('active');
@@ -47,42 +64,65 @@ function mostrarAba(id) {
 function abrirModal(id)  { document.getElementById(id).classList.remove('hidden'); }
 function fecharModal(id) { document.getElementById(id).classList.add('hidden'); }
 
-// PLACAR
-
-async function carregarPlacar() {
+async function carregarPlacar() 
+{
   document.getElementById('scores-loading').classList.remove('hidden');
   document.getElementById('scores-content').classList.add('hidden');
-  try {
+
+  try 
+  {
     const pontuacoes = await api('/placar/');
     renderizarPlacar(pontuacoes);
-  } catch(e) { toast('Erro ao carregar placar: ' + e.message, true); }
+  } 
+  catch(e) 
+  { 
+    toast('Erro ao carregar placar: ' + e.message, true); 
+  }
+
   document.getElementById('scores-loading').classList.add('hidden');
   document.getElementById('scores-content').classList.remove('hidden');
 }
 
-function calcularSaldo(pontuacoes) {
+function calcularSaldo(pontuacoes) 
+{
   const totalPot    = pontuacoes.reduce((s, p) => s + p.total_gasto, 0);
   const totalPontos = pontuacoes.reduce((s, p) => s + p.total_pontos, 0);
-  if (totalPontos === 0) return pontuacoes.map(() => 0);
+
+  if (totalPontos === 0) 
+  {
+    return pontuacoes.map(() => 0);
+  }
+
   return pontuacoes.map(p => {
     const ganho = (p.total_pontos / totalPontos) * totalPot;
     return ganho - p.total_gasto;
   });
 }
 
-function renderizarSaldo(saldo) {
-  if (Math.abs(saldo) < 0.01) return `<span class="saldo-neutro">= R$ 0,00</span>`;
-  if (saldo > 0) return `<span class="saldo-positivo">▲ R$ ${saldo.toFixed(2).replace('.',',')}</span>`;
+function renderizarSaldo(saldo) 
+{
+  if (Math.abs(saldo) < 0.01) 
+  {
+    return `<span class="saldo-neutro">= R$ 0,00</span>`;
+  }
+
+  if (saldo > 0) 
+  {
+    return `<span class="saldo-positivo">▲ R$ ${saldo.toFixed(2).replace('.',',')}</span>`;
+  }
+
   return `<span class="saldo-negativo">▼ R$ ${Math.abs(saldo).toFixed(2).replace('.',',')} a pagar</span>`;
 }
 
-function renderizarPlacar(pontuacoes) {
+function renderizarPlacar(pontuacoes) 
+{
   const medalhas    = ['🥇','🥈','🥉','4️⃣'];
   const classePodio = ['rank-1','rank-2','rank-3','rank-4'];
   const saldos      = calcularSaldo(pontuacoes);
 
   let podio = `<div class="podium">`;
-  pontuacoes.forEach((p, i) => {
+  pontuacoes.forEach((p, i) => 
+  {
     podio += `
       <div class="podium-card ${classePodio[i] || ''}">
         <div class="rank">${medalhas[i] || i+1}</div>
@@ -107,7 +147,8 @@ function renderizarPlacar(pontuacoes) {
       <th>Saldo</th>
     </tr></thead><tbody>`;
 
-  pontuacoes.forEach((p, i) => {
+  pontuacoes.forEach((p, i) => 
+  {
     tabela += `<tr>
       <td>${p.participante.nome}</td>
       ${p.por_fase.map(f => `<td>${f.pontos}</td>`).join('')}
@@ -120,50 +161,70 @@ function renderizarPlacar(pontuacoes) {
   document.getElementById('scores-content').innerHTML = podio + tabela;
 }
 
-// JOGOS
-
-async function carregarJogos() {
+async function carregarJogos() 
+{
   document.getElementById('matches-loading').classList.remove('hidden');
   document.getElementById('matches-content').classList.add('hidden');
-  try {
+
+  try 
+  {
     todosJogos = await api('/jogos/');
     fases = fases.length ? fases : await api('/fases');
     renderizarJogos(todosJogos);
-  } catch(e) { toast('Erro ao carregar jogos: ' + e.message, true); }
+  } 
+
+  catch(e) 
+  { 
+    toast('Erro ao carregar jogos: ' + e.message, true); 
+  }
+
   document.getElementById('matches-loading').classList.add('hidden');
   document.getElementById('matches-content').classList.remove('hidden');
 }
 
-function filtrarJogos(termo) {
+function filtrarJogos(termo) 
+{
   termoBusca = termo.trim().toLowerCase();
   renderizarJogos(todosJogos);
 }
 
-function formatarData(iso) {
+
+function formatarData(iso) 
+{
   const d = new Date(iso);
   return d.toLocaleDateString('pt-BR', { day:'2-digit', month:'2-digit' })
        + ' ' + d.toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
 }
 
-function ehHoje(iso) {
+function ehHoje(iso) 
+{
   const d = new Date(iso), h = new Date();
   return d.toDateString() === h.toDateString();
 }
 
-function renderizarJogos(jogos) {
+function renderizarJogos(jogos) 
+{
   const filtrados = termoBusca
-    ? jogos.filter(j =>
-        (j.time_casa?.nome || '').toLowerCase().includes(termoBusca) ||
-        (j.time_fora?.nome || '').toLowerCase().includes(termoBusca)
-      )
+    ? jogos.filter(j => (j.time_casa?.nome || '').toLowerCase().includes(termoBusca) || 
+    (j.time_fora?.nome || '').toLowerCase().includes(termoBusca))
     : jogos;
 
   const porFase = {};
-  filtrados.forEach(j => {
+  filtrados.forEach(j => 
+  {
     const chave = j.fase.id;
-    if (!porFase[chave]) porFase[chave] = { fase: j.fase, porGrupo: {} };
+    if (!porFase[chave]) 
+    { 
+      porFase[chave] = { fase: j.fase, porGrupo: {} };
+    }
+
     const g = j.grupo ? j.grupo.nome : '_eliminatoria';
-    if (!porFase[chave].porGrupo[g]) porFase[chave].porGrupo[g] = [];
+
+    if (!porFase[chave].porGrupo[g])
+    {
+      porFase[chave].porGrupo[g] = [];
+    }
+
     porFase[chave].porGrupo[g].push(j);
   });
 
@@ -184,8 +245,12 @@ function renderizarJogos(jogos) {
         </div>
         <div id="fase-${fase.id}">`;
 
-    Object.entries(porGrupo).sort(([a],[b]) => a.localeCompare(b)).forEach(([grp, jogosGrupo]) => {
-      if (grp !== '_eliminatoria') html += `<div class="group-label">Grupo ${grp}</div>`;
+    Object.entries(porGrupo).sort(([a],[b]) => a.localeCompare(b)).forEach(([grp, jogosGrupo]) => 
+    {
+      if (grp !== '_eliminatoria')
+        { 
+          html += `<div class="group-label">Grupo ${grp}</div>`;
+        }
       jogosGrupo.forEach(j => { html += renderizarCartaoJogo(j); });
     });
     html += `</div></div>`;
@@ -195,17 +260,24 @@ function renderizarJogos(jogos) {
     html || `<div class="empty">Nenhum jogo encontrado${termoBusca ? ` para "${termoBusca}"` : ''}</div>`;
 }
 
-function alternarSecao(id) {
+function alternarSecao(id) 
+{
   const el = document.getElementById(id);
   el.style.display = el.style.display === 'none' ? '' : 'none';
 }
 
-function labelTime(time) {
-  if (time) return `${time.bandeira || ''} ${time.nome}`;
+function labelTime(time) 
+{
+  if (time) 
+  {
+    return `${time.bandeira || ''} ${time.nome}`;
+  }
+
   return 'A definir';
 }
 
-function renderizarCartaoJogo(j) {
+function renderizarCartaoJogo(j) 
+{
   const classeHoje = ehHoje(j.data) ? 'today' : '';
   const classeEnc  = j.encerrado ? 'finished' : '';
   const placarHtml = j.encerrado
@@ -213,8 +285,11 @@ function renderizarCartaoJogo(j) {
     : `<span class="score-box pending">vs</span>`;
 
   let acoes = '';
-  if (!j.encerrado) {
-    if (!j.time_casa) {
+  if (!j.encerrado)
+  {
+    
+    if (!j.time_casa) 
+    {
       acoes += `<button class="btn btn-blue btn-sm" onclick="abrirModalTimes(${j.id})">🔗 Times</button>`;
     }
     acoes += `<button class="btn btn-gold btn-sm" onclick="abrirModalAposta(${j.id})">🎯 Apostar R$${j.fase.valor}</button>`;
@@ -237,11 +312,15 @@ function renderizarCartaoJogo(j) {
     </div>`;
 }
 
-// MODAL RESULTADO
 
 function abrirModalResultado(idJogo) {
   const j = todosJogos.find(x => x.id === idJogo);
-  if (!j) return;
+
+  if (!j) 
+  {
+    return;
+  }
+
   idJogoResultado = idJogo;
   document.getElementById('result-modal-title').textContent = `Resultado: ${labelTime(j.time_casa)} x ${labelTime(j.time_fora)}`;
   document.getElementById('result-home-label').textContent = labelTime(j.time_casa);
@@ -251,9 +330,12 @@ function abrirModalResultado(idJogo) {
   abrirModal('result-modal');
 }
 
-async function enviarResultado() {
-  try {
-    await api(`/jogos/${idJogoResultado}/resultado`, 'PUT', {
+async function enviarResultado() 
+{
+  try 
+  {
+    await api(`/jogos/${idJogoResultado}/resultado`, 'PUT', 
+    {
       gols_casa: parseInt(document.getElementById('result-home').value),
       gols_fora: parseInt(document.getElementById('result-away').value),
     });
@@ -261,17 +343,28 @@ async function enviarResultado() {
     fecharModal('result-modal');
     carregarJogos();
     carregarPlacar();
-  } catch(e) { toast('Erro: ' + e.message, true); }
+  } 
+
+  catch(e) 
+  { 
+    toast('Erro: ' + e.message, true); 
+  }
 }
 
-// MODAL APOSTA
-
-async function abrirModalAposta(idJogo) {
+async function abrirModalAposta(idJogo)
+{
   const j = todosJogos.find(x => x.id === idJogo);
-  if (!j) return;
+  if (!j)
+  { 
+      return;
+  }
+
   idJogoAposta = idJogo;
   idApostaEditando = null;
-  if (!participantes.length) participantes = await api('/participantes');
+  if (!participantes.length) 
+  {
+    participantes = await api('/participantes');
+  }
 
   const sel = document.getElementById('bet-modal-participant');
   sel.innerHTML = participantes.map(p => `<option value="${p.id}">${p.nome}</option>`).join('');
@@ -283,68 +376,97 @@ async function abrirModalAposta(idJogo) {
   abrirModal('bet-modal');
 }
 
-async function enviarAposta() {
-  try {
+async function enviarAposta() 
+{
+  try 
+  {
     const idParticipante = parseInt(document.getElementById('bet-modal-participant').value);
     const casa = parseInt(document.getElementById('bet-home').value);
     const fora = parseInt(document.getElementById('bet-away').value);
 
-    if (idApostaEditando) {
+    if (idApostaEditando) 
+      {
       await api(`/apostas/${idApostaEditando}`, 'PUT', { palpite_casa: casa, palpite_fora: fora });
       toast('Aposta atualizada!');
-    } else {
-      await api('/apostas/', 'POST', {
+    } 
+
+    else 
+    {
+      await api('/apostas/', 'POST', 
+      {
         id_participante: idParticipante,
         id_jogo: idJogoAposta,
         palpite_casa: casa,
         palpite_fora: fora,
       });
+
       toast('Aposta registrada!');
     }
+
     fecharModal('bet-modal');
     if (document.getElementById('tab-bets').classList.contains('active')) carregarApostas();
-  } catch(e) { toast('Erro: ' + e.message, true); }
+  } 
+  catch(e) 
+  { 
+    toast('Erro: ' + e.message, true); 
+  }
 }
 
-// MODAL TIMES
-
-async function abrirModalTimes(idJogo) {
+async function abrirModalTimes(idJogo) 
+{
   idJogoTimes = idJogo;
-  if (!times.length) times = await api('/times');
+  if (!times.length) 
+  {
+    times = await api('/times');
+  }
+
   const opts = times.map(t => `<option value="${t.id}">${t.bandeira || ''} ${t.nome}</option>`).join('');
   document.getElementById('times-casa').innerHTML = opts;
   document.getElementById('times-fora').innerHTML = opts;
   abrirModal('teams-modal');
 }
 
-async function enviarTimes() {
-  try {
-    await api(`/jogos/${idJogoTimes}/times`, 'PUT', {
+async function enviarTimes() 
+{
+  try 
+  {
+    await api(`/jogos/${idJogoTimes}/times`, 'PUT', 
+    {
       id_time_casa: parseInt(document.getElementById('times-casa').value),
       id_time_fora: parseInt(document.getElementById('times-fora').value),
     });
+
     toast('Times definidos!');
     fecharModal('teams-modal');
     carregarJogos();
-  } catch(e) { toast('Erro: ' + e.message, true); }
+  }
+  
+  catch(e) 
+  { 
+    toast('Erro: ' + e.message, true); 
+  }
 }
 
-// APOSTAS
 
-async function carregarApostas() {
+async function carregarApostas() 
+{
   document.getElementById('bets-loading').classList.remove('hidden');
   document.getElementById('bets-content').classList.add('hidden');
-  try {
+  try 
+  {
     if (!participantes.length) participantes = await api('/participantes');
     if (!fases.length) fases = await api('/fases');
 
     const filtroPart = document.getElementById('bet-participant-filter');
     const filtroFase = document.getElementById('bet-phase-filter');
 
-    if (filtroPart.options.length <= 1) {
+    if (filtroPart.options.length <= 1) 
+    {
       participantes.forEach(p => filtroPart.add(new Option(p.nome, p.id)));
     }
-    if (filtroFase.options.length <= 1) {
+
+    if (filtroFase.options.length <= 1) 
+    {
       fases.forEach(f => filtroFase.add(new Option(f.nome, f.id)));
     }
 
@@ -358,6 +480,7 @@ async function carregarApostas() {
 
     renderizarApostas(apostas);
   } 
+
   catch(e) 
   { 
     toast('Erro ao carregar apostas: ' + e.message, true); 
@@ -370,7 +493,7 @@ async function carregarApostas() {
 function labelPontos(aposta) 
 {
   if (!aposta.jogo.encerrado)
-    { 
+  { 
     return `<span class="pts open">—</span>`;
   }
 
