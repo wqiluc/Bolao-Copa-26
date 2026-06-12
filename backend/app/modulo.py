@@ -26,18 +26,22 @@ def criar_app() -> FastAPI:
     app.include_router(controlador_placar.roteador, prefix="/api")
 
     @app.get("/api/fases", response_model=list[esquemas.FaseSaida])
+
     def listar_fases(bd: Session = Depends(obter_bd)):
         return bd.query(modelos.Fase).order_by(modelos.Fase.ordem).all()
 
     @app.get("/api/times", response_model=list[esquemas.TimeSaida])
+
     def listar_times(bd: Session = Depends(obter_bd)):
         return bd.query(modelos.Time).order_by(modelos.Time.nome).all()
 
     @app.get("/api/grupos", response_model=list[esquemas.GrupoSaida])
+
     def listar_grupos(bd: Session = Depends(obter_bd)):
         return bd.query(modelos.Grupo).order_by(modelos.Grupo.nome).all()
 
     @app.get("/api/participantes", response_model=list[esquemas.ParticipanteSaida])
+    
     def listar_participantes(bd: Session = Depends(obter_bd)):
         return bd.query(modelos.Participante).order_by(modelos.Participante.nome).all()
 

@@ -20,6 +20,7 @@ def listar_apostas(
 
 @roteador.post("/", response_model=esquemas.ApostaSaida, status_code=201)
 def criar_aposta(corpo: esquemas.ApostaEntrada, bd: Session = Depends(obter_bd)):
+
     try:
         aposta = servico_apostas.criar_aposta(
             bd,
@@ -51,5 +52,6 @@ def atualizar_aposta(id_aposta: int, corpo: esquemas.AtualizarAposta, bd: Sessio
 @roteador.delete("/{id_aposta}", status_code=204)
 def deletar_aposta(id_aposta: int, bd: Session = Depends(obter_bd)):
     ok = servico_apostas.deletar_aposta(bd, id_aposta)
-    if not ok:
+
+    if not (ok):
         raise HTTPException(status_code=404, detail="Aposta não encontrada ou jogo já encerrado")

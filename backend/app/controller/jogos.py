@@ -21,7 +21,7 @@ def listar_jogos(
 def obter_jogo(id_jogo: int, bd: Session = Depends(obter_bd)):
     jogo = servico_jogos.obter_jogo(bd, id_jogo)
 
-    if not jogo:
+    if not (jogo):
         raise HTTPException(status_code=404, detail="Jogo não encontrado")
     
     return jogo
@@ -31,7 +31,7 @@ def obter_jogo(id_jogo: int, bd: Session = Depends(obter_bd)):
 def registrar_resultado(id_jogo: int, corpo: esquemas.ResultadoJogo, bd: Session = Depends(obter_bd)):
     jogo = servico_jogos.registrar_resultado(bd, id_jogo, corpo.gols_casa, corpo.gols_fora)
 
-    if not jogo:
+    if not (jogo):
         raise HTTPException(status_code=404, detail="Jogo não encontrado")
     
     return servico_jogos.obter_jogo(bd, id_jogo)
@@ -41,7 +41,7 @@ def registrar_resultado(id_jogo: int, corpo: esquemas.ResultadoJogo, bd: Session
 def atualizar_times(id_jogo: int, corpo: esquemas.AtualizarTimesJogo, bd: Session = Depends(obter_bd)):
     jogo = servico_jogos.atualizar_times(bd, id_jogo, corpo.id_time_casa, corpo.id_time_fora)
 
-    if not jogo:
+    if not (jogo):
         raise HTTPException(status_code=404, detail="Jogo não encontrado")
     
     return jogo

@@ -27,10 +27,10 @@ def listar_apostas(bd: Session, id_participante: int | None = None, id_jogo: int
         joinedload(modelos.Aposta.jogo).joinedload(modelos.Jogo.time_fora),
     )
 
-    if id_participante:
+    if (id_participante):
         q = q.filter(modelos.Aposta.id_participante == id_participante)
 
-    if id_jogo:
+    if (id_jogo):
         q = q.filter(modelos.Aposta.id_jogo == id_jogo)
 
     return q.all()
@@ -70,7 +70,7 @@ def criar_aposta(
 def atualizar_aposta(bd: Session, id_aposta: int, palpite_casa: int, palpite_fora: int) -> modelos.Aposta | None:
     aposta = bd.query(modelos.Aposta).filter(modelos.Aposta.id == id_aposta).first()
 
-    if not aposta or aposta.jogo.encerrado:
+    if (not aposta or aposta.jogo.encerrado):
         return None
     
     aposta.palpite_casa = palpite_casa

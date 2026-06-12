@@ -6,28 +6,31 @@ def calcular_placar(bd: Session) -> list[dict]:
     participantes = bd.query(modelos.Participante).all()
     fases = bd.query(modelos.Fase).order_by(modelos.Fase.ordem).all()
     resultado = []
+
     for p in participantes:
         por_fase = []
-        total = 0
+        saldo_total = 0.0
         acertos_exatos = 0
-        total_gasto = float(sum(a.valor for a in p.apostas))
+
         for fase in fases:
-            pts = sum(
-                a.pontos
+            saldo_fase = sum(
+                float(a.pontos or 0)
                 for a in p.apostas
                 if a.jogo.id_fase == fase.id and a.jogo.encerrado
             )
-            por_fase.append({"fase": fase, "pontos": pts})
-            total += pts
+            por_fase.append({"fase": fase, "saldo": saldo_fase})
+            saldo_total += saldo_fase
+
             for a in p.apostas:
-                if a.jogo.id_fase == fase.id and a.jogo.encerrado and a.pontos == 3:
+                if a.jogo.id_fase == fase.id and a.jogo.encerrado and float(a.pontos or 0) > 0:
                     acertos_exatos += 1
+
         resultado.append({
             "participante": p,
-            "total_pontos": total,
+            "saldo_total": saldo_total,
             "acertos_exatos": acertos_exatos,
-            "total_gasto": total_gasto,
             "por_fase": por_fase,
         })
-    resultado.sort(key=lambda x: (-x["total_pontos"], -x["acertos_exatos"]))
+
+    resultado.sort(key=lambda x: (-x["saldo_total"], -x["acertos_exatos"]))
     return resultado

@@ -79,7 +79,7 @@ class Aposta(Base):
     palpite_casa = Column(Integer, nullable=False)
     palpite_fora = Column(Integer, nullable=False)
     valor = Column(Numeric(10, 2), nullable=False, default=1)
-    pontos = Column(Integer, default=0, nullable=False)
+    pontos = Column(Numeric(10, 2), default=0, nullable=False)
 
     __table_args__ = (UniqueConstraint("id_participante", "id_jogo", name="uq_aposta_participante_jogo"),)
 

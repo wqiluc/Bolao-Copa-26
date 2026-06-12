@@ -30,20 +30,25 @@ def obter_jogo(bd: Session, id_jogo: int) -> modelos.Jogo | None:
     )
 
 
-def calcular_pontos(palpite_casa: int, palpite_fora: int, gols_casa: int, gols_fora: int) -> int:
-    if palpite_casa == gols_casa and palpite_fora == gols_fora:
-        return 3
-    return 0
-
-
 def recalcular_apostas(bd: Session, jogo: modelos.Jogo) -> None:
     if not jogo.encerrado or jogo.gols_casa is None or jogo.gols_fora is None:
         return
+
+    valor = jogo.fase.valor
+    algum_acertou = any(
+        a.palpite_casa == jogo.gols_casa and a.palpite_fora == jogo.gols_fora
+        for a in jogo.apostas
+    )
+
     for aposta in jogo.apostas:
-        aposta.pontos = calcular_pontos(
-            aposta.palpite_casa, aposta.palpite_fora,
-            jogo.gols_casa, jogo.gols_fora,
-        )
+        acertou = aposta.palpite_casa == jogo.gols_casa and aposta.palpite_fora == jogo.gols_fora
+        if not algum_acertou:
+            aposta.pontos = 0
+        elif acertou:
+            aposta.pontos = valor
+        else:
+            aposta.pontos = -valor
+
     bd.commit()
 
 

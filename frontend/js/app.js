@@ -83,30 +83,14 @@ async function carregarPlacar()
   document.getElementById('scores-content').classList.remove('hidden');
 }
 
-function calcularSaldo(pontuacoes) 
+function renderizarSaldo(saldo)
 {
-  const totalPot    = pontuacoes.reduce((s, p) => s + p.total_gasto, 0);
-  const totalPontos = pontuacoes.reduce((s, p) => s + p.total_pontos, 0);
-
-  if (totalPontos === 0) 
-  {
-    return pontuacoes.map(() => 0);
-  }
-
-  return pontuacoes.map(p => {
-    const ganho = (p.total_pontos / totalPontos) * totalPot;
-    return ganho - p.total_gasto;
-  });
-}
-
-function renderizarSaldo(saldo) 
-{
-  if (Math.abs(saldo) < 0.01) 
+  if (Math.abs(saldo) < 0.01)
   {
     return `<span class="saldo-neutro">= R$ 0,00</span>`;
   }
 
-  if (saldo > 0) 
+  if (saldo > 0)
   {
     return `<span class="saldo-positivo">▲ R$ ${saldo.toFixed(2).replace('.',',')}</span>`;
   }
@@ -114,23 +98,20 @@ function renderizarSaldo(saldo)
   return `<span class="saldo-negativo">▼ R$ ${Math.abs(saldo).toFixed(2).replace('.',',')} a pagar</span>`;
 }
 
-function renderizarPlacar(pontuacoes) 
+function renderizarPlacar(pontuacoes)
 {
   const medalhas    = ['🥇','🥈','🥉','4️⃣'];
   const classePodio = ['rank-1','rank-2','rank-3','rank-4'];
-  const saldos      = calcularSaldo(pontuacoes);
 
   let podio = `<div class="podium">`;
-  pontuacoes.forEach((p, i) => 
+  pontuacoes.forEach((p, i) =>
   {
     podio += `
       <div class="podium-card ${classePodio[i] || ''}">
         <div class="rank">${medalhas[i] || i+1}</div>
         <div class="name">${p.participante.nome}</div>
-        <div class="pts">${p.total_pontos} pts</div>
+        <div class="pts">${renderizarSaldo(p.saldo_total)}</div>
         <div class="sub">✅ ${p.acertos_exatos} acertos exatos</div>
-        <div class="sub" style="color:#c8a84b;margin-top:0.2rem">💸 R$ ${p.total_gasto.toFixed(2).replace('.',',')} investidos</div>
-        <div class="saldo-box">${renderizarSaldo(saldos[i])}</div>
       </div>`;
   });
   podio += `</div>`;
@@ -143,17 +124,20 @@ function renderizarPlacar(pontuacoes)
     <thead><tr>
       <th>Participante</th>
       ${nomesFases.map(n => `<th>${n}</th>`).join('')}
-      <th>Total</th>
       <th>Saldo</th>
     </tr></thead><tbody>`;
 
-  pontuacoes.forEach((p, i) => 
+  pontuacoes.forEach((p) =>
   {
     tabela += `<tr>
       <td>${p.participante.nome}</td>
-      ${p.por_fase.map(f => `<td>${f.pontos}</td>`).join('')}
-      <td><strong>${p.total_pontos}</strong></td>
-      <td>${renderizarSaldo(saldos[i])}</td>
+      ${p.por_fase.map(f => {
+        const s = f.saldo ?? 0;
+        const txt = (s > 0 ? '+' : '') + s.toFixed(2).replace('.',',');
+        const cls = s > 0.005 ? 'saldo-positivo' : s < -0.005 ? 'saldo-negativo' : 'saldo-neutro';
+        return `<td><span class="${cls}">R$ ${txt}</span></td>`;
+      }).join('')}
+      <td>${renderizarSaldo(p.saldo_total)}</td>
     </tr>`;
   });
   tabela += `</tbody></table>`;
@@ -490,24 +474,26 @@ async function carregarApostas()
   document.getElementById('bets-content').classList.remove('hidden');
 }
 
-function labelPontos(aposta) 
+function labelPontos(aposta)
 {
   if (!aposta.jogo.encerrado)
-  { 
+  {
     return `<span class="pts open">—</span>`;
   }
 
-  if (aposta.pontos === 3) 
+  const p = parseFloat(aposta.pontos);
+
+  if (Math.abs(p) < 0.01)
   {
-    return `<span class="pts exact">+3 🎯</span>`;
+    return `<span class="pts neutro">= R$ 0,00</span>`;
   }
 
-  if (aposta.pontos === 1) 
+  if (p > 0)
   {
-    return `<span class="pts correct">+1 ✓</span>`;
+    return `<span class="pts exact">+R$ ${p.toFixed(2).replace('.',',')} 🎯</span>`;
   }
 
-  return `<span class="pts wrong">0 ✗</span>`;
+  return `<span class="pts wrong">-R$ ${Math.abs(p).toFixed(2).replace('.',',')} ✗</span>`;
 }
 
 function renderizarApostas(apostas) 

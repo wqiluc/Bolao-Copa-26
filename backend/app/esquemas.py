@@ -76,18 +76,17 @@ class ApostaSaida(BaseModel):
     palpite_casa: int
     palpite_fora: int
     valor: float
-    pontos: int
+    pontos: float
     model_config = {"from_attributes": True}
 
 
 class PlacarFase(BaseModel):
     fase: FaseSaida
-    pontos: int
+    saldo: float
 
 
 class PlacarParticipante(BaseModel):
     participante: ParticipanteSaida
-    total_pontos: int
+    saldo_total: float
     acertos_exatos: int
-    total_gasto: float
     por_fase: list[PlacarFase]

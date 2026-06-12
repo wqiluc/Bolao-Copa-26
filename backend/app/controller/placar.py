@@ -14,13 +14,12 @@ def obter_placar(bd: Session = Depends(obter_bd)):
     return [
         esquemas.PlacarParticipante(
             participante=esquemas.ParticipanteSaida.model_validate(r["participante"]),
-            total_pontos=r["total_pontos"],
+            saldo_total=r["saldo_total"],
             acertos_exatos=r["acertos_exatos"],
-            total_gasto=r["total_gasto"],
             por_fase=[
                 esquemas.PlacarFase(
                     fase=esquemas.FaseSaida.model_validate(f["fase"]),
-                    pontos=f["pontos"],
+                    saldo=f["saldo"],
                 )
                 for f in r["por_fase"]
             ],
