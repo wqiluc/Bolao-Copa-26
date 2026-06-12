@@ -1,10 +1,8 @@
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Boolean, UniqueConstraint, Numeric
 from sqlalchemy.orm import relationship, DeclarativeBase
 
-
 class Base(DeclarativeBase):
     pass
-
 
 class Fase(Base):
     __tablename__ = "fases"
@@ -60,7 +58,6 @@ class Jogo(Base):
     time_fora = relationship("Time", foreign_keys=[id_time_fora], back_populates="jogos_fora")
     apostas = relationship("Aposta", back_populates="jogo")
 
-
 class Participante(Base):
     __tablename__ = "participantes"
 
@@ -68,7 +65,6 @@ class Participante(Base):
     nome = Column(String(100), nullable=False, unique=True)
 
     apostas = relationship("Aposta", back_populates="participante")
-
 
 class Aposta(Base):
     __tablename__ = "apostas"

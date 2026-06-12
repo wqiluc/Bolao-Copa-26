@@ -83,19 +83,20 @@ async function carregarPlacar()
   document.getElementById('scores-content').classList.remove('hidden');
 }
 
+function formatarReais(valor)
+{
+  return valor.toFixed(2).replace('.', ',');
+}
+
 function renderizarSaldo(saldo)
 {
   if (Math.abs(saldo) < 0.01)
-  {
     return `<span class="saldo-neutro">= R$ 0,00</span>`;
-  }
 
   if (saldo > 0)
-  {
-    return `<span class="saldo-positivo">▲ R$ ${saldo.toFixed(2).replace('.',',')}</span>`;
-  }
+    return `<span class="saldo-positivo">▲ R$ ${formatarReais(saldo)}</span>`;
 
-  return `<span class="saldo-negativo">▼ R$ ${Math.abs(saldo).toFixed(2).replace('.',',')} a pagar</span>`;
+  return `<span class="saldo-negativo">▼ R$ ${formatarReais(Math.abs(saldo))} a pagar</span>`;
 }
 
 function renderizarPlacar(pontuacoes)
@@ -104,40 +105,48 @@ function renderizarPlacar(pontuacoes)
   const classePodio = ['rank-1','rank-2','rank-3','rank-4'];
 
   let podio = `<div class="podium">`;
-  pontuacoes.forEach((p, i) =>
+  pontuacoes.forEach((entrada, i) =>
   {
     podio += `
       <div class="podium-card ${classePodio[i] || ''}">
         <div class="rank">${medalhas[i] || i+1}</div>
-        <div class="name">${p.participante.nome}</div>
-        <div class="pts">${renderizarSaldo(p.saldo_total)}</div>
-        <div class="sub">✅ ${p.acertos_exatos} acertos exatos</div>
+        <div class="name">${entrada.participante.nome}</div>
+        <div class="pts">${renderizarSaldo(entrada.saldo_total)}</div>
+        <div class="sub">✅ ${entrada.acertos_exatos} acertos exatos</div>
+        <div class="saldo-breakdown">
+          <span class="saldo-positivo">▲ R$ ${formatarReais(entrada.total_ganho)} a receber</span>
+          <span class="saldo-negativo">▼ R$ ${formatarReais(entrada.total_devido)} a pagar</span>
+        </div>
       </div>`;
   });
   podio += `</div>`;
 
   const nomesFases = pontuacoes.length > 0
-    ? pontuacoes[0].por_fase.map(f => f.fase.nome)
+    ? pontuacoes[0].por_fase.map(faseSaldo => faseSaldo.fase.nome)
     : [];
 
   let tabela = `<table class="phase-table">
     <thead><tr>
       <th>Participante</th>
-      ${nomesFases.map(n => `<th>${n}</th>`).join('')}
+      ${nomesFases.map(nome => `<th>${nome}</th>`).join('')}
+      <th>A receber</th>
+      <th>A pagar</th>
       <th>Saldo</th>
     </tr></thead><tbody>`;
 
-  pontuacoes.forEach((p) =>
+  pontuacoes.forEach((entrada) =>
   {
     tabela += `<tr>
-      <td>${p.participante.nome}</td>
-      ${p.por_fase.map(f => {
-        const s = f.saldo ?? 0;
-        const txt = (s > 0 ? '+' : '') + s.toFixed(2).replace('.',',');
-        const cls = s > 0.005 ? 'saldo-positivo' : s < -0.005 ? 'saldo-negativo' : 'saldo-neutro';
+      <td>${entrada.participante.nome}</td>
+      ${entrada.por_fase.map(faseSaldo => {
+        const saldo = faseSaldo.saldo ?? 0;
+        const txt = (saldo > 0 ? '+' : '') + formatarReais(saldo);
+        const cls = saldo > 0.005 ? 'saldo-positivo' : saldo < -0.005 ? 'saldo-negativo' : 'saldo-neutro';
         return `<td><span class="${cls}">R$ ${txt}</span></td>`;
       }).join('')}
-      <td>${renderizarSaldo(p.saldo_total)}</td>
+      <td><span class="saldo-positivo">R$ ${formatarReais(entrada.total_ganho)}</span></td>
+      <td><span class="saldo-negativo">R$ ${formatarReais(entrada.total_devido)}</span></td>
+      <td>${renderizarSaldo(entrada.saldo_total)}</td>
     </tr>`;
   });
   tabela += `</tbody></table>`;
@@ -186,36 +195,37 @@ function ehHoje(iso)
   return d.toDateString() === h.toDateString();
 }
 
-function renderizarJogos(jogos) 
+function renderizarJogos(jogos)
 {
   const filtrados = termoBusca
-    ? jogos.filter(j => (j.time_casa?.nome || '').toLowerCase().includes(termoBusca) || 
-    (j.time_fora?.nome || '').toLowerCase().includes(termoBusca))
+    ? jogos.filter(jogo => (jogo.time_casa?.nome || '').toLowerCase().includes(termoBusca) ||
+    (jogo.time_fora?.nome || '').toLowerCase().includes(termoBusca))
     : jogos;
 
   const porFase = {};
-  filtrados.forEach(j => 
+  filtrados.forEach(jogo =>
   {
-    const chave = j.fase.id;
-    if (!porFase[chave]) 
-    { 
-      porFase[chave] = { fase: j.fase, porGrupo: {} };
-    }
-
-    const g = j.grupo ? j.grupo.nome : '_eliminatoria';
-
-    if (!porFase[chave].porGrupo[g])
+    const idFase = jogo.fase.id;
+    if (!porFase[idFase])
     {
-      porFase[chave].porGrupo[g] = [];
+      porFase[idFase] = { fase: jogo.fase, porGrupo: {} };
     }
 
-    porFase[chave].porGrupo[g].push(j);
+    const chaveGrupo = jogo.grupo ? jogo.grupo.nome : '_eliminatoria';
+
+    if (!porFase[idFase].porGrupo[chaveGrupo])
+    {
+      porFase[idFase].porGrupo[chaveGrupo] = [];
+    }
+
+    porFase[idFase].porGrupo[chaveGrupo].push(jogo);
   });
 
   let html = '';
-  Object.values(porFase).sort((a,b) => a.fase.ordem - b.fase.ordem).forEach(({ fase, porGrupo }) => {
-    const total  = Object.values(porGrupo).flat().length;
-    const feitos = Object.values(porGrupo).flat().filter(j => j.encerrado).length;
+  Object.values(porFase).sort((a, b) => a.fase.ordem - b.fase.ordem).forEach(({ fase, porGrupo }) => {
+    const jogosFlat = Object.values(porGrupo).flat();
+    const total  = jogosFlat.length;
+    const feitos = jogosFlat.filter(jogo => jogo.encerrado).length;
     const datas  = DATAS_FASE[fase.slug];
     const dataTxt = datas
       ? (datas.fim ? `${datas.inicio} – ${datas.fim}` : datas.inicio)
@@ -229,13 +239,13 @@ function renderizarJogos(jogos)
         </div>
         <div id="fase-${fase.id}">`;
 
-    Object.entries(porGrupo).sort(([a],[b]) => a.localeCompare(b)).forEach(([grp, jogosGrupo]) => 
+    Object.entries(porGrupo).sort(([a], [b]) => a.localeCompare(b)).forEach(([chaveGrupo, jogosGrupo]) =>
     {
-      if (grp !== '_eliminatoria')
-        { 
-          html += `<div class="group-label">Grupo ${grp}</div>`;
+      if (chaveGrupo !== '_eliminatoria')
+        {
+          html += `<div class="group-label">Grupo ${chaveGrupo}</div>`;
         }
-      jogosGrupo.forEach(j => { html += renderizarCartaoJogo(j); });
+      jogosGrupo.forEach(jogo => { html += renderizarCartaoJogo(jogo); });
     });
     html += `</div></div>`;
   });
@@ -444,23 +454,23 @@ async function carregarApostas()
     const filtroPart = document.getElementById('bet-participant-filter');
     const filtroFase = document.getElementById('bet-phase-filter');
 
-    if (filtroPart.options.length <= 1) 
+    if (filtroPart.options.length <= 1)
     {
-      participantes.forEach(p => filtroPart.add(new Option(p.nome, p.id)));
+      participantes.forEach(participante => filtroPart.add(new Option(participante.nome, participante.id)));
     }
 
-    if (filtroFase.options.length <= 1) 
+    if (filtroFase.options.length <= 1)
     {
-      fases.forEach(f => filtroFase.add(new Option(f.nome, f.id)));
+      fases.forEach(fase => filtroFase.add(new Option(fase.nome, fase.id)));
     }
 
-    const pid = filtroPart.value;
-    const fid = filtroFase.value;
+    const idParticipante = filtroPart.value;
+    const idFase = filtroFase.value;
     let url = '/apostas/?';
-    if (pid) url += `id_participante=${pid}&`;
+    if (idParticipante) url += `id_participante=${idParticipante}&`;
 
     let apostas = await api(url);
-    if (fid) apostas = apostas.filter(a => a.jogo.fase.id == fid);
+    if (idFase) apostas = apostas.filter(aposta => aposta.jogo.fase.id === parseInt(idFase));
 
     renderizarApostas(apostas);
   } 
@@ -477,23 +487,17 @@ async function carregarApostas()
 function labelPontos(aposta)
 {
   if (!aposta.jogo.encerrado)
-  {
     return `<span class="pts open">—</span>`;
-  }
 
-  const p = parseFloat(aposta.pontos);
+  const pontos = parseFloat(aposta.pontos);
 
-  if (Math.abs(p) < 0.01)
-  {
+  if (Math.abs(pontos) < 0.01)
     return `<span class="pts neutro">= R$ 0,00</span>`;
-  }
 
-  if (p > 0)
-  {
-    return `<span class="pts exact">+R$ ${p.toFixed(2).replace('.',',')} 🎯</span>`;
-  }
+  if (pontos > 0)
+    return `<span class="pts exact">+R$ ${formatarReais(pontos)} 🎯</span>`;
 
-  return `<span class="pts wrong">-R$ ${Math.abs(p).toFixed(2).replace('.',',')} ✗</span>`;
+  return `<span class="pts wrong">-R$ ${formatarReais(Math.abs(pontos))} ✗</span>`;
 }
 
 function renderizarApostas(apostas) 
@@ -505,17 +509,17 @@ function renderizarApostas(apostas)
   }
 
   const porFase = {};
-  apostas.forEach(a => 
+  apostas.forEach(aposta =>
   {
-    const chave = a.jogo.fase.id;
-    if (!porFase[chave]) porFase[chave] = { fase: a.jogo.fase, apostas: [] };
-    porFase[chave].apostas.push(a);
+    const idFase = aposta.jogo.fase.id;
+    if (!porFase[idFase]) porFase[idFase] = { fase: aposta.jogo.fase, apostas: [] };
+    porFase[idFase].apostas.push(aposta);
   });
 
   let html = '';
-  Object.values(porFase).sort((a,b) => a.fase.ordem - b.fase.ordem).forEach(({ fase, apostas: apostasFase }) => {
+  Object.values(porFase).sort((a, b) => a.fase.ordem - b.fase.ordem).forEach(({ fase, apostas: apostasFase }) => {
     html += `<div class="phase-header" style="margin-top:1rem">${fase.nome}</div>`;
-    apostasFase.sort((a,b) => new Date(a.jogo.data) - new Date(b.jogo.data)).forEach(aposta => {
+    apostasFase.sort((a, b) => new Date(a.jogo.data) - new Date(b.jogo.data)).forEach(aposta => {
       const casa = labelTime(aposta.jogo.time_casa);
       const fora = labelTime(aposta.jogo.time_fora);
       const placarStr = aposta.jogo.encerrado

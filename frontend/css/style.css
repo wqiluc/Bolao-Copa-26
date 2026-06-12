@@ -1,4 +1,7 @@
-* { box-sizing: border-box; margin: 0; padding: 0; }
+* 
+{ 
+  box-sizing: border-box; margin: 0; padding: 0; 
+}
 
 body 
 {
@@ -71,6 +74,7 @@ main { padding: 1.5rem; max-width: 1100px; margin: 0 auto; }
 .podium-card .name { font-size: 1.1rem; font-weight: 700; margin: 0.3rem 0; }
 .podium-card .pts  { font-size: 2rem; font-weight: 800; color: #c8a84b; }
 .podium-card .sub  { font-size: 0.75rem; color: #8aabcc; margin-top: 0.4rem; }
+.podium-card .saldo-breakdown { display: flex; flex-direction: column; gap: 0.15rem; font-size: 0.72rem; margin-top: 0.5rem; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 0.4rem; }
 
 .phase-table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
 

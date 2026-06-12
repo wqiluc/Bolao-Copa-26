@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Bolão Copa do Mundo 2026 (Familia Paguetti)</title>
-  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/style.css"/>
 </head>
 <body>
 
@@ -26,14 +26,17 @@
   </div>
 
   <div id="tab-matches" class="tab">
+
     <div class="match-search">
-      <input type="text" id="match-search" placeholder="🔍 Buscar por time..." oninput="filtrarJogos(this.value)" />
+      <input type="text" id="match-search" placeholder="🔍 Buscar por time..." oninput="filtrarJogos(this.value)"/>
     </div>
+
     <div class="loading" id="matches-loading">Carregando...</div>
     <div id="matches-content" class="hidden"></div>
   </div>
 
   <div id="tab-bets" class="tab">
+
     <div class="bet-filters">
       <div>
         <label>Participante</label><br/>
@@ -41,30 +44,36 @@
           <option value="">Todos</option>
         </select>
       </div>
+
       <div>
         <label>Fase</label><br/>
         <select id="bet-phase-filter" onchange="carregarApostas()">
           <option value="">Todas</option>
         </select>
       </div>
+
     </div>
     <div class="loading" id="bets-loading">Carregando...</div>
     <div id="bets-content" class="hidden"></div>
   </div>
+
 </main>
 
 <div id="result-modal" class="modal-overlay hidden">
+
   <div class="modal">
     <span class="close" onclick="fecharModal('result-modal')">✕</span>
     <h3 id="result-modal-title">Registrar Resultado</h3>
     <div class="field">
       <label id="result-home-label">Casa</label>
-      <input type="number" id="result-home" min="0" max="30" value="0" />
+      <input type="number" id="result-home" min="0" max="30" value="0"/>
     </div>
+
     <div class="field">
       <label id="result-away-label">Fora</label>
-      <input type="number" id="result-away" min="0" max="30" value="0" />
+      <input type="number" id="result-away" min="0" max="30" value="0"/>
     </div>
+
     <div class="actions">
       <button class="btn btn-red" onclick="fecharModal('result-modal')">Cancelar</button>
       <button class="btn btn-green" onclick="enviarResultado()">Salvar</button>
@@ -73,6 +82,7 @@
 </div>
 
 <div id="bet-modal" class="modal-overlay hidden">
+  
   <div class="modal">
     <span class="close" onclick="fecharModal('bet-modal')">✕</span>
     <h3 id="bet-modal-title">Registrar Aposta</h3>
@@ -80,22 +90,27 @@
       <label>Participante</label>
       <select id="bet-modal-participant" style="width:100%"></select>
     </div>
+
     <div class="field">
       <label id="bet-home-label">Casa</label>
       <input type="number" id="bet-home" min="0" max="30" value="1" />
     </div>
+
     <div class="field">
       <label id="bet-away-label">Fora</label>
       <input type="number" id="bet-away" min="0" max="30" value="0" />
     </div>
+
     <div class="actions">
       <button class="btn btn-red" onclick="fecharModal('bet-modal')">Cancelar</button>
       <button class="btn btn-gold" onclick="enviarAposta()">Apostar</button>
     </div>
+
   </div>
 </div>
 
 <div id="teams-modal" class="modal-overlay hidden">
+
   <div class="modal">
     <span class="close" onclick="fecharModal('teams-modal')">✕</span>
     <h3>Definir Times</h3>
@@ -103,14 +118,17 @@
       <label>Time da Casa</label>
       <select id="times-casa" style="width:100%"></select>
     </div>
+
     <div class="field">
       <label>Time Visitante</label>
       <select id="times-fora" style="width:100%"></select>
     </div>
+
     <div class="actions">
       <button class="btn btn-red" onclick="fecharModal('teams-modal')">Cancelar</button>
       <button class="btn btn-blue" onclick="enviarTimes()">Salvar</button>
     </div>
+  
   </div>
 </div>
 

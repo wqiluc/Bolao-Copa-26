@@ -1,0 +1,733 @@
+openapi: 3.1.0
+info:
+  title: Bolão Copa do Mundo 2026 🏆
+  version: 1.0.0
+paths:
+
+  /api/jogos/:
+    get:
+      tags:
+      - jogos
+      summary: Listar Jogos
+      operationId: listar_jogos_api_jogos__get
+      parameters:
+      - name: id_fase
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Id Fase
+      - name: id_grupo
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Id Grupo
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/JogoSaida'
+                title: Response Listar Jogos Api Jogos  Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+
+  /api/jogos/{id_jogo}:
+    get:
+      tags:
+      - jogos
+      summary: Obter Jogo
+      operationId: obter_jogo_api_jogos__id_jogo__get
+      parameters:
+      - name: id_jogo
+        in: path
+        required: true
+        schema:
+          type: integer
+          title: Id Jogo
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JogoSaida'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  
+  /api/jogos/{id_jogo}/resultado:
+    put:
+      tags:
+      - jogos
+      summary: Registrar Resultado
+      operationId: registrar_resultado_api_jogos__id_jogo__resultado_put
+      parameters:
+      - name: id_jogo
+        in: path
+        required: true
+        schema:
+          type: integer
+          title: Id Jogo
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResultadoJogo'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JogoSaida'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+
+  /api/jogos/{id_jogo}/times:
+    put:
+      tags:
+      - jogos
+      summary: Atualizar Times
+      operationId: atualizar_times_api_jogos__id_jogo__times_put
+      parameters:
+      - name: id_jogo
+        in: path
+        required: true
+        schema:
+          type: integer
+          title: Id Jogo
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AtualizarTimesJogo'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JogoSaida'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+
+  /api/apostas/:
+    get:
+      tags:
+      - apostas
+      summary: Listar Apostas
+      operationId: listar_apostas_api_apostas__get
+      parameters:
+      - name: id_participante
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Id Participante
+      - name: id_jogo
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Id Jogo
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ApostaSaida'
+                title: Response Listar Apostas Api Apostas  Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    post:
+      tags:
+      - apostas
+      summary: Criar Aposta
+      operationId: criar_aposta_api_apostas__post
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApostaEntrada'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApostaSaida'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  
+  /api/apostas/{id_aposta}:
+    put:
+      tags:
+      - apostas
+      summary: Atualizar Aposta
+      operationId: atualizar_aposta_api_apostas__id_aposta__put
+      parameters:
+      - name: id_aposta
+        in: path
+        required: true
+        schema:
+          type: integer
+          title: Id Aposta
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AtualizarAposta'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApostaSaida'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - apostas
+      summary: Deletar Aposta
+      operationId: deletar_aposta_api_apostas__id_aposta__delete
+      parameters:
+      - name: id_aposta
+        in: path
+        required: true
+        schema:
+          type: integer
+          title: Id Aposta
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+
+  /api/placar/:
+    get:
+      tags:
+      - placar
+      summary: Obter Placar
+      operationId: obter_placar_api_placar__get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/PlacarParticipante'
+                type: array
+                title: Response Obter Placar Api Placar Get
+
+  /api/fases:
+    get:
+      summary: Listar Fases
+      operationId: listar_fases_api_fases_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/FaseSaida'
+                type: array
+                title: Response Listar Fases Api Fases Get
+
+  /api/times:
+    get:
+      summary: Listar Times
+      operationId: listar_times_api_times_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/TimeSaida'
+                type: array
+                title: Response Listar Times Api Times Get
+
+  /api/grupos:
+    get:
+      summary: Listar Grupos
+      operationId: listar_grupos_api_grupos_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/GrupoSaida'
+                type: array
+                title: Response Listar Grupos Api Grupos Get
+
+  /api/participantes:
+    get:
+      summary: Listar Participantes
+      operationId: listar_participantes_api_participantes_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/ParticipanteSaida'
+                type: array
+                title: Response Listar Participantes Api Participantes Get
+
+  /saude:
+    get:
+      summary: Saude da Aplicação ❤️🏥 (running)
+      operationId: saude_saude_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+components:
+  schemas:
+    ApostaEntrada:
+      properties:
+
+        id_participante:
+          type: integer
+          title: Id Participante
+
+        id_jogo:
+          type: integer
+          title: Id Jogo
+
+        palpite_casa:
+          type: integer
+          title: Palpite Casa
+
+        palpite_fora:
+          type: integer
+          title: Palpite Fora
+
+      type: object
+      required:
+      - id_participante
+      - id_jogo
+      - palpite_casa
+      - palpite_fora
+
+      title: ApostaEntrada
+
+    ApostaSaida:
+      properties:
+        id:
+          type: integer
+          title: Id
+
+        participante:
+          $ref: '#/components/schemas/ParticipanteSaida'
+
+        jogo:
+          $ref: '#/components/schemas/JogoSaida'
+
+        palpite_casa:
+          type: integer
+          title: Palpite Casa
+
+        palpite_fora:
+          type: integer
+          title: Palpite Fora
+
+        valor:
+          type: number
+          title: Valor
+
+        pontos:
+          type: number
+          title: Pontos
+
+      type: object
+      required:
+      - id
+      - participante
+      - jogo
+      - palpite_casa
+      - palpite_fora
+      - valor
+      - pontos
+
+      title: ApostaSaida
+
+    AtualizarAposta:
+
+      properties:
+        palpite_casa:
+          type: integer
+          title: Palpite Casa
+
+        palpite_fora:
+          type: integer
+          title: Palpite Fora
+
+      type: object
+      required:
+      - palpite_casa
+      - palpite_fora
+
+      title: AtualizarAposta
+
+    AtualizarTimesJogo:
+
+      properties:
+        id_time_casa:
+          type: integer
+          title: Id Time Casa
+
+        id_time_fora:
+          type: integer
+          title: Id Time Fora
+
+      type: object
+      required:
+      - id_time_casa
+      - id_time_fora
+
+      title: AtualizarTimesJogo
+
+    FaseSaida:
+
+      properties:
+        id:
+          type: integer
+          title: Id
+
+        nome:
+          type: string
+          title: Nome
+
+        slug:
+          type: string
+          title: Slug
+
+        ordem:
+          type: integer
+          title: Ordem
+
+        valor:
+          type: number
+          title: Valor
+
+      type: object
+      required:
+      - id
+      - nome
+      - slug
+      - ordem
+      - valor
+
+      title: FaseSaida
+
+    GrupoSaida:
+
+      properties:
+        id:
+          type: integer
+          title: Id
+
+        nome:
+          type: string
+          title: Nome
+
+      type: object
+      required:
+      - id
+      - nome
+
+      title: GrupoSaida
+
+    HTTPValidationError:
+
+      properties:
+
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+
+    JogoSaida:
+
+      properties:
+
+        id:
+          type: integer
+          title: Id
+
+        numero:
+          type: integer
+          title: Numero
+
+        data:
+          type: string
+          format: date-time
+          title: Data
+
+        fase:
+          $ref: '#/components/schemas/FaseSaida'
+
+        grupo:
+          anyOf:
+          - $ref: '#/components/schemas/GrupoSaida'
+          - type: 'null'
+
+        time_casa:
+          anyOf:
+          - $ref: '#/components/schemas/TimeSaida'
+          - type: 'null'
+
+        time_fora:
+          anyOf:
+          - $ref: '#/components/schemas/TimeSaida'
+          - type: 'null'
+
+        descricao:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Descricao
+
+        local:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Local
+
+        gols_casa:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Gols Casa
+
+        gols_fora:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Gols Fora
+
+        encerrado:
+          type: boolean
+          title: Encerrado
+
+      type: object
+      required:
+      - id
+      - numero
+      - data
+      - fase
+      - grupo
+      - time_casa
+      - time_fora
+      - descricao
+      - local
+      - gols_casa
+      - gols_fora
+      - encerrado
+
+      title: JogoSaida
+
+    ParticipanteSaida:
+
+      properties:
+        id:
+          type: integer
+          title: Id
+
+        nome:
+          type: string
+          title: Nome
+
+      type: object
+      required:
+      - id
+      - nome
+
+      title: ParticipanteSaida
+
+    PlacarFase:
+
+      properties:
+        fase:
+          $ref: '#/components/schemas/FaseSaida'
+        saldo:
+          type: number
+          title: Saldo
+      type: object
+      required:
+      - fase
+      - saldo
+
+      title: PlacarFase
+
+    PlacarParticipante:
+
+      properties:
+        participante:
+          $ref: '#/components/schemas/ParticipanteSaida'
+        saldo_total:
+
+          type: number
+          title: Saldo Total
+
+        total_ganho:
+          type: number
+          title: Total Ganho
+
+        total_devido:
+          type: number
+          title: Total Devido
+
+        acertos_exatos:
+          type: integer
+          title: Acertos Exatos
+
+        por_fase:
+          items:
+            $ref: '#/components/schemas/PlacarFase'
+          type: array
+          title: Por Fase
+
+      type: object
+      required:
+      - participante
+      - saldo_total
+      - total_ganho
+      - total_devido
+      - acertos_exatos
+      - por_fase
+
+      title: PlacarParticipante
+
+    ResultadoJogo:
+
+      properties:
+        gols_casa:
+          type: integer
+          title: Gols Casa
+
+        gols_fora:
+          type: integer
+          title: Gols Fora
+
+      type: object
+      required:
+      - gols_casa
+      - gols_fora
+
+      title: ResultadoJogo
+
+    TimeSaida:
+
+      properties:
+        id:
+          type: integer
+          title: Id
+
+        nome:
+          type: string
+          title: Nome
+
+        bandeira:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Bandeira
+
+      type: object
+      required:
+      - id
+      - nome
+      - bandeira
+
+      title: TimeSaida
+    ValidationError:
+      properties:
+
+        loc:
+
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+
+        msg:
+          type: string
+          title: Message
+
+        type:
+          type: string
+          title: Error Type
+      type: object
+      
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError

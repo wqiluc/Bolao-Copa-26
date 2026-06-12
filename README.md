@@ -1,10 +1,12 @@
 <h1 align="center"> Bolão Copa do Mundo 2026 🏆⚽🌎 <br>
 <img src="./img/logofifa.jpeg" width="420" alt="Logo FIFA 2026"/></h1>
 
-<h2 align="center">💻⛏️ Tecnologias e Ferramentas Utilizadas:</h2>
+<h2 align="center">💻⛏️ Tecnologias e Ferramentas Utilizadas: <br>
+<img src="https://img.shields.io/badge/Tech_Stack-111827?style=flat-square&logo=stackshare&logoColor=white"/></h2>
 <p align="center">
   <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/vscode/vscode-original.svg" height="25" alt="VS Code"/> <br>
   <img src="https://img.shields.io/badge/FIFA-111827?style=for-the-badge&logo=fifa&logoColor=yellow" height="25" alt="FIFA"/>
+  <img src="https://img.shields.io/badge/Architecture-111827?style=flat-square&logo=instructure&logoColor=white" height="25" alt="Arquitetura"/>
   <img src="https://img.shields.io/badge/Python-111827?style=for-the-badge&logo=python&logoColor=3776AB" height="25" alt="Python"/>
   <img src="https://img.shields.io/badge/FastAPI-111827?style=for-the-badge&logo=fastapi&logoColor=009688" height="25" alt="FastAPI"/>
   <img src="https://img.shields.io/badge/SQLAlchemy-111827?style=for-the-badge&logo=sqlalchemy&logoColor=D71F00" height="25" alt="SQLAlchemy"/>
@@ -14,13 +16,16 @@
   <img src="https://img.shields.io/badge/Nginx-111827?style=for-the-badge&logo=nginx&logoColor=009639" height="25" alt="Nginx"/>
   <img src="https://img.shields.io/badge/HTML5-111827?style=for-the-badge&logo=html5&logoColor=E34F26" height="25" alt="HTML5"/>
   <img src="https://img.shields.io/badge/-CSS3-111827?style=flat-square&logo=css&logoColor=663399" height="25" alt="CSS3"/>
-  <img src="https://img.shields.io/badge/JavaScript-111827?style=for-the-badge&logo=javascript&logoColor=F7DF1E" height="25" alt="JavaScript"/> <br>
+  <img src="https://img.shields.io/badge/JavaScript-111827?style=for-the-badge&logo=javascript&logoColor=F7DF1E" height="25" alt="JavaScript"/>
+  <img src="https://img.shields.io/badge/-Swagger-111827?style=flat-square&logo=swagger&logoColor=85EA2D" height="25" alt="Swagger"/>
+  <img src="https://img.shields.io/badge/openapi.yml-111827?style=flat-square&logo=openapiinitiative&logoColor=green" height="25" alt="OpenApi"/> <br>
   <img src="https://img.shields.io/badge/Git-111827?style=for-the-badge&logo=git&logoColor=F05032" height="25" alt="Git"/>
   <img src="https://img.shields.io/badge/GitHub-111827?style=for-the-badge&logo=github&logoColor=white" height="25" alt="GitHub"/>
   <img src="https://img.shields.io/badge/GitHub_Desktop-111827?style=for-the-badge&logo=github&logoColor=purple" height="25" alt="GitHub Desktop"/>
 </p>
 
-<h2 align="center">🏰 Arquitetura do Projeto</h2>
+<h2 align="center">🏰 Arquitetura do Projeto <br>
+<img src="https://img.shields.io/badge/Architecture-111827?style=flat-square&logo=instructure&logoColor=white"/></h2>
 
 <pre>
 Bolao-Copa-26⚽/
@@ -54,6 +59,9 @@ Bolao-Copa-26⚽/
 │   ├── Dockerfile <img src="https://img.shields.io/badge/-Dockerfile-111827?style=flat&logo=docker&logoColor=2496ED" height="18"/>
 │   └── nginx.conf <img src="https://img.shields.io/badge/-Nginx-111827?style=flat&logo=nginx&logoColor=009639" height="18"/>
 │
+├── api <img src="https://img.shields.io/badge/OpenAPI-111827?style=flat&logo=openapiinitiative&logoColor=green" height="18"/>/
+│   └── openapi.yml <img src="https://img.shields.io/badge/OpenAPI_3.1-Spec-6BA539?style=flat&logo=openapiinitiative&logoColor=white" height="18"/>
+│
 ├── img/ <img src="https://img.shields.io/badge/Assets-green?style=flat&logo=image&logoColor=white" height="18"/>
 ├── docker-compose.yml <img src="https://img.shields.io/badge/-Docker_Compose-111827?style=flat&logo=docker&logoColor=2496ED" height="18"/>
 ├── .gitignore <img src="https://img.shields.io/badge/-GitIgnore-111827?style=flat&logo=git&logoColor=F05032" height="18"/>
@@ -61,7 +69,8 @@ Bolao-Copa-26⚽/
 └── README.md <img src="https://img.shields.io/badge/-Markdown-111827?style=flat&logo=markdown&logoColor=white" height="18"/>
 </pre>
 
-<h2 align="center">🎲 Modelos de Dados</h2>
+<h2 align="center">🎲 Modelos de Dados <br>
+<img src="https://img.shields.io/badge/Data_Models-111827?style=flat-square&logo=sqlalchemy&logoColor=D71F00"/></h2>
 
 | Modelo | Tabela | Descrição |
 |---|---|---|
@@ -72,7 +81,8 @@ Bolao-Copa-26⚽/
 | **Participante** | `participantes` | Apostadores do bolão |
 | **Aposta** | `apostas` | Palpite de placar por participante/jogo com pontuação calculada |
 
-<h2 align="center">🌐 Endpoints da API</h2>
+<h2 align="center">🌐 Endpoints da API (rotas) <br>
+<img src="https://img.shields.io/badge/REST_API-111827?style=flat-square&logo=swagger&logoColor=85EA2D"/></h2>
 
 | Método | Rota | Descrição |
 |---|---|---|
@@ -91,7 +101,8 @@ Bolao-Copa-26⚽/
 | `GET` | `/api/participantes` | Lista participantes |
 | `GET` | `/saude` | Health check `{ "status": "ok" }` |
 
-> 📖 Documentação interativa disponível em **http://localhost:8000/docs** (Swagger UI)
+> 📖 Documentação interativa disponível em **http://localhost:8000/docs** (Swagger UI) <br>
+> 📄 Spec completo em [`api/openapi.yml`](api/openapi.yml) — OpenAPI 3.1, gerado diretamente do FastAPI
 
 <h2 align="center">📂 Modularização CS (Controller & Service)<br>
 <img src="https://img.shields.io/badge/-FastAPI-111827?style=flat&logo=fastapi&logoColor=009688" height="18"/>
@@ -146,7 +157,8 @@ Lógica client-side. Gerencia chamadas à API REST, renderiza os dados dinamicam
 
 Serve os arquivos estáticos do frontend via Nginx Alpine e faz proxy reverso das requisições `/api/*` para o backend FastAPI.
 
-<h2 align="center">🏆 Sistema de Pontuação</h2>
+<h2 align="center">🏆 Sistema de Pontuação <br>
+<img src="https://img.shields.io/badge/Pontuação-111827?style=flat-square&logo=fifa&logoColor=yellow"/></h2>
 
 | Resultado | Saldo |
 |---|---|
@@ -236,7 +248,8 @@ docker system prune -f
 docker system prune -f --volumes
 ```
 
-<h2 align="center">🔑 Versões Necessárias:</h2>
+<h2 align="center">🔑 Versões Necessárias: <br>
+<img src="https://img.shields.io/badge/Requirements-111827?style=flat-square&logo=dependabot&logoColor=white"/></h2>
 <p align="center">
   <img src="https://img.shields.io/badge/Python-3.12+-3776AB?style=for-the-badge&logo=python&logoColor=3776AB"/>
   <img src="https://img.shields.io/badge/FastAPI-0.115.0-009688?style=for-the-badge&logo=fastapi&logoColor=009688"/>
@@ -248,7 +261,8 @@ docker system prune -f --volumes
   <img src="https://img.shields.io/badge/Nginx-Alpine-009639?style=for-the-badge&logo=nginx&logoColor=009639"/>
 </p>
 
-<h2 align="center">Acompanhe os Jogos da Copa do Mundo 2026 ⚽️🏆</h2>
+<h2 align="center">Acompanhe os Jogos da Copa do Mundo 2026 ⚽️🏆 <br>
+<img src="https://img.shields.io/badge/Copa_2026-111827?style=flat-square&logo=fifa&logoColor=yellow"/></h2>
 <p align="center">
   Confira partidas passadas, próximos jogos e placares em tempo real no Globo Esporte:<br><br>
   <a href="https://ge.globo.com/futebol/copa-do-mundo/">

@@ -41,12 +41,12 @@ def criar_app() -> FastAPI:
         return bd.query(modelos.Grupo).order_by(modelos.Grupo.nome).all()
 
     @app.get("/api/participantes", response_model=list[esquemas.ParticipanteSaida])
-    
+
     def listar_participantes(bd: Session = Depends(obter_bd)):
         return bd.query(modelos.Participante).order_by(modelos.Participante.nome).all()
 
     @app.get("/saude")
     def saude():
-        return {"status": "ok"}
+        return {"status": "running ❤️🏥"}
 
     return app

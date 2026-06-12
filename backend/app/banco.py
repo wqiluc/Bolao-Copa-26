@@ -8,6 +8,7 @@ engine = create_engine(URL_BANCO)
 SessaoLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 def obter_bd():
+
     bd = SessaoLocal()
     
     try:

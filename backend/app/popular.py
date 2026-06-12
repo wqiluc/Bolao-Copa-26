@@ -225,6 +225,6 @@ def popular(reset: bool = False):
         bd.close()
 
 
-if __name__ == "__main__":
+if (__name__ == "__main__"):
     import sys
     popular(reset="--reset" in sys.argv)

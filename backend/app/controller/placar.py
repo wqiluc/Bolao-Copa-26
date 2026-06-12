@@ -12,15 +12,20 @@ def obter_placar(bd: Session = Depends(obter_bd)):
     bruto = servico_placar.calcular_placar(bd)
 
     return [
-        esquemas.PlacarParticipante(
+        esquemas.PlacarParticipante
+        (
             participante=esquemas.ParticipanteSaida.model_validate(r["participante"]),
             saldo_total=r["saldo_total"],
+            total_ganho=r["total_ganho"],
+            total_devido=r["total_devido"],
             acertos_exatos=r["acertos_exatos"],
             por_fase=[
-                esquemas.PlacarFase(
+                esquemas.PlacarFase
+                (
                     fase=esquemas.FaseSaida.model_validate(f["fase"]),
                     saldo=f["saldo"],
                 )
+                
                 for f in r["por_fase"]
             ],
         )

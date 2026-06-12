@@ -43,19 +43,24 @@ def criar_aposta(
     palpite_casa: int,
     palpite_fora: int,
 ) -> modelos.Aposta | None:
-    jogo = bd.query(modelos.Jogo).filter(modelos.Jogo.id == id_jogo).first()
+    jogo = (
+        bd.query(modelos.Jogo)
+        .options(joinedload(modelos.Jogo.fase))
+        .filter(modelos.Jogo.id == id_jogo)
+        .first()
+    )
 
-    if not jogo or jogo.encerrado:
+    if (not jogo) or (jogo.encerrado) or not (jogo.fase):
         return None
-    
-    fase = bd.query(modelos.Fase).filter(modelos.Fase.id == jogo.id_fase).first()
+
     aposta = modelos.Aposta(
         id_participante=id_participante,
         id_jogo=id_jogo,
         palpite_casa=palpite_casa,
         palpite_fora=palpite_fora,
-        valor=fase.valor,
+        valor=jogo.fase.valor,
     )
+
     bd.add(aposta)
 
     try:
@@ -64,26 +69,38 @@ def criar_aposta(
         bd.rollback()
         raise
     bd.refresh(aposta)
+
     return carregar_aposta(bd, aposta.id)
 
 
 def atualizar_aposta(bd: Session, id_aposta: int, palpite_casa: int, palpite_fora: int) -> modelos.Aposta | None:
-    aposta = bd.query(modelos.Aposta).filter(modelos.Aposta.id == id_aposta).first()
+    aposta = (
+        bd.query(modelos.Aposta)
+        .options(joinedload(modelos.Aposta.jogo))
+        .filter(modelos.Aposta.id == id_aposta)
+        .first()
+    )
 
-    if (not aposta or aposta.jogo.encerrado):
+    if not (aposta) or (aposta.jogo.encerrado):
         return None
     
     aposta.palpite_casa = palpite_casa
     aposta.palpite_fora = palpite_fora
     
     bd.commit()
+
     return carregar_aposta(bd, id_aposta)
 
 
 def deletar_aposta(bd: Session, id_aposta: int) -> bool:
-    aposta = bd.query(modelos.Aposta).filter(modelos.Aposta.id == id_aposta).first()
+    aposta = (
+        bd.query(modelos.Aposta)
+        .options(joinedload(modelos.Aposta.jogo))
+        .filter(modelos.Aposta.id == id_aposta)
+        .first()
+    )
 
-    if not aposta or aposta.jogo.encerrado:
+    if not (aposta) or (aposta.jogo.encerrado):
         return False
     
     bd.delete(aposta)
