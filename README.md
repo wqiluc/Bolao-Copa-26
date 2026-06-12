@@ -1,4 +1,4 @@
-<h1 align="center"> Bolões Copa do Mundo 🏆 (2026)</h1>
+xx<h1 align="center"> Bolões Copa do Mundo 🏆 (2026)</h1>
 <p align="center"><img src="./img/logofifa.jpeg" width="420" alt="Logo Fifa 2026">
 </p>
 
