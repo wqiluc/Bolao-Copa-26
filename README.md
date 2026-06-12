@@ -2,7 +2,7 @@
 <img src="./img/logofifa.jpeg" width="420" alt="Logo FIFA 2026"/></h1>
 
 <h2 align="center">💻⛏️ Tecnologias e Ferramentas Utilizadas: <br>
-<img src="https://img.shields.io/badge/Tech_Stack-111827?style=flat-square&logo=stackshare&logoColor=white"/></h2>
+<img src="https://img.shields.io/badge/Tech_Stack-111827?style=flat-square&logo=stackshare&logoColor=whitesmoke"/></h2>
 <p align="center">
   <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/vscode/vscode-original.svg" height="25" alt="VS Code"/> <br>
   <img src="https://img.shields.io/badge/FIFA-111827?style=for-the-badge&logo=fifa&logoColor=yellow" height="25" alt="FIFA"/>
@@ -56,14 +56,14 @@ Bolao-Copa-26⚽/
 │       └── app.js <img src="https://img.shields.io/badge/-JavaScript-111827?style=flat&logo=javascript&logoColor=F7DF1E" height="18"/>
 │
 ├── docker <img src="https://img.shields.io/badge/-Docker-111827?style=flat&logo=docker&logoColor=2496ED" height="18"/>/
+│   ├── docker-compose.yml <img src="https://img.shields.io/badge/-Docker_Compose-111827?style=flat&logo=docker&logoColor=2496ED" height="18"/>
 │   ├── Dockerfile <img src="https://img.shields.io/badge/-Dockerfile-111827?style=flat&logo=docker&logoColor=2496ED" height="18"/>
-│   └── nginx.conf <img src="https://img.shields.io/badge/-Nginx-111827?style=flat&logo=nginx&logoColor=009639" height="18"/>
+│   ├── nginx.conf <img src="https://img.shields.io/badge/-Nginx-111827?style=flat&logo=nginx&logoColor=009639" height="18"/>
 │
 ├── api <img src="https://img.shields.io/badge/OpenAPI-111827?style=flat&logo=openapiinitiative&logoColor=green" height="18"/>/
 │   └── openapi.yml <img src="https://img.shields.io/badge/OpenAPI_3.1-Spec-6BA539?style=flat&logo=openapiinitiative&logoColor=white" height="18"/>
 │
 ├── img/ <img src="https://img.shields.io/badge/Assets-green?style=flat&logo=image&logoColor=white" height="18"/>
-├── docker-compose.yml <img src="https://img.shields.io/badge/-Docker_Compose-111827?style=flat&logo=docker&logoColor=2496ED" height="18"/>
 ├── .gitignore <img src="https://img.shields.io/badge/-GitIgnore-111827?style=flat&logo=git&logoColor=F05032" height="18"/>
 ├── LICENSE <img src="https://img.shields.io/badge/License-MIT-FF8C00?style=flat&logo=opensource&logoColor=white" height="18"/>
 └── README.md <img src="https://img.shields.io/badge/-Markdown-111827?style=flat&logo=markdown&logoColor=white" height="18"/>
@@ -186,7 +186,7 @@ Serve os arquivos estáticos do frontend via Nginx Alpine e faz proxy reverso da
 
 ```bash
 # Sobe banco, backend e frontend de uma vez (com rebuild das imagens):
-docker compose up --build
+docker compose -f docker/docker-compose.yml up --build
 
 # O backend executa automaticamente na inicialização:
 # python -m app.popular  →  uvicorn app.principal:app
@@ -200,13 +200,13 @@ http://localhost:8000/docs
 
 ```bash
 # Parar os containers (mantém o volume do banco):
-docker compose stop
+docker compose -f docker/docker-compose.yml stop
 
 # Parar e remover containers (mantém o volume do banco):
-docker compose down
+docker compose -f docker/docker-compose.yml down
 
 # Parar, remover containers E volume (reset total do banco):
-docker compose down -v
+docker compose -f docker/docker-compose.yml down -v
 ```
 
 | Serviço 🔑 | URL 🔗 |
@@ -221,25 +221,25 @@ docker compose down -v
 
 ```bash
 # Reconstrói sem usar cache (forçar rebuild completo)
-docker compose build --no-cache
+docker compose -f docker/docker-compose.yml build --no-cache
 
 # Sobe em background
-docker compose up -d --build
+docker compose -f docker/docker-compose.yml up -d --build
 
 # Logs em tempo real
-docker compose logs -f
+docker compose -f docker/docker-compose.yml logs -f
 
 # Logs de um serviço específico
-docker compose logs -f backend
+docker compose -f docker/docker-compose.yml logs -f backend
 
 # Lista containers em execução
-docker compose ps
+docker compose -f docker/docker-compose.yml ps
 
 # Executa shell dentro do container do backend
-docker compose exec backend bash
+docker compose -f docker/docker-compose.yml exec backend bash
 
 # Reinicia um serviço específico
-docker compose restart backend
+docker compose -f docker/docker-compose.yml restart backend
 
 # Remove containers parados, redes e imagens não usadas
 docker system prune -f
@@ -249,7 +249,7 @@ docker system prune -f --volumes
 ```
 
 <h2 align="center">🔑 Versões Necessárias: <br>
-<img src="https://img.shields.io/badge/Requirements-111827?style=flat-square&logo=dependabot&logoColor=white"/></h2>
+<img src="https://img.shields.io/badge/Requirements-111827?style=flat-square&logo=dependabot&logoColor=yellow"/></h2>
 <p align="center">
   <img src="https://img.shields.io/badge/Python-3.12+-3776AB?style=for-the-badge&logo=python&logoColor=3776AB"/>
   <img src="https://img.shields.io/badge/FastAPI-0.115.0-009688?style=for-the-badge&logo=fastapi&logoColor=009688"/>
