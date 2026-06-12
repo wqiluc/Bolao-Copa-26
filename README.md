@@ -3,6 +3,8 @@
 
 <h2 align="center">💻⛏️ Tecnologias e Ferramentas Utilizadas:</h2>
 <p align="center">
+  <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/vscode/vscode-original.svg" height="25" alt="VS Code"/> <br>
+  <img src="https://img.shields.io/badge/FIFA-111827?style=for-the-badge&logo=fifa&logoColor=yellow" height="25" alt="FIFA"/>
   <img src="https://img.shields.io/badge/Python-111827?style=for-the-badge&logo=python&logoColor=3776AB" height="25" alt="Python"/>
   <img src="https://img.shields.io/badge/FastAPI-111827?style=for-the-badge&logo=fastapi&logoColor=009688" height="25" alt="FastAPI"/>
   <img src="https://img.shields.io/badge/SQLAlchemy-111827?style=for-the-badge&logo=sqlalchemy&logoColor=D71F00" height="25" alt="SQLAlchemy"/>
@@ -89,7 +91,7 @@ Bolao-Copa-26⚽/
 | `GET` | `/api/participantes` | Lista participantes |
 | `GET` | `/saude` | Health check `{ "status": "ok" }` |
 
-> 📖 Documentação interativa disponível em **http://localhost:8000/docs** (Swagger UI) após subir o projeto.
+> 📖 Documentação interativa disponível em **http://localhost:8000/docs** (Swagger UI)
 
 <h2 align="center">📂 Modularização CS (Controller & Service)<br>
 <img src="https://img.shields.io/badge/-FastAPI-111827?style=flat&logo=fastapi&logoColor=009688" height="18"/>
@@ -128,7 +130,7 @@ Camada de **mapeamento objeto-relacional (ORM)**. Define as tabelas do banco de 
 <img src="https://img.shields.io/badge/-Nginx-111827?style=flat&logo=nginx&logoColor=009639" height="18"/>
 </h2>
 
-### ![HTML](https://img.shields.io/badge/HTML5-E34F26?style=flat-square&logo=html5&logoColor=white) `html/index.html`
+### ![HTML](https://img.shields.io/badge/HTML5-E34F26?style=flat-square&logo=html5&logoColor=black) `html/index.html`
 
 Página única (SPA-like) que concentra toda a interface do bolão — listagem de jogos, formulário de apostas e ranking de participantes. Consome a API via `fetch`.
 
@@ -140,7 +142,7 @@ Estilos visuais da aplicação. Responsável pelo layout, cores, tipografia e re
 
 Lógica client-side. Gerencia chamadas à API REST, renderiza os dados dinamicamente no DOM e trata interações do usuário (apostas, filtros, placar).
 
-### ![Nginx](https://img.shields.io/badge/Nginx-009639?style=flat-square&logo=nginx&logoColor=white) `docker/nginx.conf`
+### ![Nginx](https://img.shields.io/badge/Nginx-009639?style=flat-square&logo=nginx&logoColor=black) `docker/nginx.conf`
 
 Serve os arquivos estáticos do frontend via Nginx Alpine e faz proxy reverso das requisições `/api/*` para o backend FastAPI.
 
@@ -249,4 +251,12 @@ docker system prune -f --volumes
   <img src="https://img.shields.io/badge/Uvicorn-0.30.6-499848?style=for-the-badge&logo=gunicorn&logoColor=499848"/>
   <img src="https://img.shields.io/badge/Docker-Engine-2496ED?style=for-the-badge&logo=docker&logoColor=2496ED"/>
   <img src="https://img.shields.io/badge/Nginx-Alpine-009639?style=for-the-badge&logo=nginx&logoColor=009639"/>
+</p>
+
+<h2 align="center">Acompanhe os Jogos da Copa do Mundo 2026 ⚽️🏆</h2>
+<p align="center">
+  Confira partidas passadas, próximos jogos e placares em tempo real no Globo Esporte:<br><br>
+  <a href="https://ge.globo.com/futebol/copa-do-mundo/">
+    <img src="https://img.shields.io/badge/Globo_Esporte-Ver_Jogos_%26_Resultados-yellow?style=for-the-badge&logo=globo&logoColor=white" height="25" alt="Globo Esporte - Jogos e Resultados"/>
+  </a>
 </p>
