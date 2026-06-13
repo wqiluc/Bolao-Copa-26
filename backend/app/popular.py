@@ -30,6 +30,7 @@ TIMES_POR_GRUPO: dict[str, list[tuple[str, str]]] = {
 
 # (numero, data_brasilia, grupo, time_casa, time_fora, local)
 JOGOS_GRUPOS: list[tuple[int, datetime, str, str, str, str | None]] = [
+
     # GRUPO A
     (1,  datetime(2026, 6, 11, 16,  0), "A", "México",          "África do Sul",   None),
     (2,  datetime(2026, 6, 11, 23,  0), "A", "Coreia do Sul",   "Tchéquia",        None),
@@ -37,6 +38,7 @@ JOGOS_GRUPOS: list[tuple[int, datetime, str, str, str, str | None]] = [
     (4,  datetime(2026, 6, 18, 22,  0), "A", "México",          "Coreia do Sul",   "Guadalajara"),
     (5,  datetime(2026, 6, 24, 22,  0), "A", "Tchéquia",        "México",          "Cidade do México"),
     (6,  datetime(2026, 6, 24, 22,  0), "A", "África do Sul",   "Coreia do Sul",   "Monterrey"),
+
     # GRUPO B
     (7,  datetime(2026, 6, 12, 16,  0), "B", "Canadá",          "Bósnia",          "Toronto"),
     (8,  datetime(2026, 6, 13, 16,  0), "B", "Catar",           "Suíça",           "San Francisco"),
@@ -44,6 +46,7 @@ JOGOS_GRUPOS: list[tuple[int, datetime, str, str, str, str | None]] = [
     (10, datetime(2026, 6, 18, 19,  0), "B", "Canadá",          "Catar",           "Vancouver"),
     (11, datetime(2026, 6, 24, 16,  0), "B", "Suíça",           "Canadá",          "Vancouver"),
     (12, datetime(2026, 6, 24, 16,  0), "B", "Bósnia",          "Catar",           "Seattle"),
+
     # GRUPO C
     (13, datetime(2026, 6, 13, 19,  0), "C", "Brasil",          "Marrocos",        "Nova York/NJ"),
     (14, datetime(2026, 6, 13, 22,  0), "C", "Haiti",           "Escócia",         "Boston"),
@@ -51,6 +54,7 @@ JOGOS_GRUPOS: list[tuple[int, datetime, str, str, str, str | None]] = [
     (16, datetime(2026, 6, 19, 22,  0), "C", "Brasil",          "Haiti",           "Filadélfia"),
     (17, datetime(2026, 6, 24, 19,  0), "C", "Escócia",         "Brasil",          "Miami"),
     (18, datetime(2026, 6, 24, 19,  0), "C", "Marrocos",        "Haiti",           "Atlanta"),
+
     # GRUPO D
     (19, datetime(2026, 6, 12, 22,  0), "D", "EUA",             "Paraguai",        "Los Angeles"),
     (20, datetime(2026, 6, 14,  1,  0), "D", "Austrália",       "Turquia",         "Vancouver"),
@@ -58,6 +62,7 @@ JOGOS_GRUPOS: list[tuple[int, datetime, str, str, str, str | None]] = [
     (22, datetime(2026, 6, 19, 16,  0), "D", "EUA",             "Austrália",       "Seattle"),
     (23, datetime(2026, 6, 25, 23,  0), "D", "Turquia",         "EUA",             "Los Angeles"),
     (24, datetime(2026, 6, 25, 23,  0), "D", "Paraguai",        "Austrália",       "San Francisco"),
+
     # GRUPO E
     (25, datetime(2026, 6, 14, 14,  0), "E", "Alemanha",        "Curaçao",         "Houston"),
     (26, datetime(2026, 6, 14, 20,  0), "E", "Costa do Marfim", "Equador",         "Filadélfia"),
@@ -65,6 +70,7 @@ JOGOS_GRUPOS: list[tuple[int, datetime, str, str, str, str | None]] = [
     (28, datetime(2026, 6, 20, 21,  0), "E", "Equador",         "Curaçao",         "Kansas City"),
     (29, datetime(2026, 6, 25, 17,  0), "E", "Equador",         "Alemanha",        "Nova York/NJ"),
     (30, datetime(2026, 6, 25, 17,  0), "E", "Curaçao",         "Costa do Marfim", "Filadélfia"),
+    
     # GRUPO F
     (31, datetime(2026, 6, 14, 17,  0), "F", "Holanda",         "Japão",           "Dallas"),
     (32, datetime(2026, 6, 14, 23,  0), "F", "Suécia",          "Tunísia",         "Monterrey"),
@@ -72,6 +78,7 @@ JOGOS_GRUPOS: list[tuple[int, datetime, str, str, str, str | None]] = [
     (34, datetime(2026, 6, 21,  1,  0), "F", "Tunísia",         "Japão",           "Monterrey"),
     (35, datetime(2026, 6, 25, 20,  0), "F", "Japão",           "Suécia",          "Dallas"),
     (36, datetime(2026, 6, 25, 20,  0), "F", "Tunísia",         "Holanda",         "Kansas City"),
+
     # GRUPO G
     (37, datetime(2026, 6, 15, 16,  0), "G", "Bélgica",         "Egito",           "Seattle"),
     (38, datetime(2026, 6, 15, 22,  0), "G", "Irã",             "Nova Zelândia",   "Los Angeles"),
@@ -79,6 +86,7 @@ JOGOS_GRUPOS: list[tuple[int, datetime, str, str, str, str | None]] = [
     (40, datetime(2026, 6, 21, 22,  0), "G", "Nova Zelândia",   "Egito",           "Vancouver"),
     (41, datetime(2026, 6, 27,  0,  0), "G", "Egito",           "Irã",             "Seattle"),
     (42, datetime(2026, 6, 27,  0,  0), "G", "Nova Zelândia",   "Bélgica",         "Vancouver"),
+
     # GRUPO H
     (43, datetime(2026, 6, 15, 13,  0), "H", "Espanha",         "Cabo Verde",      "Atlanta"),
     (44, datetime(2026, 6, 15, 19,  0), "H", "Arábia Saudita",  "Uruguai",         "Miami"),
@@ -86,6 +94,7 @@ JOGOS_GRUPOS: list[tuple[int, datetime, str, str, str, str | None]] = [
     (46, datetime(2026, 6, 21, 19,  0), "H", "Uruguai",         "Cabo Verde",      "Miami"),
     (47, datetime(2026, 6, 26, 21,  0), "H", "Cabo Verde",      "Arábia Saudita",  "Houston"),
     (48, datetime(2026, 6, 26, 21,  0), "H", "Uruguai",         "Espanha",         "Guadalajara"),
+
     # GRUPO I
     (49, datetime(2026, 6, 16, 16,  0), "I", "França",          "Senegal",         "Nova York/NJ"),
     (50, datetime(2026, 6, 16, 19,  0), "I", "Iraque",          "Noruega",         "Boston"),
@@ -93,6 +102,7 @@ JOGOS_GRUPOS: list[tuple[int, datetime, str, str, str, str | None]] = [
     (52, datetime(2026, 6, 22, 21,  0), "I", "Noruega",         "Senegal",         "Nova York/NJ"),
     (53, datetime(2026, 6, 26, 16,  0), "I", "Noruega",         "França",          "Boston"),
     (54, datetime(2026, 6, 26, 16,  0), "I", "Senegal",         "Iraque",          "Toronto"),
+
     # GRUPO J
     (55, datetime(2026, 6, 16, 22,  0), "J", "Argentina",       "Argélia",         "Kansas City"),
     (56, datetime(2026, 6, 17,  1,  0), "J", "Áustria",         "Jordânia",        "San Francisco"),
@@ -100,6 +110,7 @@ JOGOS_GRUPOS: list[tuple[int, datetime, str, str, str, str | None]] = [
     (58, datetime(2026, 6, 23,  0,  0), "J", "Jordânia",        "Argélia",         "San Francisco"),
     (59, datetime(2026, 6, 27, 23,  0), "J", "Argélia",         "Áustria",         "Kansas City"),
     (60, datetime(2026, 6, 27, 23,  0), "J", "Jordânia",        "Argentina",       "Dallas"),
+
     # GRUPO K
     (61, datetime(2026, 6, 17, 14,  0), "K", "Portugal",        "RD Congo",        "Houston"),
     (62, datetime(2026, 6, 17, 23,  0), "K", "Uzbequistão",     "Colômbia",        "Cidade do México"),
@@ -107,6 +118,7 @@ JOGOS_GRUPOS: list[tuple[int, datetime, str, str, str, str | None]] = [
     (64, datetime(2026, 6, 23, 23,  0), "K", "Colômbia",        "RD Congo",        "Guadalajara"),
     (65, datetime(2026, 6, 27, 20, 30), "K", "Colômbia",        "Portugal",        "Miami"),
     (66, datetime(2026, 6, 27, 20, 30), "K", "RD Congo",        "Uzbequistão",     "Atlanta"),
+
     # GRUPO L
     (67, datetime(2026, 6, 17, 17,  0), "L", "Inglaterra",      "Croácia",         "Dallas"),
     (68, datetime(2026, 6, 17, 20,  0), "L", "Gana",            "Panamá",          "Toronto"),
@@ -153,18 +165,19 @@ JOGOS_ELIMINATORIAS: list[tuple[int, datetime, int, str]] = [
 
 
 def popular(reset: bool = False):
-    if reset:
+    if (reset):
         modelos.Base.metadata.drop_all(bind=engine)
         print("Tabelas removidas.")
 
     modelos.Base.metadata.create_all(bind=engine)
     bd = SessaoLocal()
+
     try:
-        if not reset and bd.query(modelos.Fase).count() > 0:
+        if not (reset) and (bd.query(modelos.Fase).count() > 0):
             print("Banco já populado, pulando.")
             return
-
-        print("Populando o banco de dados...")
+        else:
+            print("Populando o banco de dados...")
 
         for f in FASES:
             bd.add(modelos.Fase(**f))
@@ -174,10 +187,11 @@ def popular(reset: bool = False):
             bd.add(modelos.Participante(nome=nome))
         bd.flush()
 
-        mapa_id_grupo: dict[str, int] = {}
-        mapa_id_time: dict[str, int] = {}
+        mapa_id_grupo: dict[str, int] = { }
+        mapa_id_time: dict[str, int] = { }
 
         for nome_grupo, times in TIMES_POR_GRUPO.items():
+
             grupo = modelos.Grupo(nome=nome_grupo)
             bd.add(grupo)
             bd.flush()
@@ -189,7 +203,7 @@ def popular(reset: bool = False):
                 bd.flush()
                 mapa_id_time[nome_time] = time.id
 
-        for num, dt, grp, casa, fora, local in JOGOS_GRUPOS:
+        for num, dt, grp, casa, fora, local in (JOGOS_GRUPOS):
             bd.add(modelos.Jogo(
                 numero=num,
                 data=dt,
@@ -201,7 +215,7 @@ def popular(reset: bool = False):
                 local=local,
             ))
 
-        for num, dt, id_fase, desc in JOGOS_ELIMINATORIAS:
+        for num, dt, id_fase, desc in (JOGOS_ELIMINATORIAS):
             bd.add(modelos.Jogo(
                 numero=num,
                 data=dt,
@@ -214,6 +228,7 @@ def popular(reset: bool = False):
             ))
 
         bd.commit()
+        
         print(f"Populado: {bd.query(modelos.Jogo).count()} jogos criados.")
 
     except Exception as e:

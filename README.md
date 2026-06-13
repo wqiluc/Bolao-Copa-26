@@ -155,18 +155,39 @@ Módulo de **constantes de cores ANSI** para saída formatada no terminal. Defin
 
 Script de **apoio ao desenvolvimento da automação GUI**. Aguarda 7 segundos (tempo para posicionar o mouse) e imprime as coordenadas exatas do cursor via `pyautogui.position()`. Usado para descobrir as posições de tela necessárias na construção dos scripts de automação.
 
-```bash
+```py
 python backend/app/apoio.py
 # → posicione o mouse e aguarde → imprime (x, y)
+import pyautogui
+from time import (sleep)
+
+#👇🧭: 
+sleep(7)
+print(pyautogui.position())
 ```
 
 ### ![Python](https://img.shields.io/badge/pesquisar_jogo.py-111827?style=flat-square&logo=python&logoColor=009688) `pesquisar_jogo.py`
 
 Script de **automação GUI** que abre o Google Chrome e pesquisa automaticamente por *"Jogos da Copa na data de hoje"* no navegador, exibindo uma mensagem colorida no terminal ao concluir. Depende de `color/cores.py` para formatação e de `pyautogui` para o controle do teclado.
 
-```bash
-python backend/app/pesquisar_jogo.py
-# → abre o Chrome → digita a busca → confirma com Enter
+```py
+import os
+import pyautogui as auto
+from time import sleep
+from color.cores import *
+
+navegador = "Google Chrome"
+mensagem = "Jogos da Copa na data de hoje"
+
+os.system(f"open -a '{navegador}'")
+sleep(0.9)
+auto.press("enter")
+
+auto.write(f"{mensagem}")
+sleep(0.5)
+auto.press("enter")
+
+print(f"\n{CinzaClaro}Seguem os Jogos da {Reset}{Verde}Copa do Mundo 🏆{Reset}{CinzaClaro} de Hoje{Reset} {Amarelo}no seu navegador!!{Reset}\n")
 ```
 
 <h2 align="center">🖥️ Frontend<br>
