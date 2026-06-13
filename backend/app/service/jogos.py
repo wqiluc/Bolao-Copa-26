@@ -40,11 +40,7 @@ def recalcular_apostas(bd: Session, jogo: modelos.Jogo) -> None:
 
     valor = jogo.fase.valor
 
-    algum_acertou = any
-    (
-        a.palpite_casa == jogo.gols_casa and a.palpite_fora == jogo.gols_fora
-        for a in jogo.apostas
-    )
+    algum_acertou = any(a.palpite_casa == jogo.gols_casa and a.palpite_fora == jogo.gols_fora for a in jogo.apostas)
 
     for aposta in jogo.apostas:
 
@@ -74,7 +70,8 @@ def registrar_resultado(bd: Session, id_jogo: int, gols_casa: int, gols_fora: in
 
     jogo = (
         bd.query(modelos.Jogo)
-        .options(
+        .options
+        (
             joinedload(modelos.Jogo.fase),
             joinedload(modelos.Jogo.apostas),
         )

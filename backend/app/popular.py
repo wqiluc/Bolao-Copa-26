@@ -2,7 +2,6 @@ from datetime import datetime
 from app.banco import SessaoLocal, engine
 import app.modelos as modelos
 
-
 FASES = [
     {"id": 1, "nome": "Fase de Grupos",   "slug": "grupos",   "ordem": 1, "valor": 1},
     {"id": 2, "nome": "16avas de Final",  "slug": "16avas",   "ordem": 2, "valor": 2},
@@ -32,8 +31,8 @@ TIMES_POR_GRUPO: dict[str, list[tuple[str, str]]] = {
 # (numero, data_brasilia, grupo, time_casa, time_fora, local)
 JOGOS_GRUPOS: list[tuple[int, datetime, str, str, str, str | None]] = [
     # GRUPO A
-    (1,  datetime(2026, 6, 12, 13,  0), "A", "México",          "África do Sul",   None),
-    (2,  datetime(2026, 6, 12, 22,  0), "A", "Coreia do Sul",   "Tchéquia",        None),
+    (1,  datetime(2026, 6, 11, 16,  0), "A", "México",          "África do Sul",   None),
+    (2,  datetime(2026, 6, 11, 23,  0), "A", "Coreia do Sul",   "Tchéquia",        None),
     (3,  datetime(2026, 6, 18, 13,  0), "A", "Tchéquia",        "África do Sul",   "Atlanta"),
     (4,  datetime(2026, 6, 18, 22,  0), "A", "México",          "Coreia do Sul",   "Guadalajara"),
     (5,  datetime(2026, 6, 24, 22,  0), "A", "Tchéquia",        "México",          "Cidade do México"),
@@ -54,8 +53,8 @@ JOGOS_GRUPOS: list[tuple[int, datetime, str, str, str, str | None]] = [
     (18, datetime(2026, 6, 24, 19,  0), "C", "Marrocos",        "Haiti",           "Atlanta"),
     # GRUPO D
     (19, datetime(2026, 6, 12, 22,  0), "D", "EUA",             "Paraguai",        "Los Angeles"),
-    (20, datetime(2026, 6, 13,  1,  0), "D", "Austrália",       "Turquia",         "Vancouver"),
-    (21, datetime(2026, 6, 19,  1,  0), "D", "Turquia",         "Paraguai",        "San Francisco"),
+    (20, datetime(2026, 6, 14,  1,  0), "D", "Austrália",       "Turquia",         "Vancouver"),
+    (21, datetime(2026, 6, 20,  0,  0), "D", "Turquia",         "Paraguai",        "San Francisco"),
     (22, datetime(2026, 6, 19, 16,  0), "D", "EUA",             "Austrália",       "Seattle"),
     (23, datetime(2026, 6, 25, 23,  0), "D", "Turquia",         "EUA",             "Los Angeles"),
     (24, datetime(2026, 6, 25, 23,  0), "D", "Paraguai",        "Austrália",       "San Francisco"),
@@ -95,7 +94,7 @@ JOGOS_GRUPOS: list[tuple[int, datetime, str, str, str, str | None]] = [
     (53, datetime(2026, 6, 26, 16,  0), "I", "Noruega",         "França",          "Boston"),
     (54, datetime(2026, 6, 26, 16,  0), "I", "Senegal",         "Iraque",          "Toronto"),
     # GRUPO J
-    (55, datetime(2026, 6, 16, 14,  0), "J", "Argentina",       "Argélia",         "Kansas City"),
+    (55, datetime(2026, 6, 16, 22,  0), "J", "Argentina",       "Argélia",         "Kansas City"),
     (56, datetime(2026, 6, 17,  1,  0), "J", "Áustria",         "Jordânia",        "San Francisco"),
     (57, datetime(2026, 6, 22, 14,  0), "J", "Argentina",       "Áustria",         "Dallas"),
     (58, datetime(2026, 6, 23,  0,  0), "J", "Jordânia",        "Argélia",         "San Francisco"),

@@ -8,12 +8,14 @@
   <img src="https://img.shields.io/badge/FIFA-111827?style=for-the-badge&logo=fifa&logoColor=yellow" height="25" alt="FIFA"/>
   <img src="https://img.shields.io/badge/Architecture-111827?style=flat-square&logo=instructure&logoColor=white" height="25" alt="Arquitetura"/>
   <img src="https://img.shields.io/badge/Python-111827?style=for-the-badge&logo=python&logoColor=3776AB" height="25" alt="Python"/>
+  <img src="https://img.shields.io/badge/PyAutoGUI-111827?style=for-the-badge&logo=python&logoColor=yellow" height="25" alt="PyAutoGUI"/>
+  <img src="https://img.shields.io/badge/os_(macOS)-111827?style=for-the-badge&logo=apple&logoColor=white" height="25" alt="os macOS"/> <br>
   <img src="https://img.shields.io/badge/FastAPI-111827?style=for-the-badge&logo=fastapi&logoColor=009688" height="25" alt="FastAPI"/>
   <img src="https://img.shields.io/badge/SQLAlchemy-111827?style=for-the-badge&logo=sqlalchemy&logoColor=D71F00" height="25" alt="SQLAlchemy"/>
   <img src="https://img.shields.io/badge/Pydantic-111827?style=for-the-badge&logo=pydantic&logoColor=E92063" height="25" alt="Pydantic"/>
   <img src="https://img.shields.io/badge/PostgreSQL-111827?style=for-the-badge&logo=postgresql&logoColor=white" height="25" alt="PostgreSQL"/>
   <img src="https://img.shields.io/badge/Docker-111827?style=for-the-badge&logo=docker&logoColor=2496ED" height="25" alt="Docker"/>
-  <img src="https://img.shields.io/badge/Nginx-111827?style=for-the-badge&logo=nginx&logoColor=009639" height="25" alt="Nginx"/>
+  <img src="https://img.shields.io/badge/Nginx-111827?style=for-the-badge&logo=nginx&logoColor=009639" height="25" alt="Nginx"/> <br>
   <img src="https://img.shields.io/badge/HTML5-111827?style=for-the-badge&logo=html5&logoColor=E34F26" height="25" alt="HTML5"/>
   <img src="https://img.shields.io/badge/-CSS3-111827?style=flat-square&logo=css&logoColor=663399" height="25" alt="CSS3"/>
   <img src="https://img.shields.io/badge/JavaScript-111827?style=for-the-badge&logo=javascript&logoColor=F7DF1E" height="25" alt="JavaScript"/>
@@ -39,12 +41,16 @@ Bolao-Copa-26⚽/
 │   │   │   ├── jogos.py <img src="https://img.shields.io/badge/Service_Jogos-111827?style=flat&logo=python&logoColor=3776AB" height="18"/>
 │   │   │   ├── apostas.py <img src="https://img.shields.io/badge/Service_Apostas-111827?style=flat&logo=python&logoColor=3776AB" height="18"/>
 │   │   │   └── placar.py <img src="https://img.shields.io/badge/Service_Placar-111827?style=flat&logo=python&logoColor=3776AB" height="18"/>
+│   │   ├── color <img src="https://img.shields.io/badge/Terminal_Colors-111827?style=flat&logo=gnometerminal&logoColor=white" height="18"/>/
+│   │   │   └── cores.py <img src="https://img.shields.io/badge/ANSI_Colors-111827?style=flat&logo=python&logoColor=3776AB" height="18"/>
 │   │   ├── banco.py <img src="https://img.shields.io/badge/Conexão_BD-111827?style=flat&logo=postgresql&logoColor=white" height="18"/>
 │   │   ├── esquemas.py <img src="https://img.shields.io/badge/Pydantic_Schemas-111827?style=flat&logo=pydantic&logoColor=E92063" height="18"/>
 │   │   ├── modelos.py <img src="https://img.shields.io/badge/SQLAlchemy_Models-111827?style=flat&logo=sqlalchemy&logoColor=D71F00" height="18"/>
 │   │   ├── modulo.py <img src="https://img.shields.io/badge/App_Factory-111827?style=flat&logo=fastapi&logoColor=009688" height="18"/>
 │   │   ├── popular.py <img src="https://img.shields.io/badge/Seed_de_Dados-111827?style=flat&logo=python&logoColor=2E8B57" height="18"/>
-│   │   └── principal.py <img src="https://img.shields.io/badge/-Entrypoint-111827?style=flat&logo=python&logoColor=purple" height="18"/>
+│   │   ├── principal.py <img src="https://img.shields.io/badge/-Entrypoint-111827?style=flat&logo=python&logoColor=purple" height="18"/>
+│   │   ├── apoio.py <img src="https://img.shields.io/badge/Dev_Helper-111827?style=flat&logo=python&logoColor=F7DF1E" height="18"/>
+│   │   └── pesquisar_jogo.py <img src="https://img.shields.io/badge/Automação_GUI-111827?style=flat&logo=python&logoColor=009688" height="18"/>
 │   └── requirements.txt <img src="https://img.shields.io/badge/Dependências-111827?style=flat&logo=python&logoColor=3776AB" height="18"/>
 │
 ├── frontend <img src="https://img.shields.io/badge/HTML5-111827?style=flat&logo=html5&logoColor=E34F26" height="18"/> <img src="https://img.shields.io/badge/-CSS-111827?style=flat-square&logo=css&logoColor=663399" height="18"/> <img src="https://img.shields.io/badge/-JavaScript-111827?style=flat&logo=javascript&logoColor=F7DF1E" height="18"/>/
@@ -133,6 +139,35 @@ Camada de **validação e serialização**. Define os modelos de entrada (`*Entr
 Camada de **mapeamento objeto-relacional (ORM)**. Define as tabelas do banco de dados como classes Python com SQLAlchemy `DeclarativeBase`. Gerencia relacionamentos (`relationship`) e restrições de integridade (`UniqueConstraint`, `ForeignKey`).
 
 **Arquivo neste projeto:** `app/modelos.py`
+
+<h2 align="center">🛠️ Scripts Utilitários (Automação GUI)<br>
+<img src="https://img.shields.io/badge/PyAutoGUI-111827?style=flat&logo=python&logoColor=F7DF1E" height="18"/>
+<img src="https://img.shields.io/badge/Terminal_Colors-111827?style=flat&logo=gnometerminal&logoColor=white" height="18"/>
+</h2>
+
+Scripts independentes do servidor FastAPI — executados diretamente no terminal para auxiliar no desenvolvimento e uso do bolão.
+
+### ![Python](https://img.shields.io/badge/color/cores.py-111827?style=flat-square&logo=python&logoColor=3776AB) `color/cores.py`
+
+Módulo de **constantes de cores ANSI** para saída formatada no terminal. Define variáveis como `Verde`, `Amarelo`, `CinzaClaro`, `Reset`, etc., importadas pelos scripts de automação para colorir as mensagens impressas no console.
+
+### ![Python](https://img.shields.io/badge/apoio.py-111827?style=flat-square&logo=python&logoColor=F7DF1E) `apoio.py`
+
+Script de **apoio ao desenvolvimento da automação GUI**. Aguarda 7 segundos (tempo para posicionar o mouse) e imprime as coordenadas exatas do cursor via `pyautogui.position()`. Usado para descobrir as posições de tela necessárias na construção dos scripts de automação.
+
+```bash
+python backend/app/apoio.py
+# → posicione o mouse e aguarde → imprime (x, y)
+```
+
+### ![Python](https://img.shields.io/badge/pesquisar_jogo.py-111827?style=flat-square&logo=python&logoColor=009688) `pesquisar_jogo.py`
+
+Script de **automação GUI** que abre o Google Chrome e pesquisa automaticamente por *"Jogos da Copa na data de hoje"* no navegador, exibindo uma mensagem colorida no terminal ao concluir. Depende de `color/cores.py` para formatação e de `pyautogui` para o controle do teclado.
+
+```bash
+python backend/app/pesquisar_jogo.py
+# → abre o Chrome → digita a busca → confirma com Enter
+```
 
 <h2 align="center">🖥️ Frontend<br>
 <img src="https://img.shields.io/badge/HTML5-111827?style=flat&logo=html5&logoColor=E34F26" height="18"/>
