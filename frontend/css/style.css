@@ -232,6 +232,7 @@ label { font-size: 0.85rem; color: #8aabcc; }
 .pts.correct{ color: #ff9800; font-weight: 700; }
 .pts.wrong  { color: #f44336; }
 .pts.open   { color: #5a7a9c; }
+.pts.neutro { color: #5a7a9c; font-style: italic; }
 
 .modal-overlay 
 {
@@ -284,8 +285,74 @@ label { font-size: 0.85rem; color: #8aabcc; }
 .saldo-negativo { color: #f44336; }
 .saldo-neutro   { color: #5a7a9c; }
 
-.match-search { margin-bottom: 1rem; }
-.match-search input { width: 100%; font-size: 0.95rem; }
+.match-filters { margin-bottom: 1rem; display: flex; flex-direction: column; gap: 0.5rem; }
+.match-filters input[type=text] { width: 100%; font-size: 0.95rem; }
+.date-filter-row { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
+.date-filter-row input[type=date] { flex: 1; min-width: 140px; }
+
+.standings-table
+{
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0.4rem 0 0.2rem;
+  font-size: 0.82rem;
+}
+
+.standings-table th, .standings-table td
+{
+  padding: 0.3rem 0.5rem;
+  border: 1px solid #1a3a5c;
+  text-align: center;
+  color: #c8d8e8;
+}
+
+.standings-table th { background: #0a1e33; color: #8aabcc; font-weight: 600; }
+.standings-table tr:nth-child(1) td, .standings-table tr:nth-child(2) td { background: rgba(74,160,44,0.08); }
+.standings-table tr:nth-child(4) td { background: rgba(180,40,40,0.08); color: #8a9aaa; }
+.standings-table tr.sem-jogos td { color: #4a6a8a; }
+.standings-table td.time-nome { text-align: left; font-weight: 600; min-width: 120px; }
+.standings-table td.pts-col { font-weight: 800; color: #c8a84b; }
+.standings-table td.pos { color: #8aabcc; font-size: 0.75rem; }
+.standings-table td.sg-pos { color: #4caf50; }
+.standings-table td.sg-neg { color: #f44336; }
+.standings-table td.status-col { font-weight: 800; font-size: 0.85rem; }
+.standings-table td.passa-direto { color: #4caf50; }
+.standings-table td.terceiro     { color: #ff9800; }
+.standings-table td.eliminado    { color: #f44336; }
+
+.standings-legend
+{
+  font-size: 0.72rem;
+  color: #5a7a9c;
+  margin: 0.15rem 0 0.6rem;
+  padding-left: 0.25rem;
+}
+
+.fin-section-title
+{
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: linear-gradient(90deg, #1a3a5c, transparent);
+  border-left: 3px solid #c8a84b;
+  padding: 0.5rem 0.75rem;
+  margin: 1.5rem 0 0.5rem;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #c8a84b;
+}
+
+.fin-valor-badge
+{
+  margin-left: auto;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #8aabcc;
+  background: #0d2137;
+  border: 1px solid #1e3a5c;
+  border-radius: 4px;
+  padding: 0.1rem 0.4rem;
+}
 
 .phase-date 
 {

@@ -19,31 +19,41 @@ def calcular_placar(bd: Session) -> list[dict]:
     resultado = [ ]
 
     for participante in participantes:
-        saldo_por_fase = {fase.id: 0.0 for fase in fases}
+        saldo_por_fase = {fase.id: {"saldo": 0.0, "ganho": 0.0, "devido": 0.0, "acertos": 0} for fase in fases}
         saldo_total = 0.0
         total_ganho = 0.0
         total_devido = 0.0
         acertos_exatos = 0
 
-        for aposta in (participante.apostas):
-            if not (aposta.jogo.encerrado):
+        for aposta in participante.apostas:
+            if not aposta.jogo.encerrado:
                 continue
 
             pts = float(aposta.pontos or 0)
-            saldo_por_fase[aposta.jogo.id_fase] = saldo_por_fase.get(aposta.jogo.id_fase, 0.0) + pts
+            id_fase = aposta.jogo.id_fase
+            if id_fase not in saldo_por_fase:
+                saldo_por_fase[id_fase] = {"saldo": 0.0, "ganho": 0.0, "devido": 0.0, "acertos": 0}
+
+            saldo_por_fase[id_fase]["saldo"] += pts
             saldo_total += pts
 
-            if (pts > 0):
+            if pts > 0:
+                saldo_por_fase[id_fase]["ganho"] += pts
+                saldo_por_fase[id_fase]["acertos"] += 1
                 total_ganho += pts
                 acertos_exatos += 1
-            elif (pts < 0):
+            elif pts < 0:
+                saldo_por_fase[id_fase]["devido"] += abs(pts)
                 total_devido += abs(pts)
 
         por_fase = [
             {
-                "fase": fase, "saldo": saldo_por_fase.get(fase.id, 0.0)
+                "fase": fase,
+                "saldo":   saldo_por_fase.get(fase.id, {}).get("saldo", 0.0),
+                "ganho":   saldo_por_fase.get(fase.id, {}).get("ganho", 0.0),
+                "devido":  saldo_por_fase.get(fase.id, {}).get("devido", 0.0),
+                "acertos": saldo_por_fase.get(fase.id, {}).get("acertos", 0),
             }
-
             for fase in fases
         ]
 

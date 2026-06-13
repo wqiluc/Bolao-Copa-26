@@ -21,14 +21,22 @@
 
 <main>
   <div id="tab-scores" class="tab active">
+    <div style="display:flex;justify-content:flex-end;margin-bottom:0.5rem">
+      <button id="btn-recalcular" class="btn btn-blue btn-sm" onclick="recalcularPontuacoes()">🔄 Recalcular Pontuações</button>
+    </div>
     <div class="loading" id="scores-loading">Carregando...</div>
     <div id="scores-content" class="hidden"></div>
   </div>
 
   <div id="tab-matches" class="tab">
 
-    <div class="match-search">
+    <div class="match-filters">
       <input type="text" id="match-search" placeholder="🔍 Buscar por time..." oninput="filtrarJogos(this.value)"/>
+      <div class="date-filter-row">
+        <input type="date" id="date-filter" onchange="filtrarPorData(this.value)"/>
+        <button class="btn btn-gold btn-sm" onclick="filtrarHoje()">Hoje</button>
+        <button class="btn btn-blue btn-sm" onclick="limparFiltros()">✕ Limpar</button>
+      </div>
     </div>
 
     <div class="loading" id="matches-loading">Carregando...</div>
@@ -76,6 +84,7 @@
 
     <div class="actions">
       <button class="btn btn-red" onclick="fecharModal('result-modal')">Cancelar</button>
+      <button id="btn-buscar-resultado" class="btn btn-blue" onclick="buscarResultadoExterno()">🌐 Buscar</button>
       <button class="btn btn-green" onclick="enviarResultado()">Salvar</button>
     </div>
   </div>
@@ -134,6 +143,6 @@
 
 <div id="toast" class="toast"></div>
 
-<script src="js/app.js?v=2"></script>
+<script src="js/app.js?v=7"></script>
 </body>
 </html>

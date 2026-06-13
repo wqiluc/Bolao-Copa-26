@@ -72,6 +72,9 @@ class ApostaSaida(BaseModel):
 class PlacarFase(BaseModel):
     fase: FaseSaida
     saldo: float
+    ganho: float
+    devido: float
+    acertos: int
 
 class PlacarParticipante(BaseModel):
     participante: ParticipanteSaida

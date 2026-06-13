@@ -40,7 +40,8 @@ Bolao-Copa-26⚽/
 │   │   ├── service <img src="https://img.shields.io/badge/-Service-111827?style=flat&logo=python&logoColor=3776AB" height="18"/>/
 │   │   │   ├── jogos.py <img src="https://img.shields.io/badge/Service_Jogos-111827?style=flat&logo=python&logoColor=3776AB" height="18"/>
 │   │   │   ├── apostas.py <img src="https://img.shields.io/badge/Service_Apostas-111827?style=flat&logo=python&logoColor=3776AB" height="18"/>
-│   │   │   └── placar.py <img src="https://img.shields.io/badge/Service_Placar-111827?style=flat&logo=python&logoColor=3776AB" height="18"/>
+│   │   │   ├── placar.py <img src="https://img.shields.io/badge/Service_Placar-111827?style=flat&logo=python&logoColor=3776AB" height="18"/>
+│   │   │   └── resultado_externo.py <img src="https://img.shields.io/badge/Fonte_Externa-111827?style=flat&logo=python&logoColor=F7DF1E" height="18"/>
 │   │   ├── color <img src="https://img.shields.io/badge/Terminal_Colors-111827?style=flat&logo=gnometerminal&logoColor=white" height="18"/>/
 │   │   │   └── cores.py <img src="https://img.shields.io/badge/ANSI_Colors-111827?style=flat&logo=python&logoColor=3776AB" height="18"/>
 │   │   ├── banco.py <img src="https://img.shields.io/badge/Conexão_BD-111827?style=flat&logo=postgresql&logoColor=white" height="18"/>
@@ -94,13 +95,16 @@ Bolao-Copa-26⚽/
 |---|---|---|
 | `GET` | `/api/jogos` | Lista jogos — filtros `?id_fase=` e `?id_grupo=` |
 | `GET` | `/api/jogos/{id}` | Detalha um jogo |
-| `PUT` | `/api/jogos/{id}/resultado` | Registra placar e calcula pontos das apostas |
+| `PUT` | `/api/jogos/{id}/resultado` | Registra placar, calcula pontos e avança vencedor no chaveamento |
 | `PUT` | `/api/jogos/{id}/times` | Atualiza times do jogo (fases eliminatórias) |
+| `GET` | `/api/jogos/{id}/buscar_resultado` | Busca placar na fonte externa (openfootball) com cache de 5 min |
+| `POST` | `/api/jogos/recalcular_tudo` | Re-aplica a pontuação em todos os jogos encerrados |
 | `GET` | `/api/apostas` | Lista apostas — filtros `?id_participante=` e `?id_jogo=` |
 | `POST` | `/api/apostas` | Cria aposta `{ id_participante, id_jogo, palpite_casa, palpite_fora }` |
 | `PUT` | `/api/apostas/{id}` | Atualiza palpite (somente antes do encerramento) |
 | `DELETE` | `/api/apostas/{id}` | Remove aposta |
-| `GET` | `/api/placar` | Ranking geral de pontos por participante |
+| `GET` | `/api/placar` | Ranking com breakdown financeiro por fase (saldo, ganho, devido, acertos) |
+| `GET` | `/api/classificacoes` | Classificação de todos os grupos (pontos FIFA: V=3, E=1, D=0) |
 | `GET` | `/api/fases` | Lista fases ordenadas |
 | `GET` | `/api/times` | Lista seleções ordenadas por nome |
 | `GET` | `/api/grupos` | Lista grupos |
@@ -126,7 +130,7 @@ Camada de **entrada da API**. Define rotas e métodos HTTP com FastAPI `APIRoute
 
 Camada de **lógica de negócio**. Processa os dados recebidos do Controller, consulta e persiste via SQLAlchemy (com `joinedload` para evitar N+1) e aplica as regras do bolão (cálculo de pontos, validações de encerramento, integridade).
 
-**Arquivos neste projeto:** `service/jogos.py` · `service/apostas.py` · `service/placar.py`
+**Arquivos neste projeto:** `service/jogos.py` · `service/apostas.py` · `service/placar.py` · `service/resultado_externo.py`
 
 ### ![Schemas](https://img.shields.io/badge/Schemas-Pydantic-E92063?style=flat-square&logo=pydantic&logoColor=E92063) `esquemas.py`
 
@@ -139,6 +143,10 @@ Camada de **validação e serialização**. Define os modelos de entrada (`*Entr
 Camada de **mapeamento objeto-relacional (ORM)**. Define as tabelas do banco de dados como classes Python com SQLAlchemy `DeclarativeBase`. Gerencia relacionamentos (`relationship`) e restrições de integridade (`UniqueConstraint`, `ForeignKey`).
 
 **Arquivo neste projeto:** `app/modelos.py`
+
+### ![Python](https://img.shields.io/badge/resultado__externo.py-111827?style=flat-square&logo=python&logoColor=F7DF1E) `service/resultado_externo.py`
+
+Módulo de **integração com fonte externa de resultados**. Consulta o feed público [openfootball/worldcup.json](https://github.com/openfootball/worldcup.json) para obter placares reais da Copa 2026. Implementa cache em memória com TTL de 5 minutos para evitar requisições repetidas. Usado pelo endpoint `GET /api/jogos/{id}/buscar_resultado` e pelo botão **🌐 Buscar** no modal de registro de resultado do frontend.
 
 <h2 align="center">🛠️ Scripts Utilitários (Automação GUI)<br>
 <img src="https://img.shields.io/badge/PyAutoGUI-111827?style=flat&logo=python&logoColor=F7DF1E" height="18"/>
@@ -201,13 +209,27 @@ print(f"\n{CinzaClaro}Seguem os Jogos da {Reset}{Verde}Copa do Mundo 🏆{Reset}
 
 Página única (SPA-like) que concentra toda a interface do bolão — listagem de jogos, formulário de apostas e ranking de participantes. Consome a API via `fetch`.
 
+Novidades de interface:
+- **🔄 Recalcular Pontuações** — botão na aba de placar que chama `POST /api/jogos/recalcular_tudo` e recarrega o ranking
+- **🌐 Buscar** — botão no modal de resultado que preenche automaticamente o placar via `GET /api/jogos/{id}/buscar_resultado`
+- **Filtro por data** — seletor de data + botão **Hoje** + botão **✕ Limpar** na aba de jogos
+
 ### ![CSS](https://img.shields.io/badge/CSS3-1572B6?style=flat-square&logo=css3&logoColor=white) `css/style.css`
 
 Estilos visuais da aplicação. Responsável pelo layout, cores, tipografia e responsividade da interface.
 
+Novos estilos: `.standings-table` (tabela de classificação de grupos), `.fin-section-title` / `.fin-valor-badge` (breakdown financeiro por fase), `.match-filters` / `.date-filter-row` (filtros de data), `.pts.neutro` (jogo sem acertadores).
+
 ### ![JS](https://img.shields.io/badge/JavaScript-F7DF1E?style=flat-square&logo=javascript&logoColor=black) `js/app.js`
 
 Lógica client-side. Gerencia chamadas à API REST, renderiza os dados dinamicamente no DOM e trata interações do usuário (apostas, filtros, placar).
+
+Novidades:
+- `recalcularPontuacoes()` — dispara recálculo geral e recarrega o placar
+- `buscarResultadoExterno()` — busca o placar real e preenche o modal automaticamente
+- `filtrarPorData()` / `filtrarHoje()` / `limparFiltros()` — filtros de data na listagem de jogos
+- `renderizarPlacar()` — exibe resumo geral + tabelas detalhadas por fase (acertos, ganho, a pagar, saldo)
+- Carregamento das classificações de grupos via `GET /api/classificacoes`
 
 ### ![Nginx](https://img.shields.io/badge/Nginx-009639?style=flat-square&logo=nginx&logoColor=black) `docker/nginx.conf`
 
@@ -218,7 +240,8 @@ Serve os arquivos estáticos do frontend via Nginx Alpine e faz proxy reverso da
 
 | Resultado | Saldo |
 |---|---|
-| **Acertou o placar exato** (e alguém acertou) | `+ R$ valor_fase` |
+| **Acertou o placar exato** (único) | `+ R$ valor_fase × nº de erros` (fica com o bolo inteiro) |
+| **Acertou o placar exato** (múltiplos) | `+ R$ (valor_fase × nº de erros) ÷ nº de acertadores` (prêmio dividido) |
 | **Errou** (mas alguém acertou) | `- R$ valor_fase` |
 | **Ninguém acertou** | `= R$ 0,00` (neutro) |
 
@@ -229,7 +252,22 @@ Serve os arquivos estáticos do frontend via Nginx Alpine e faz proxy reverso da
 | Semifinal | R$ 5,00 |
 | Final | R$ 10,00 |
 
-> Se nenhum participante acertar o placar exato de um jogo, o jogo é neutro — ninguém ganha nem perde.
+> Se nenhum participante acertar o placar exato de um jogo, o jogo é neutro — ninguém ganha nem perde.  
+> Quando múltiplos participantes acertam o mesmo placar, o prêmio total (soma de todos os R$ pagos pelos perdedores) é dividido igualmente entre eles.
+
+<h2 align="center">⚙️ Chaveamento Eliminatório <br>
+<img src="https://img.shields.io/badge/Bracket-111827?style=flat-square&logo=fifa&logoColor=yellow"/></h2>
+
+Ao registrar o resultado de um jogo eliminatório, o backend avança automaticamente o time vencedor para o próximo jogo do chaveamento. O mapeamento `CHAVE_PROXIMO_JOGO` em `service/jogos.py` codifica o bracket completo da Copa 2026:
+
+| Rodada | Jogos | → |
+|---|---|---|
+| 16avos (jg 73–88) | → 8avos (jg 89–96) | slot `casa` ou `fora` do próximo jogo |
+| 8avos (jg 89–96) | → Quartas (jg 97–100) | |
+| Quartas (jg 97–100) | → Semis (jg 101–102) | |
+| Semis (jg 101–102) | → Final (jg 103) | |
+
+> Em caso de empate no tempo regulamentar, o slot não é preenchido automaticamente — times devem ser atribuídos manualmente via `PUT /api/jogos/{id}/times`.
 
 <h2 align="center">🕹️ Como Rodar <br>
 <img src="https://img.shields.io/badge/-🕹️%20Terminal-020617?style=flat-square" alt="Terminal"></h2>

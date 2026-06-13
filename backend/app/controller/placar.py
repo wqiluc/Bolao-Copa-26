@@ -6,7 +6,6 @@ from app.service import placar as servico_placar
 
 roteador = APIRouter(prefix="/placar", tags=["placar"])
 
-
 @roteador.get("/", response_model=list[esquemas.PlacarParticipante])
 def obter_placar(bd: Session = Depends(obter_bd)):
     bruto = servico_placar.calcular_placar(bd)
@@ -24,8 +23,11 @@ def obter_placar(bd: Session = Depends(obter_bd)):
                 (
                     fase=esquemas.FaseSaida.model_validate(f["fase"]),
                     saldo=f["saldo"],
+                    ganho=f["ganho"],
+                    devido=f["devido"],
+                    acertos=f["acertos"],
                 )
-                
+
                 for f in r["por_fase"]
             ],
         )

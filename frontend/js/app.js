@@ -10,10 +10,11 @@ const DATAS_FASE =
   final:    { inicio: '19/Jul', fim: null },
 };
 
-let participantes = [], fases = [], times = [], todosJogos = [];
+let participantes = [], fases = [], times = [], todosJogos = [], classificacoes = {};
 let idJogoResultado = null, idJogoAposta = null, idJogoTimes = null;
 let idApostaEditando = null;
 let termoBusca = '';
+let filtroData = '';
 
 async function api(caminho, metodo = 'GET', corpo = null) 
 {
@@ -29,7 +30,7 @@ async function api(caminho, metodo = 'GET', corpo = null)
   if (!r.ok) 
     {
     const err = await r.json().catch(() => ({}));
-    throw new Error(err.detail || r.statusText);
+      throw new Error(err.detail || r.statusText);
   }
 
   if (r.status === 204) 
@@ -56,31 +57,64 @@ function mostrarAba(id)
   document.getElementById(id).classList.add('active');
   const idx = ['tab-scores','tab-matches','tab-bets'].indexOf(id);
   document.querySelectorAll('nav button')[idx].classList.add('active');
-  if (id === 'tab-scores')  carregarPlacar();
-  if (id === 'tab-matches') carregarJogos();
-  if (id === 'tab-bets')    carregarApostas();
+  if (id === 'tab-scores') 
+  {
+      carregarPlacar();
+  }
+
+  if (id === 'tab-matches') 
+  {
+    carregarJogos();
+  }
+
+  if (id === 'tab-bets') 
+  {
+    carregarApostas();
+  }
 }
 
 function abrirModal(id)  { document.getElementById(id).classList.remove('hidden'); }
 function fecharModal(id) { document.getElementById(id).classList.add('hidden'); }
 
-async function carregarPlacar() 
+async function carregarPlacar()
 {
   document.getElementById('scores-loading').classList.remove('hidden');
   document.getElementById('scores-content').classList.add('hidden');
 
-  try 
+  try
   {
     const pontuacoes = await api('/placar/');
     renderizarPlacar(pontuacoes);
-  } 
-  catch(e) 
-  { 
-    toast('Erro ao carregar placar: ' + e.message, true); 
+  }
+
+  catch(e)
+  {
+    toast('Erro ao carregar placar: ' + e.message, true);
   }
 
   document.getElementById('scores-loading').classList.add('hidden');
   document.getElementById('scores-content').classList.remove('hidden');
+}
+
+async function recalcularPontuacoes()
+{
+  const btn = document.getElementById('btn-recalcular');
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ Recalculando...'; }
+
+  try
+  {
+    const r = await api('/jogos/recalcular_tudo', 'POST');
+    toast(`${r.recalculados} jogos recalculados!`);
+    carregarPlacar();
+  }
+
+  catch(e) { toast('Erro ao recalcular: ' + e.message, true); }
+  finally 
+  { if (btn) 
+    { 
+      btn.disabled = false; btn.textContent = '🔄 Recalcular Pontuações'; 
+    } 
+  }
 }
 
 function formatarReais(valor)
@@ -90,11 +124,15 @@ function formatarReais(valor)
 
 function renderizarSaldo(saldo)
 {
-  if (Math.abs(saldo) < 0.01)
+  if (Math.abs(saldo) < 0.01) 
+  {
     return `<span class="saldo-neutro">= R$ 0,00</span>`;
+  }
 
-  if (saldo > 0)
+  if (saldo > 0) 
+  {
     return `<span class="saldo-positivo">▲ R$ ${formatarReais(saldo)}</span>`;
+  }
 
   return `<span class="saldo-negativo">▼ R$ ${formatarReais(Math.abs(saldo))} a pagar</span>`;
 }
@@ -121,54 +159,99 @@ function renderizarPlacar(pontuacoes)
   });
   podio += `</div>`;
 
-  const nomesFases = pontuacoes.length > 0
-    ? pontuacoes[0].por_fase.map(faseSaldo => faseSaldo.fase.nome)
-    : [];
-
-  let tabela = `<table class="phase-table">
-    <thead><tr>
-      <th>Participante</th>
-      ${nomesFases.map(nome => `<th>${nome}</th>`).join('')}
-      <th>A receber</th>
-      <th>A pagar</th>
-      <th>Saldo</th>
-    </tr></thead><tbody>`;
-
-  pontuacoes.forEach((entrada) =>
+  let resumo = `
+    <div class="fin-section-title">Resumo Geral</div>
+    <table class="phase-table">
+      <thead><tr>
+        <th>Participante</th><th>Acertos</th><th>A receber</th><th>A pagar</th><th>Saldo Total</th>
+      </tr></thead><tbody>`;
+  pontuacoes.forEach(e => 
   {
-    tabela += `<tr>
-      <td>${entrada.participante.nome}</td>
-      ${entrada.por_fase.map(faseSaldo => {
-        const saldo = faseSaldo.saldo ?? 0;
-        const txt = (saldo > 0 ? '+' : '') + formatarReais(saldo);
-        const cls = saldo > 0.005 ? 'saldo-positivo' : saldo < -0.005 ? 'saldo-negativo' : 'saldo-neutro';
-        return `<td><span class="${cls}">R$ ${txt}</span></td>`;
-      }).join('')}
-      <td><span class="saldo-positivo">R$ ${formatarReais(entrada.total_ganho)}</span></td>
-      <td><span class="saldo-negativo">R$ ${formatarReais(entrada.total_devido)}</span></td>
-      <td>${renderizarSaldo(entrada.saldo_total)}</td>
+    resumo += `<tr>
+      <td>${e.participante.nome}</td>
+      <td>${e.acertos_exatos}</td>
+      <td><span class="saldo-positivo">R$ ${formatarReais(e.total_ganho)}</span></td>
+      <td><span class="saldo-negativo">R$ ${formatarReais(e.total_devido)}</span></td>
+      <td>${renderizarSaldo(e.saldo_total)}</td>
     </tr>`;
   });
-  tabela += `</tbody></table>`;
+  resumo += `</tbody></table>`;
 
-  document.getElementById('scores-content').innerHTML = podio + tabela;
+  const fasesDoPlayar = pontuacoes.length > 0 ? pontuacoes[0].por_fase : [];
+  let tabelasFases = '';
+
+  fasesDoPlayar.forEach(fp0 =>
+  {
+    const faseId = fp0.fase.id;
+    const datas   = DATAS_FASE[fp0.fase.slug];
+    const dataTxt = datas ? (datas.fim ? `${datas.inicio} – ${datas.fim}` : datas.inicio) : '';
+    const temMovimento = pontuacoes.some(e => {
+      const fp = e.por_fase.find(f => f.fase.id === faseId);
+      return fp && (fp.ganho > 0.005 || fp.devido > 0.005);
+    });
+
+    tabelasFases += `
+      <div class="fin-section-title">
+        ${fp0.fase.nome}${dataTxt ? `<span class="phase-date"> ${dataTxt}</span>` : ''}
+        <span class="fin-valor-badge">R$ ${formatarReais(fp0.fase.valor)}/jogo</span>
+      </div>`;
+
+    if (!temMovimento)
+    {
+      tabelasFases += `<div class="empty" style="padding:0.6rem 0.8rem;font-size:0.82rem">Nenhum jogo encerrado ainda nesta fase</div>`;
+    }
+    else
+    {
+      tabelasFases += `<table class="phase-table">
+        <thead><tr>
+          <th>Participante</th><th>Acertos</th><th>A receber</th><th>A pagar</th><th>Saldo na fase</th>
+        </tr></thead><tbody>`;
+
+      pontuacoes.forEach(e => {
+        const fp = e.por_fase.find(f => f.fase.id === faseId) || {acertos: 0, ganho: 0, devido: 0, saldo: 0};
+        tabelasFases += `<tr>
+          <td>${e.participante.nome}</td>
+          <td>${fp.acertos}</td>
+          <td><span class="saldo-positivo">R$ ${formatarReais(fp.ganho || 0)}</span></td>
+          <td><span class="saldo-negativo">R$ ${formatarReais(fp.devido || 0)}</span></td>
+          <td>${renderizarSaldo(fp.saldo || 0)}</td>
+        </tr>`;
+      });
+
+      tabelasFases += `</tbody></table>`;
+    }
+  });
+
+  document.getElementById('scores-content').innerHTML = podio + resumo + tabelasFases;
 }
 
-async function carregarJogos() 
+async function carregarJogos()
 {
   document.getElementById('matches-loading').classList.remove('hidden');
   document.getElementById('matches-content').classList.add('hidden');
 
-  try 
+  try
   {
-    todosJogos = await api('/jogos/');
-    fases = fases.length ? fases : await api('/fases');
-    renderizarJogos(todosJogos);
-  } 
+    const [jogos, fasesResp, clasResp] = await Promise.all
+    (
+      [
+        api('/jogos/'),
+        fases.length ? Promise.resolve(fases) : api('/fases'),
+        api('/classificacoes').catch(() => []),
+      ]
+  );
 
-  catch(e) 
-  { 
-    toast('Erro ao carregar jogos: ' + e.message, true); 
+    todosJogos = jogos;
+    if (!fases.length) fases = fasesResp;
+
+    classificacoes = {};
+    clasResp.forEach(g => { classificacoes[g.grupo] = g.times; });
+
+    renderizarJogos(todosJogos);
+  }
+  catch(e)
+  {
+    toast('Erro ao carregar jogos: ' + e.message, true);
   }
 
   document.getElementById('matches-loading').classList.add('hidden');
@@ -178,6 +261,32 @@ async function carregarJogos()
 function filtrarJogos(termo) 
 {
   termoBusca = termo.trim().toLowerCase();
+  renderizarJogos(todosJogos);
+}
+
+function filtrarPorData(val)
+{
+  filtroData = val;
+  renderizarJogos(todosJogos);
+}
+
+function filtrarHoje()
+{
+  const hoje = new Date();
+  const iso = hoje.getFullYear() + '-'
+    + String(hoje.getMonth() + 1).padStart(2, '0') + '-'
+    + String(hoje.getDate()).padStart(2, '0');
+  filtroData = iso;
+  document.getElementById('date-filter').value = iso;
+  renderizarJogos(todosJogos);
+}
+
+function limparFiltros()
+{
+  filtroData = '';
+  termoBusca = '';
+  document.getElementById('match-search').value = '';
+  document.getElementById('date-filter').value = '';
   renderizarJogos(todosJogos);
 }
 
@@ -197,15 +306,26 @@ function ehHoje(iso)
 
 function renderizarJogos(jogos)
 {
-  const filtrados = termoBusca
-    ? jogos.filter(jogo => (jogo.time_casa?.nome || '').toLowerCase().includes(termoBusca) ||
-    (jogo.time_fora?.nome || '').toLowerCase().includes(termoBusca))
-    : jogos;
+  let filtrados = jogos;
 
-  const porFase = {};
+  if (termoBusca) 
+  {
+    filtrados = filtrados.filter(jogo =>
+      (jogo.time_casa?.nome || '').toLowerCase().includes(termoBusca) ||
+      (jogo.time_fora?.nome || '').toLowerCase().includes(termoBusca));
+  }
+
+  if (filtroData) 
+  {
+    filtrados = filtrados.filter(jogo => jogo.data && jogo.data.startsWith(filtroData));
+  }
+
+  const porFase = { };
+
   filtrados.forEach(jogo =>
   {
     const idFase = jogo.fase.id;
+    
     if (!porFase[idFase])
     {
       porFase[idFase] = { fase: jogo.fase, porGrupo: {} };
@@ -242,9 +362,11 @@ function renderizarJogos(jogos)
     Object.entries(porGrupo).sort(([a], [b]) => a.localeCompare(b)).forEach(([chaveGrupo, jogosGrupo]) =>
     {
       if (chaveGrupo !== '_eliminatoria')
-        {
-          html += `<div class="group-label">Grupo ${chaveGrupo}</div>`;
-        }
+      {
+        html += `<div class="group-label">Grupo ${chaveGrupo}</div>`;
+        const clas = classificacoes[chaveGrupo] || [];
+        html += renderizarClassificacao(chaveGrupo, clas);
+      }
       jogosGrupo.forEach(jogo => { html += renderizarCartaoJogo(jogo); });
     });
     html += `</div></div>`;
@@ -254,7 +376,42 @@ function renderizarJogos(jogos)
     html || `<div class="empty">Nenhum jogo encontrado${termoBusca ? ` para "${termoBusca}"` : ''}</div>`;
 }
 
-function alternarSecao(id) 
+function renderizarClassificacao(nomeGrupo, times)
+{
+  if (!times || times.length === 0)
+    return '<div class="empty" style="padding:0.35rem 0.6rem;font-size:0.78rem;margin-bottom:0.4rem">Classificação disponível após início dos jogos</div>';
+
+  let html = '<table class="standings-table"><thead><tr>'
+    + '<th>#</th><th>Time</th><th>PJ</th><th>V</th><th>E</th><th>D</th><th>GP</th><th>GC</th><th>SG</th><th>Pts</th><th></th>'
+    + '</tr></thead><tbody>';
+
+  times.forEach((time, i) => {
+    const sg = time.gp - time.gc;
+    const sgTxt = sg > 0 ? '+' + sg : '' + sg;
+    let statusCls = '', statusTxt = '';
+    if (time.pj === 0)           { statusCls = '';              statusTxt = '-'; }
+    else if (i === 0 || i === 1) { statusCls = 'passa-direto'; statusTxt = 'PASS'; }
+    else if (i === 2)            { statusCls = 'terceiro';      statusTxt = '?'; }
+    else                        { statusCls = 'eliminado';     statusTxt = 'X'; }
+
+    const rowCls = time.pj === 0 ? 'sem-jogos' : '';
+    const sgCls  = sg > 0 ? 'sg-pos' : sg < 0 ? 'sg-neg' : '';
+    html += '<tr class="' + rowCls + '">'
+      + '<td class="pos">' + (i + 1) + '</td>'
+      + '<td class="time-nome">' + time.bandeira + ' ' + time.nome + '</td>'
+      + '<td>' + time.pj + '</td><td>' + time.v + '</td><td>' + time.e + '</td><td>' + time.d + '</td>'
+      + '<td>' + time.gp + '</td><td>' + time.gc + '</td>'
+      + '<td class="' + sgCls + '">' + sgTxt + '</td>'
+      + '<td class="pts-col">' + time.pts + '</td>'
+      + '<td class="status-col ' + statusCls + '">' + statusTxt + '</td>'
+      + '</tr>';
+  });
+  html += '</tbody></table>'
+    + '<div class="standings-legend">V=3pts | E=1pt | D=0 | PASS=Classificado | ?=3o aguarda | X=Eliminado</div>';
+  return html;
+}
+
+function alternarSecao(id)
 {
   const el = document.getElementById(id);
   el.style.display = el.style.display === 'none' ? '' : 'none';
@@ -324,11 +481,32 @@ function abrirModalResultado(idJogo) {
   abrirModal('result-modal');
 }
 
-async function enviarResultado() 
+async function buscarResultadoExterno()
 {
-  try 
+  const btn = document.getElementById('btn-buscar-resultado');
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ Buscando...'; }
+  try
   {
-    await api(`/jogos/${idJogoResultado}/resultado`, 'PUT', 
+    const r = await api(`/jogos/${idJogoResultado}/buscar_resultado`);
+    document.getElementById('result-home').value = r.gols_casa;
+    document.getElementById('result-away').value = r.gols_fora;
+    toast('Placar carregado da API! Confirme antes de salvar.');
+  }
+  catch(e)
+  {
+    toast('Resultado ainda não disponível: ' + e.message, true);
+  }
+  finally
+  {
+    if (btn) { btn.disabled = false; btn.textContent = '🌐 Buscar'; }
+  }
+}
+
+async function enviarResultado()
+{
+  try
+  {
+    await api(`/jogos/${idJogoResultado}/resultado`, 'PUT',
     {
       gols_casa: parseInt(document.getElementById('result-home').value),
       gols_fora: parseInt(document.getElementById('result-away').value),
@@ -337,11 +515,11 @@ async function enviarResultado()
     fecharModal('result-modal');
     carregarJogos();
     carregarPlacar();
-  } 
+  }
 
-  catch(e) 
-  { 
-    toast('Erro: ' + e.message, true); 
+  catch(e)
+  {
+    toast('Erro: ' + e.message, true);
   }
 }
 
@@ -409,14 +587,16 @@ async function enviarAposta()
 async function abrirModalTimes(idJogo) 
 {
   idJogoTimes = idJogo;
-  if (!times.length) 
+  if (!times.length)
   {
     times = await api('/times');
   }
 
   const opts = times.map(t => `<option value="${t.id}">${t.bandeira || ''} ${t.nome}</option>`).join('');
+
   document.getElementById('times-casa').innerHTML = opts;
   document.getElementById('times-fora').innerHTML = opts;
+
   abrirModal('teams-modal');
 }
 
@@ -446,10 +626,18 @@ async function carregarApostas()
 {
   document.getElementById('bets-loading').classList.remove('hidden');
   document.getElementById('bets-content').classList.add('hidden');
+
   try 
   {
-    if (!participantes.length) participantes = await api('/participantes');
-    if (!fases.length) fases = await api('/fases');
+    if (!participantes.length) 
+    {
+      participantes = await api('/participantes');
+    }
+
+    if (!fases.length) 
+    {
+      fases = await api('/fases');
+    }
 
     const filtroPart = document.getElementById('bet-participant-filter');
     const filtroFase = document.getElementById('bet-phase-filter');
@@ -467,10 +655,18 @@ async function carregarApostas()
     const idParticipante = filtroPart.value;
     const idFase = filtroFase.value;
     let url = '/apostas/?';
-    if (idParticipante) url += `id_participante=${idParticipante}&`;
+
+    if (idParticipante) 
+    { 
+        url += `id_participante=${idParticipante}&`;
+    }
 
     let apostas = await api(url);
-    if (idFase) apostas = apostas.filter(aposta => aposta.jogo.fase.id === parseInt(idFase));
+
+    if (idFase) 
+    { 
+      apostas = apostas.filter(aposta => aposta.jogo.fase.id === parseInt(idFase));
+    }
 
     renderizarApostas(apostas);
   } 
@@ -486,16 +682,22 @@ async function carregarApostas()
 
 function labelPontos(aposta)
 {
-  if (!aposta.jogo.encerrado)
+  if (!aposta.jogo.encerrado) 
+  {
     return `<span class="pts open">—</span>`;
+  }
 
   const pontos = parseFloat(aposta.pontos);
 
-  if (Math.abs(pontos) < 0.01)
+  if (Math.abs(pontos) < 0.01) 
+  {
     return `<span class="pts neutro">= R$ 0,00</span>`;
+  }
 
-  if (pontos > 0)
+  if (pontos > 0) 
+  {
     return `<span class="pts exact">+R$ ${formatarReais(pontos)} 🎯</span>`;
+  }
 
   return `<span class="pts wrong">-R$ ${formatarReais(Math.abs(pontos))} ✗</span>`;
 }
@@ -508,7 +710,7 @@ function renderizarApostas(apostas)
     return;
   }
 
-  const porFase = {};
+  const porFase = { };
   apostas.forEach(aposta =>
   {
     const idFase = aposta.jogo.fase.id;
