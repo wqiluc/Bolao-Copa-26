@@ -15,15 +15,15 @@ def obter_placar(bd: Session = Depends(obter_bd)):
         esquemas.PlacarParticipante
         (
             participante=esquemas.ParticipanteSaida.model_validate(rota["participante"]),
-            saldo_total=r["saldo_total"],
-            total_ganho=r["total_ganho"],
-            total_devido=r["total_devido"],
-            acertos_exatos=r["acertos_exatos"],
+            saldo_total=rota["saldo_total"],
+            total_ganho=rota["total_ganho"],
+            total_devido=rota["total_devido"],
+            acertos_exatos=rota["acertos_exatos"],
 
             por_fase=[
                 esquemas.PlacarFase
                 (
-                    fase=esquemas.FaseSaida.model_validate(f["fase"]),
+                    fase=esquemas.FaseSaida.model_validate(fase["fase"]),
                     saldo=fase["saldo"],
                     ganho=fase["ganho"],
                     devido=fase["devido"],
