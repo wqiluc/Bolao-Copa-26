@@ -76,8 +76,15 @@ function mostrarAba(id)
   }
 }
 
-function abrirModal(id)  { document.getElementById(id).classList.remove('hidden'); }
-function fecharModal(id) { document.getElementById(id).classList.add('hidden'); }
+function abrirModal(id)  
+{ 
+  document.getElementById(id).classList.remove('hidden'); 
+}
+
+function fecharModal(id) 
+{ 
+  document.getElementById(id).classList.add('hidden'); 
+}
 
 async function carregarPlacar()
 {
@@ -202,7 +209,8 @@ function renderizarPlacar(pontuacoes)
     const faseId = fp0.fase.id;
     const datas   = DATAS_FASE[fp0.fase.slug];
     const dataTxt = datas ? (datas.fim ? `${datas.inicio} – ${datas.fim}` : datas.inicio) : '';
-    const temMovimento = pontuacoes.some(e => {
+    const temMovimento = pontuacoes.some(e => 
+    {
       const fp = e.por_fase.find(f => f.fase.id === faseId);
       return fp && (fp.ganho > 0.005 || fp.devido > 0.005);
     });
@@ -217,6 +225,7 @@ function renderizarPlacar(pontuacoes)
     {
       tabelasFases += `<div class="empty" style="padding:0.6rem 0.8rem;font-size:0.82rem">Nenhum jogo encerrado ainda nesta fase</div>`;
     }
+
     else
     {
       tabelasFases += `<table class="phase-table">
@@ -224,7 +233,8 @@ function renderizarPlacar(pontuacoes)
           <th>Participante</th><th>Acertos</th><th>A receber</th><th>A pagar</th><th>Saldo na fase</th>
         </tr></thead><tbody>`;
 
-      pontuacoes.forEach(e => {
+      pontuacoes.forEach(e => 
+      {
         const fp = e.por_fase.find(f => f.fase.id === faseId) || {acertos: 0, ganho: 0, devido: 0, saldo: 0};
 
         tabelasFases += `<tr>
@@ -275,7 +285,7 @@ async function carregarJogos()
 
   catch(e)
   {
-    toast('Erro ao carregar jogos: ' + e.message, true);
+    toast('Erro ao carregar os jogos: ' + e.message, true);
   }
 
   document.getElementById('matches-loading').classList.add('hidden');
@@ -298,10 +308,13 @@ function filtrarHoje()
 {
   const hoje = new Date();
   const iso = hoje.getFullYear() + '-'
+
     + String(hoje.getMonth() + 1).padStart(2, '0') + '-'
     + String(hoje.getDate()).padStart(2, '0');
+
   filtroData = iso;
   document.getElementById('date-filter').value = iso;
+
   renderizarJogos(todosJogos);
 }
 
@@ -317,15 +330,15 @@ function limparFiltros()
 
 function formatarData(iso) 
 {
-  const d = new Date(iso);
-  return d.toLocaleDateString('pt-BR', { day:'2-digit', month:'2-digit' })
-       + ' ' + d.toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
+  const date = new Date(iso);
+  return date.toLocaleDateString('pt-BR', { day:'2-digit', month:'2-digit' })
+       + ' ' + date.toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
 }
 
 function ehHoje(iso) 
 {
-  const d = new Date(iso), h = new Date();
-  return d.toDateString() === h.toDateString();
+  const date = new Date(iso), hour = new Date();
+  return date.toDateString() === hour.toDateString();
 }
 
 function renderizarJogos(jogos)
@@ -363,10 +376,13 @@ function renderizarJogos(jogos)
     }
 
     porFase[idFase].porGrupo[chaveGrupo].push(jogo);
+
   });
 
   let html = '';
-  Object.values(porFase).sort((a, b) => a.fase.ordem - b.fase.ordem).forEach(({ fase, porGrupo }) => {
+
+  Object.values(porFase).sort((a, b) => a.fase.ordem - b.fase.ordem).forEach(({ fase, porGrupo }) => 
+  {
     const jogosFlat = Object.values(porGrupo).flat();
     const total  = jogosFlat.length;
     const feitos = jogosFlat.filter(jogo => jogo.encerrado).length;
@@ -415,7 +431,7 @@ function renderizarClassificacao(nomeGrupo, times)
     + '</tr></thead><tbody>';
 
   times.forEach((time, i) => 
-    {
+  {
     const sg = time.gp - time.gc;
     const sgTxt = sg > 0 ? '+' + sg : '' + sg;
     let statusCls = '', statusTxt = '';
@@ -433,16 +449,17 @@ function renderizarClassificacao(nomeGrupo, times)
 
     else if (i === 2) 
     { 
-        statusCls = 'terceiro';      statusTxt = '?'; 
+        statusCls = 'terceiro'; statusTxt = '?'; 
     }
 
     else 
     { 
-      statusCls = 'eliminado';     statusTxt = 'X'; 
+      statusCls = 'eliminado'; statusTxt = 'X'; 
     }
 
     const rowCls = time.pj === 0 ? 'sem-jogos' : '';
     const sgCls  = sg > 0 ? 'sg-pos' : sg < 0 ? 'sg-neg' : '';
+
     html += '<tr class="' + rowCls + '">'
       + '<td class="pos">' + (i + 1) + '</td>'
       + '<td class="time-nome">' + time.bandeira + ' ' + time.nome + '</td>'
@@ -452,9 +469,10 @@ function renderizarClassificacao(nomeGrupo, times)
       + '<td class="pts-col">' + time.pts + '</td>'
       + '<td class="status-col ' + statusCls + '">' + statusTxt + '</td>'
       + '</tr>';
-  });
+});
   html += '</tbody></table>'
     + '<div class="standings-legend">V=3pts | E=1pt | D=0 | PASS=Classificado | ?=3o aguarda | X=Eliminado</div>';
+
   return html;
 }
 
@@ -517,17 +535,19 @@ function abrirModalResultado(idJogo)
 {
   const j = todosJogos.find(x => x.id === idJogo);
 
-  if (!j) 
+  if (!j)
   {
     return;
   }
 
   idJogoResultado = idJogo;
+
   document.getElementById('result-modal-title').textContent = `Resultado: ${labelTime(j.time_casa)} x ${labelTime(j.time_fora)}`;
   document.getElementById('result-home-label').textContent = labelTime(j.time_casa);
   document.getElementById('result-away-label').textContent = labelTime(j.time_fora);
   document.getElementById('result-home').value = j.gols_casa ?? 0;
   document.getElementById('result-away').value = j.gols_fora ?? 0;
+
   abrirModal('result-modal');
 }
 
@@ -573,6 +593,7 @@ async function enviarResultado()
       gols_casa: parseInt(document.getElementById('result-home').value),
       gols_fora: parseInt(document.getElementById('result-away').value),
     });
+
     toast('Resultado salvo!');
     fecharModal('result-modal');
     carregarJogos();
@@ -590,19 +611,20 @@ async function abrirModalAposta(idJogo)
   const j = todosJogos.find(x => x.id === idJogo);
 
   if (!j)
-  { 
-      return;
+  {
+    return;
   }
 
   idJogoAposta = idJogo;
   idApostaEditando = null;
 
-  if (!participantes.length) 
+  if (!participantes.length)
   {
     participantes = await api('/participantes');
   }
 
   const sel = document.getElementById('bet-modal-participant');
+
   sel.innerHTML = participantes.map(p => `<option value="${p.id}">${p.nome}</option>`).join('');
   document.getElementById('bet-modal-title').textContent = `Apostar: ${labelTime(j.time_casa)} x ${labelTime(j.time_fora)}`;
   document.getElementById('bet-home-label').textContent = labelTime(j.time_casa);
@@ -617,6 +639,7 @@ async function enviarAposta()
   try 
   {
     const idParticipante = parseInt(document.getElementById('bet-modal-participant').value);
+
     const casa = parseInt(document.getElementById('bet-home').value);
     const fora = parseInt(document.getElementById('bet-away').value);
 
@@ -624,7 +647,7 @@ async function enviarAposta()
       {
       await api(`/apostas/${idApostaEditando}`, 'PUT', { palpite_casa: casa, palpite_fora: fora });
 
-      toast('Aposta atualizada!');
+      toast('Aposta atualizada! 🎰');
     } 
 
     else 
@@ -657,15 +680,16 @@ async function enviarAposta()
 async function abrirModalTimes(idJogo) 
 {
   idJogoTimes = idJogo;
+
   if (!times.length)
   {
     times = await api('/times');
   }
 
-  const opts = times.map(t => `<option value="${t.id}">${t.bandeira || ''} ${t.nome}</option>`).join('');
+  const opcoes = times.map(t => `<option value="${t.id}">${t.bandeira || ''} ${t.nome}</option>`).join('');
 
-  document.getElementById('times-casa').innerHTML = opts;
-  document.getElementById('times-fora').innerHTML = opts;
+  document.getElementById('times-casa').innerHTML = opcoes;
+  document.getElementById('times-fora').innerHTML = opcoes;
 
   abrirModal('teams-modal');
 }
@@ -785,20 +809,30 @@ function renderizarApostas(apostas)
   apostas.forEach(aposta =>
   {
     const idFase = aposta.jogo.fase.id;
-    if (!porFase[idFase]) porFase[idFase] = { fase: aposta.jogo.fase, apostas: [] };
+    if (!porFase[idFase]) porFase[idFase] = 
+    { 
+      fase: aposta.jogo.fase, apostas: [] 
+    };
+
     porFase[idFase].apostas.push(aposta);
+
   });
 
   let html = '';
-  Object.values(porFase).sort((a, b) => a.fase.ordem - b.fase.ordem).forEach(({ fase, apostas: apostasFase }) => {
+
+  Object.values(porFase).sort((a, b) => a.fase.ordem - b.fase.ordem).forEach(({ fase, apostas: apostasFase }) => 
+  {
     html += `<div class="phase-header" style="margin-top:1rem">${fase.nome}</div>`;
     apostasFase.sort((a, b) => new Date(a.jogo.data) - new Date(b.jogo.data)).forEach(aposta => 
     {
       const casa = labelTime(aposta.jogo.time_casa);
       const fora = labelTime(aposta.jogo.time_fora);
       const placarStr = aposta.jogo.encerrado
-        ? ` (${aposta.jogo.gols_casa}–${aposta.jogo.gols_fora})` : '';
+        ? ` (${aposta.jogo.gols_casa}–${aposta.jogo.gols_fora})` 
+        : '';
+
       html += `
+
         <div class="bet-row">
           <span class="teams">${casa} x ${fora}${placarStr}</span>
           <span style="color:#8aabcc;font-size:0.8rem">${aposta.participante.nome}</span>
@@ -816,7 +850,6 @@ function renderizarApostas(apostas)
 }
 
 async function editarAposta(idAposta, idJogo, labelCasa, labelFora, palpiteCasa, palpiteFora, idParticipante) 
-
 {
   idJogoAposta = idJogo;
   idApostaEditando = idAposta;
@@ -858,7 +891,7 @@ async function deletarAposta(idAposta)
   try 
   {
     await api(`/apostas/${idAposta}`, 'DELETE');
-    toast('Aposta removida');
+    toast('Aposta removida ❌');
     carregarApostas();
   } 
 
