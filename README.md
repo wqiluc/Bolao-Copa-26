@@ -1,5 +1,5 @@
 <h1 align="center"> Bolão Copa do Mundo 2026 🏆⚽🌎 <br>
-<img src="./img/logofifa.jpeg" width="420" alt="Logo FIFA 2026"/></h1>
+<img src="./img/fifa_logo.jpeg" width="420" alt="Logo FIFA 2026"/></h1>
 
 <h2 align="center">💻⛏️ Tecnologias e Ferramentas Utilizadas: <br>
 <img src="https://img.shields.io/badge/Tech_Stack-111827?style=flat-square&logo=stackshare&logoColor=whitesmoke"/></h2>
@@ -9,6 +9,7 @@
   <img src="https://img.shields.io/badge/Architecture-111827?style=flat-square&logo=instructure&logoColor=white" height="25" alt="Arquitetura"/>
   <img src="https://img.shields.io/badge/Python-111827?style=for-the-badge&logo=python&logoColor=3776AB" height="25" alt="Python"/>
   <img src="https://img.shields.io/badge/PyAutoGUI-111827?style=for-the-badge&logo=python&logoColor=yellow" height="25" alt="PyAutoGUI"/>
+   <img src="https://img.shields.io/badge/PyperClip-111827?style=for-the-badge&logo=python&logoColor=purple" height="25" alt="PyperClip"/>
   <img src="https://img.shields.io/badge/os_(macOS)-111827?style=for-the-badge&logo=apple&logoColor=white" height="25" alt="os macOS"/> <br>
   <img src="https://img.shields.io/badge/FastAPI-111827?style=for-the-badge&logo=fastapi&logoColor=009688" height="25" alt="FastAPI"/>
   <img src="https://img.shields.io/badge/SQLAlchemy-111827?style=for-the-badge&logo=sqlalchemy&logoColor=D71F00" height="25" alt="SQLAlchemy"/>
@@ -70,6 +71,9 @@ Bolao-Copa-26⚽/
 ├── api <img src="https://img.shields.io/badge/OpenAPI-111827?style=flat&logo=openapiinitiative&logoColor=green" height="18"/>/
 │   └── openapi.yml <img src="https://img.shields.io/badge/OpenAPI_3.1-Spec-6BA539?style=flat&logo=openapiinitiative&logoColor=white" height="18"/>
 │
+├── docs <img src="https://img.shields.io/badge/Docs-111827?style=flat&logo=markdown&logoColor=blue" height="18"/>/
+│   └── API.md <img src="https://img.shields.io/badge/Documentação_API-111827?style=flat&logo=swagger&logoColor=cyan" height="18"/>
+│
 ├── img/ <img src="https://img.shields.io/badge/Assets-green?style=flat&logo=image&logoColor=white" height="18"/>
 ├── .gitignore <img src="https://img.shields.io/badge/-GitIgnore-111827?style=flat&logo=git&logoColor=F05032" height="18"/>
 ├── LICENSE <img src="https://img.shields.io/badge/License-MIT-FF8C00?style=flat&logo=opensource&logoColor=white" height="18"/>
@@ -112,7 +116,8 @@ Bolao-Copa-26⚽/
 | `GET` | `/saude` | Health check `{ "status": "ok" }` |
 
 > 📖 Documentação interativa disponível em **http://localhost:8000/docs** (Swagger UI) <br>
-> 📄 Spec completo em [`api/openapi.yml`](api/openapi.yml) — OpenAPI 3.1, gerado diretamente do FastAPI
+> 📄 Spec completo em [`api/openapi.yml`](api/openapi.yml) — OpenAPI 3.1, gerado diretamente do FastAPI <br>
+> 📋 Documentação técnica detalhada (fluxo de computação de gols e pontos) em [`docs/API.md`](docs/API.md)
 
 <h2 align="center">📂 Modularização CS (Controller & Service)<br>
 <img src="https://img.shields.io/badge/-FastAPI-111827?style=flat&logo=fastapi&logoColor=009688" height="18"/>
@@ -147,6 +152,49 @@ Camada de **mapeamento objeto-relacional (ORM)**. Define as tabelas do banco de 
 ### ![Python](https://img.shields.io/badge/resultado__externo.py-111827?style=flat-square&logo=python&logoColor=F7DF1E) `service/resultado_externo.py`
 
 Módulo de **integração com fonte externa de resultados**. Consulta o feed público [openfootball/worldcup.json](https://github.com/openfootball/worldcup.json) para obter placares reais da Copa 2026. Implementa cache em memória com TTL de 5 minutos para evitar requisições repetidas. Usado pelo endpoint `GET /api/jogos/{id}/buscar_resultado` e pelo botão **🌐 Buscar** no modal de registro de resultado do frontend.
+
+#### 🌐 Fluxo de atualização automática de gols (botão Buscar)
+
+```
+[Usuário clica 🌐 Buscar no modal]
+        │
+        ▼
+buscarResultadoExterno()          ← app.js:555
+  GET /api/jogos/{id}/buscar_resultado
+        │
+        ▼
+controller/jogos.py               ← busca o jogo no BD pelo id
+  jogo.numero → resultado_externo.buscar_resultado(numero)
+        │
+        ▼
+service/resultado_externo.py
+  ┌─ cache válido? (< 5 min) ──────────────┐
+  │  Sim → retorna cache[numero]            │
+  │  Não → carregar_jogos()                 │
+  │         └─ GET openfootball GitHub JSON │
+  │              filtra jogo de 3º lugar    │
+  │              mapeia índice+1 → número   │
+  │              lê score.ft[0], score.ft[1]│
+  └─────────────────────────────────────────┘
+        │
+        ▼
+  { gols_casa: N, gols_fora: M }
+        │
+        ▼
+Frontend preenche os campos do modal automaticamente
+  result-home.value = gols_casa
+  result-away.value = gols_fora
+  toast("Placar carregado da API! Confirme antes de salvar.")
+        │
+        ▼
+[Usuário confere e clica ✅ Salvar]
+  PUT /api/jogos/{id}/resultado   ← persiste no banco + calcula pontos
+```
+
+**Detalhes importantes:**
+- A fonte `openfootball/worldcup.json` indexa os jogos por posição no array (índice + 1 = número do jogo). O jogo de 3º lugar é excluído do mapeamento para manter a numeração compatível com o banco.
+- O cache é global por processo — a primeira requisição após 5 minutos baixa o JSON completo; as demais servem do cache sem custo de rede.
+- O botão **Buscar** apenas pré-preenche o modal. O resultado **não é salvo** até o usuário clicar em **Salvar** (`PUT /api/jogos/{id}/resultado`).
 
 <h2 align="center">🛠️ Scripts Utilitários (Automação GUI)<br>
 <img src="https://img.shields.io/badge/PyAutoGUI-111827?style=flat&logo=python&logoColor=F7DF1E" height="18"/>

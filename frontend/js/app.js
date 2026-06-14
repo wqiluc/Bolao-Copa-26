@@ -1,6 +1,6 @@
 const API = 'http://localhost:8000/api';
 
-const DATAS_FASE = 
+const DATAS_FASE =
 {
   grupos:  { inicio: '11/Jun', fim: '27/Jun' },
   '16avas': { inicio: '28/Jun', fim: '03/Jul' },
@@ -19,7 +19,7 @@ let idApostaEditando = null;
 let termoBusca = '';
 let filtroData = '';
 
-async function api(caminho, metodo = 'GET', corpo = null) 
+async function api(caminho, metodo = 'GET', corpo = null)
 {
   const opts = { method: metodo, headers: { 'Content-Type': 'application/json' } };
 
@@ -28,62 +28,62 @@ async function api(caminho, metodo = 'GET', corpo = null)
       opts.body = JSON.stringify(corpo);
     }
 
-  const r = await fetch(API + caminho, opts);
+  const resposta = await fetch(API + caminho, opts);
 
-  if (!r.ok) 
+  if (!resposta.ok)
     {
-    const err = await r.json().catch(() => ({}));
-      throw new Error(err.detail || r.statusText);
+    const err = await resposta.json().catch(() => ({}));
+      throw new Error(err.detail || resposta.statusText);
   }
 
-  if (r.status === 204) 
+  if (resposta.status === 204)
     {
       return null;
     }
 
-  return r.json();
+  return resposta.json();
 }
 
-function toast(msg, erro = false) 
+function toast(msg, erro = false)
 {
-  const el = document.getElementById('toast');
-  el.textContent = msg;
-  el.className = 'toast show' + (erro ? ' error' : '');
-  setTimeout(() => el.className = 'toast', 3000);
+  const elementoToast = document.getElementById('toast');
+  elementoToast.textContent = msg;
+  elementoToast.className = 'toast show' + (erro ? ' error' : '');
+  setTimeout(() => elementoToast.className = 'toast', 3000);
 }
 
-function mostrarAba(id) 
+function mostrarAba(idAba)
 {
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  const idx = ['tab-scores','tab-matches','tab-bets'].indexOf(id);
+  document.querySelectorAll('.tab').forEach(aba => aba.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(botao => botao.classList.remove('active'));
+  document.getElementById(idAba).classList.add('active');
+  const idx = ['tab-scores','tab-matches','tab-bets'].indexOf(idAba);
   document.querySelectorAll('nav button')[idx].classList.add('active');
 
-  if (id === 'tab-scores') 
+  if (idAba === 'tab-scores')
   {
       carregarPlacar();
   }
 
-  if (id === 'tab-matches') 
+  if (idAba === 'tab-matches')
   {
     carregarJogos();
   }
 
-  if (id === 'tab-bets') 
+  if (idAba === 'tab-bets')
   {
     carregarApostas();
   }
 }
 
-function abrirModal(id)  
-{ 
-  document.getElementById(id).classList.remove('hidden'); 
+function abrirModal(idModal)
+{
+  document.getElementById(idModal).classList.remove('hidden');
 }
 
-function fecharModal(id) 
-{ 
-  document.getElementById(id).classList.add('hidden'); 
+function fecharModal(idModal)
+{
+  document.getElementById(idModal).classList.add('hidden');
 }
 
 async function carregarPlacar()
@@ -97,9 +97,9 @@ async function carregarPlacar()
     renderizarPlacar(pontuacoes);
   }
 
-  catch(e)
+  catch(erro)
   {
-    toast('Erro ao carregar placar: ' + e.message, true);
+    toast('Erro ao carregar placar: ' + erro.message, true);
   }
 
   document.getElementById('scores-loading').classList.add('hidden');
@@ -110,29 +110,29 @@ async function recalcularPontuacoes()
 {
   const btn = document.getElementById('btn-recalcular');
 
-  if (btn) 
-  { 
-    btn.disabled = true; btn.textContent = '⏳ Recalculando...'; 
+  if (btn)
+  {
+    btn.disabled = true; btn.textContent = '⏳ Recalculando...';
   }
 
   try
   {
-    const r = await api('/jogos/recalcular_tudo', 'POST');
-    toast(`${r.recalculados} jogos recalculados!`);
+    const resultado = await api('/jogos/recalcular_tudo', 'POST');
+    toast(`${resultado.recalculados} jogos recalculados!`);
     carregarPlacar();
   }
 
-  catch(e) 
-  { 
-    toast('Erro ao recalcular: ' + e.message, true); 
+  catch(erro)
+  {
+    toast('Erro ao recalcular: ' + erro.message, true);
   }
 
-  finally 
-  { 
-    if (btn) 
-    { 
-      btn.disabled = false; btn.textContent = '🔄 Recalcular Pontuações'; 
-    } 
+  finally
+  {
+    if (btn)
+    {
+      btn.disabled = false; btn.textContent = '🔄 Recalcular Pontuações';
+    }
   }
 }
 
@@ -143,12 +143,12 @@ function formatarReais(valor)
 
 function renderizarSaldo(saldo)
 {
-  if (Math.abs(saldo) < 0.01) 
+  if (Math.abs(saldo) < 0.01)
   {
     return `<span class="saldo-neutro">= R$ 0,00</span>`;
   }
 
-  if (saldo > 0) 
+  if (saldo > 0)
   {
     return `<span class="saldo-positivo">▲ R$ ${formatarReais(saldo)}</span>`;
   }
@@ -162,11 +162,11 @@ function renderizarPlacar(pontuacoes)
   const classePodio = ['rank-1','rank-2','rank-3','rank-4'];
 
   let podio = `<div class="podium">`;
-  pontuacoes.forEach((entrada, i) =>
+  pontuacoes.forEach((entrada, indice) =>
   {
     podio += `
-      <div class="podium-card ${classePodio[i] || ''}">
-        <div class="rank">${medalhas[i] || i+1}</div>
+      <div class="podium-card ${classePodio[indice] || ''}">
+        <div class="rank">${medalhas[indice] || indice+1}</div>
         <div class="name">${entrada.participante.nome}</div>
         <div class="pts">${renderizarSaldo(entrada.saldo_total)}</div>
         <div class="sub">✅ ${entrada.acertos_exatos} acertos exatos</div>
@@ -186,15 +186,15 @@ function renderizarPlacar(pontuacoes)
         <th>Participante</th><th>Acertos</th><th>A receber</th><th>A pagar</th><th>Saldo Total</th>
       </tr></thead><tbody>`;
 
-  pontuacoes.forEach(e => 
+  pontuacoes.forEach(entrada =>
   {
     resumo += `<tr>
 
-      <td>${e.participante.nome}</td>
-      <td>${e.acertos_exatos}</td>
-      <td><span class="saldo-positivo">R$ ${formatarReais(e.total_ganho)}</span></td>
-      <td><span class="saldo-negativo">R$ ${formatarReais(e.total_devido)}</span></td>
-      <td>${renderizarSaldo(e.saldo_total)}</td>
+      <td>${entrada.participante.nome}</td>
+      <td>${entrada.acertos_exatos}</td>
+      <td><span class="saldo-positivo">R$ ${formatarReais(entrada.total_ganho)}</span></td>
+      <td><span class="saldo-negativo">R$ ${formatarReais(entrada.total_devido)}</span></td>
+      <td>${renderizarSaldo(entrada.saldo_total)}</td>
     </tr>`;
   });
 
@@ -209,10 +209,10 @@ function renderizarPlacar(pontuacoes)
     const faseId = fp0.fase.id;
     const datas   = DATAS_FASE[fp0.fase.slug];
     const dataTxt = datas ? (datas.fim ? `${datas.inicio} – ${datas.fim}` : datas.inicio) : '';
-    const temMovimento = pontuacoes.some(e => 
+    const temMovimento = pontuacoes.some(entrada =>
     {
-      const fp = e.por_fase.find(f => f.fase.id === faseId);
-      return fp && (fp.ganho > 0.005 || fp.devido > 0.005);
+      const faseParticipante = entrada.por_fase.find(faseItem => faseItem.fase.id === faseId);
+      return faseParticipante && (faseParticipante.ganho > 0.005 || faseParticipante.devido > 0.005);
     });
 
     tabelasFases += `
@@ -233,17 +233,17 @@ function renderizarPlacar(pontuacoes)
           <th>Participante</th><th>Acertos</th><th>A receber</th><th>A pagar</th><th>Saldo na fase</th>
         </tr></thead><tbody>`;
 
-      pontuacoes.forEach(e => 
+      pontuacoes.forEach(entrada =>
       {
-        const fp = e.por_fase.find(f => f.fase.id === faseId) || {acertos: 0, ganho: 0, devido: 0, saldo: 0};
+        const faseParticipante = entrada.por_fase.find(faseItem => faseItem.fase.id === faseId) || {acertos: 0, ganho: 0, devido: 0, saldo: 0};
 
         tabelasFases += `<tr>
 
-          <td>${e.participante.nome}</td>
-          <td>${fp.acertos}</td>
-          <td><span class="saldo-positivo">R$ ${formatarReais(fp.ganho || 0)}</span></td>
-          <td><span class="saldo-negativo">R$ ${formatarReais(fp.devido || 0)}</span></td>
-          <td>${renderizarSaldo(fp.saldo || 0)}</td>
+          <td>${entrada.participante.nome}</td>
+          <td>${faseParticipante.acertos}</td>
+          <td><span class="saldo-positivo">R$ ${formatarReais(faseParticipante.ganho || 0)}</span></td>
+          <td><span class="saldo-negativo">R$ ${formatarReais(faseParticipante.devido || 0)}</span></td>
+          <td>${renderizarSaldo(faseParticipante.saldo || 0)}</td>
         </tr>`;
       });
 
@@ -272,27 +272,27 @@ async function carregarJogos()
 
     todosJogos = jogos;
 
-    if (!fases.length) 
+    if (!fases.length)
     {
       fases = fasesResp;
     }
 
     classificacoes = { };
-    clasResp.forEach(g => { classificacoes[g.grupo] = g.times; });
+    clasResp.forEach(grupo => { classificacoes[grupo.grupo] = grupo.times; });
 
     renderizarJogos(todosJogos);
   }
 
-  catch(e)
+  catch(erro)
   {
-    toast('Erro ao carregar os jogos: ' + e.message, true);
+    toast('Erro ao carregar os jogos: ' + erro.message, true);
   }
 
   document.getElementById('matches-loading').classList.add('hidden');
   document.getElementById('matches-content').classList.remove('hidden');
 }
 
-function filtrarJogos(termo) 
+function filtrarJogos(termo)
 {
   termoBusca = termo.trim().toLowerCase();
   renderizarJogos(todosJogos);
@@ -328,14 +328,14 @@ function limparFiltros()
 }
 
 
-function formatarData(iso) 
+function formatarData(iso)
 {
   const date = new Date(iso);
   return date.toLocaleDateString('pt-BR', { day:'2-digit', month:'2-digit' })
-       + ' ' + date.toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
+  + ' ' + date.toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
 }
 
-function ehHoje(iso) 
+function ehHoje(iso)
 {
   const date = new Date(iso), hour = new Date();
   return date.toDateString() === hour.toDateString();
@@ -345,14 +345,15 @@ function renderizarJogos(jogos)
 {
   let filtrados = jogos;
 
-  if (termoBusca) 
+  if (termoBusca)
   {
     filtrados = filtrados.filter(jogo =>
-      (jogo.time_casa?.nome || '').toLowerCase().includes(termoBusca) ||
+      (jogo.time_casa?.nome || '').toLowerCase().includes(termoBusca) 
+      ||
       (jogo.time_fora?.nome || '').toLowerCase().includes(termoBusca));
   }
 
-  if (filtroData) 
+  if (filtroData)
   {
     filtrados = filtrados.filter(jogo => jogo.data && jogo.data.startsWith(filtroData));
   }
@@ -362,7 +363,7 @@ function renderizarJogos(jogos)
   filtrados.forEach(jogo =>
   {
     const idFase = jogo.fase.id;
-    
+
     if (!porFase[idFase])
     {
       porFase[idFase] = { fase: jogo.fase, porGrupo: {} };
@@ -381,7 +382,7 @@ function renderizarJogos(jogos)
 
   let html = '';
 
-  Object.values(porFase).sort((a, b) => a.fase.ordem - b.fase.ordem).forEach(({ fase, porGrupo }) => 
+  Object.values(porFase).sort((faseA, faseB) => faseA.fase.ordem - faseB.fase.ordem).forEach(({ fase, porGrupo }) =>
   {
     const jogosFlat = Object.values(porGrupo).flat();
     const total  = jogosFlat.length;
@@ -399,7 +400,7 @@ function renderizarJogos(jogos)
         </div>
         <div id="fase-${fase.id}">`;
 
-    Object.entries(porGrupo).sort(([a], [b]) => a.localeCompare(b)).forEach(([chaveGrupo, jogosGrupo]) =>
+    Object.entries(porGrupo).sort(([chaveA], [chaveB]) => chaveA.localeCompare(chaveB)).forEach(([chaveGrupo, jogosGrupo]) =>
     {
 
       if (chaveGrupo !== '_eliminatoria')
@@ -421,7 +422,7 @@ function renderizarJogos(jogos)
 
 function renderizarClassificacao(nomeGrupo, times)
 {
-  if (!times || times.length === 0) 
+  if (!times || times.length === 0)
   {
     return '<div class="empty" style="padding:0.35rem 0.6rem;font-size:0.78rem;margin-bottom:0.4rem">Classificação disponível após início dos jogos</div>';
   }
@@ -430,38 +431,38 @@ function renderizarClassificacao(nomeGrupo, times)
     + '<th>#</th><th>Time</th><th>PJ</th><th>V</th><th>E</th><th>D</th><th>GP</th><th>GC</th><th>SG</th><th>Pts</th><th></th>'
     + '</tr></thead><tbody>';
 
-  times.forEach((time, i) => 
+  times.forEach((time, indice) =>
   {
-    const sg = time.gp - time.gc;
-    const sgTxt = sg > 0 ? '+' + sg : '' + sg;
+    const saldoGols = time.gp - time.gc;
+    const sgTxt = saldoGols > 0 ? '+' + saldoGols : '' + saldoGols;
     let statusCls = '', statusTxt = '';
 
     if (time.pj === 0)
-    { 
-      statusCls = ''; 
-      statusTxt = '-'; 
+    {
+      statusCls = '';
+      statusTxt = '-';
     }
 
-    else if (i === 0 || i === 1) 
-    { 
-        statusCls = 'passa-direto'; statusTxt = 'PASS'; 
+    else if (indice === 0 || indice === 1)
+    {
+        statusCls = 'passa-direto'; statusTxt = 'PASS';
     }
 
-    else if (i === 2) 
-    { 
-        statusCls = 'terceiro'; statusTxt = '?'; 
+    else if (indice === 2)
+    {
+        statusCls = 'terceiro'; statusTxt = '?';
     }
 
-    else 
-    { 
-      statusCls = 'eliminado'; statusTxt = 'X'; 
+    else
+    {
+      statusCls = 'eliminado'; statusTxt = 'X';
     }
 
     const rowCls = time.pj === 0 ? 'sem-jogos' : '';
-    const sgCls  = sg > 0 ? 'sg-pos' : sg < 0 ? 'sg-neg' : '';
+    const sgCls  = saldoGols > 0 ? 'sg-pos' : saldoGols < 0 ? 'sg-neg' : '';
 
     html += '<tr class="' + rowCls + '">'
-      + '<td class="pos">' + (i + 1) + '</td>'
+      + '<td class="pos">' + (indice + 1) + '</td>'
       + '<td class="time-nome">' + time.bandeira + ' ' + time.nome + '</td>'
       + '<td>' + time.pj + '</td><td>' + time.v + '</td><td>' + time.e + '</td><td>' + time.d + '</td>'
       + '<td>' + time.gp + '</td><td>' + time.gc + '</td>'
@@ -476,15 +477,15 @@ function renderizarClassificacao(nomeGrupo, times)
   return html;
 }
 
-function alternarSecao(id)
+function alternarSecao(idSecao)
 {
-  const el = document.getElementById(id);
-  el.style.display = el.style.display === 'none' ? '' : 'none';
+  const elemento = document.getElementById(idSecao);
+  elemento.style.display = elemento.style.display === 'none' ? '' : 'none';
 }
 
-function labelTime(time) 
+function labelTime(time)
 {
-  if (time) 
+  if (time)
   {
     return `${time.bandeira || ''} ${time.nome}`;
   }
@@ -492,61 +493,61 @@ function labelTime(time)
   return 'A definir';
 }
 
-function renderizarCartaoJogo(j) 
+function renderizarCartaoJogo(jogo)
 {
-  const classeHoje = ehHoje(j.data) ? 'today' : '';
-  const classeEnc  = j.encerrado ? 'finished' : '';
-  const placarHtml = j.encerrado
-    ? `<span class="score-box">${j.gols_casa} – ${j.gols_fora}</span>`
+  const classeHoje = ehHoje(jogo.data) ? 'today' : '';
+  const classeEnc  = jogo.encerrado ? 'finished' : '';
+  const placarHtml = jogo.encerrado
+    ? `<span class="score-box">${jogo.gols_casa} – ${jogo.gols_fora}</span>`
     : `<span class="score-box pending">vs</span>`;
 
   let acoes = '';
-  if (!j.encerrado)
+  if (!jogo.encerrado)
   {
-    
-    if (!j.time_casa) 
+
+    if (!jogo.time_casa)
     {
-      acoes += `<button class="btn btn-blue btn-sm" onclick="abrirModalTimes(${j.id})">🔗 Times</button>`;
+      acoes += `<button class="btn btn-blue btn-sm" onclick="abrirModalTimes(${jogo.id})">🔗 Times</button>`;
     }
 
-    acoes += `<button class="btn btn-gold btn-sm" onclick="abrirModalAposta(${j.id})">🎯 Apostar R$${j.fase.valor}</button>`;
+    acoes += `<button class="btn btn-gold btn-sm" onclick="abrirModalAposta(${jogo.id})">🎯 Apostar R$${jogo.fase.valor}</button>`;
 
-    acoes += `<button class="btn btn-green btn-sm" onclick="abrirModalResultado(${j.id})">✅ Resultado</button>`;
+    acoes += `<button class="btn btn-green btn-sm" onclick="abrirModalResultado(${jogo.id})">✅ Resultado</button>`;
   }
 
-  const localHtml = j.local ? `<span class="match-local">${j.local}</span>` : '';
+  const localHtml = jogo.local ? `<span class="match-local">${jogo.local}</span>` : '';
 
   return `
-    <div class="match-card ${classeEnc} ${classeHoje}" data-id="${j.id}">
-      <span class="match-num">#${j.numero}</span>
-      <span class="match-date">${formatarData(j.data)}</span>
+    <div class="match-card ${classeEnc} ${classeHoje}" data-id="${jogo.id}">
+      <span class="match-num">#${jogo.numero}</span>
+      <span class="match-date">${formatarData(jogo.data)}</span>
       ${localHtml}
       <div class="match-teams">
-        <span class="team-name">${labelTime(j.time_casa)}</span>
+        <span class="team-name">${labelTime(jogo.time_casa)}</span>
         ${placarHtml}
-        <span class="team-name">${labelTime(j.time_fora)}</span>
+        <span class="team-name">${labelTime(jogo.time_fora)}</span>
       </div>
       <div class="match-actions">${acoes}</div>
     </div>`;
 }
 
 
-function abrirModalResultado(idJogo) 
+function abrirModalResultado(idJogo)
 {
-  const j = todosJogos.find(x => x.id === idJogo);
+  const jogo = todosJogos.find(jogoItem => jogoItem.id === idJogo);
 
-  if (!j)
+  if (!jogo)
   {
     return;
   }
 
   idJogoResultado = idJogo;
 
-  document.getElementById('result-modal-title').textContent = `Resultado: ${labelTime(j.time_casa)} x ${labelTime(j.time_fora)}`;
-  document.getElementById('result-home-label').textContent = labelTime(j.time_casa);
-  document.getElementById('result-away-label').textContent = labelTime(j.time_fora);
-  document.getElementById('result-home').value = j.gols_casa ?? 0;
-  document.getElementById('result-away').value = j.gols_fora ?? 0;
+  document.getElementById('result-modal-title').textContent = `Resultado: ${labelTime(jogo.time_casa)} x ${labelTime(jogo.time_fora)}`;
+  document.getElementById('result-home-label').textContent = labelTime(jogo.time_casa);
+  document.getElementById('result-away-label').textContent = labelTime(jogo.time_fora);
+  document.getElementById('result-home').value = jogo.gols_casa ?? 0;
+  document.getElementById('result-away').value = jogo.gols_fora ?? 0;
 
   abrirModal('result-modal');
 }
@@ -555,30 +556,30 @@ async function buscarResultadoExterno()
 {
   const btn = document.getElementById('btn-buscar-resultado');
 
-  if (btn) 
-  { 
-    btn.disabled = true; btn.textContent = '⏳ Buscando...'; 
+  if (btn)
+  {
+    btn.disabled = true; btn.textContent = '⏳ Buscando...';
   }
 
   try
   {
-    const r = await api(`/jogos/${idJogoResultado}/buscar_resultado`);
-    document.getElementById('result-home').value = r.gols_casa;
-    document.getElementById('result-away').value = r.gols_fora;
+    const resultado = await api(`/jogos/${idJogoResultado}/buscar_resultado`);
+    document.getElementById('result-home').value = resultado.gols_casa;
+    document.getElementById('result-away').value = resultado.gols_fora;
     toast('Placar carregado da API! Confirme antes de salvar.');
   }
 
-  catch(e)
+  catch(erro)
   {
-    toast('Resultado ainda não disponível: ' + e.message, true);
+    toast('Resultado ainda não disponível: ' + erro.message, true);
   }
 
   finally
   {
 
-    if (btn) 
-    { 
-      btn.disabled = false; btn.textContent = '🌐 Buscar'; 
+    if (btn)
+    {
+      btn.disabled = false; btn.textContent = '🌐 Buscar';
     }
 
   }
@@ -600,17 +601,17 @@ async function enviarResultado()
     carregarPlacar();
   }
 
-  catch(e)
+  catch(erro)
   {
-    toast('Erro: ' + e.message, true);
+    toast('Erro: ' + erro.message, true);
   }
 }
 
 async function abrirModalAposta(idJogo)
 {
-  const j = todosJogos.find(x => x.id === idJogo);
+  const jogo = todosJogos.find(jogoItem => jogoItem.id === idJogo);
 
-  if (!j)
+  if (!jogo)
   {
     return;
   }
@@ -625,34 +626,34 @@ async function abrirModalAposta(idJogo)
 
   const sel = document.getElementById('bet-modal-participant');
 
-  sel.innerHTML = participantes.map(p => `<option value="${p.id}">${p.nome}</option>`).join('');
-  document.getElementById('bet-modal-title').textContent = `Apostar: ${labelTime(j.time_casa)} x ${labelTime(j.time_fora)}`;
-  document.getElementById('bet-home-label').textContent = labelTime(j.time_casa);
-  document.getElementById('bet-away-label').textContent = labelTime(j.time_fora);
+  sel.innerHTML = participantes.map(participante => `<option value="${participante.id}">${participante.nome}</option>`).join('');
+  document.getElementById('bet-modal-title').textContent = `Apostar: ${labelTime(jogo.time_casa)} x ${labelTime(jogo.time_fora)}`;
+  document.getElementById('bet-home-label').textContent = labelTime(jogo.time_casa);
+  document.getElementById('bet-away-label').textContent = labelTime(jogo.time_fora);
   document.getElementById('bet-home').value = 1;
   document.getElementById('bet-away').value = 0;
   abrirModal('bet-modal');
 }
 
-async function enviarAposta() 
+async function enviarAposta()
 {
-  try 
+  try
   {
     const idParticipante = parseInt(document.getElementById('bet-modal-participant').value);
 
     const casa = parseInt(document.getElementById('bet-home').value);
     const fora = parseInt(document.getElementById('bet-away').value);
 
-    if (idApostaEditando) 
-      {
+    if (idApostaEditando)
+    {
       await api(`/apostas/${idApostaEditando}`, 'PUT', { palpite_casa: casa, palpite_fora: fora });
 
       toast('Aposta atualizada! 🎰');
-    } 
+    }
 
-    else 
+    else
     {
-      await api('/apostas/', 'POST', 
+      await api('/apostas/', 'POST',
       {
         id_participante: idParticipante,
         id_jogo: idJogoAposta,
@@ -660,24 +661,24 @@ async function enviarAposta()
         palpite_fora: fora,
       });
 
-      toast('Aposta registrada!');
+      toast('Aposta registrada! 🎰');
     }
 
     fecharModal('bet-modal');
 
-    if (document.getElementById('tab-bets').classList.contains('active')) 
-    { 
+    if (document.getElementById('tab-bets').classList.contains('active'))
+    {
       carregarApostas();
     }
-  } 
+  }
 
-  catch(e) 
-  { 
-    toast('Erro: ' + e.message, true); 
+  catch(erro)
+  {
+    toast('Erro: ' + erro.message, true);
   }
 }
 
-async function abrirModalTimes(idJogo) 
+async function abrirModalTimes(idJogo)
 {
   idJogoTimes = idJogo;
 
@@ -686,7 +687,7 @@ async function abrirModalTimes(idJogo)
     times = await api('/times');
   }
 
-  const opcoes = times.map(t => `<option value="${t.id}">${t.bandeira || ''} ${t.nome}</option>`).join('');
+  const opcoes = times.map(time => `<option value="${time.id}">${time.bandeira || ''} ${time.nome}</option>`).join('');
 
   document.getElementById('times-casa').innerHTML = opcoes;
   document.getElementById('times-fora').innerHTML = opcoes;
@@ -694,11 +695,11 @@ async function abrirModalTimes(idJogo)
   abrirModal('teams-modal');
 }
 
-async function enviarTimes() 
+async function enviarTimes()
 {
-  try 
+  try
   {
-    await api(`/jogos/${idJogoTimes}/times`, 'PUT', 
+    await api(`/jogos/${idJogoTimes}/times`, 'PUT',
     {
       id_time_casa: parseInt(document.getElementById('times-casa').value),
       id_time_fora: parseInt(document.getElementById('times-fora').value),
@@ -708,27 +709,27 @@ async function enviarTimes()
     fecharModal('teams-modal');
     carregarJogos();
   }
-  
-  catch(e) 
-  { 
-    toast('Erro: ' + e.message, true); 
+
+  catch(erro)
+  {
+    toast('Erro: ' + erro.message, true);
   }
 }
 
 
-async function carregarApostas() 
+async function carregarApostas()
 {
   document.getElementById('bets-loading').classList.remove('hidden');
   document.getElementById('bets-content').classList.add('hidden');
 
-  try 
+  try
   {
-    if (!participantes.length) 
+    if (!participantes.length)
     {
       participantes = await api('/participantes');
     }
 
-    if (!fases.length) 
+    if (!fases.length)
     {
       fases = await api('/fases');
     }
@@ -751,45 +752,45 @@ async function carregarApostas()
 
     let url = '/apostas/?';
 
-    if (idParticipante) 
-    { 
+    if (idParticipante)
+    {
         url += `id_participante=${idParticipante}&`;
     }
 
     let apostas = await api(url);
 
-    if (idFase) 
-    { 
+    if (idFase)
+    {
       apostas = apostas.filter(aposta => aposta.jogo.fase.id === parseInt(idFase));
     }
 
     renderizarApostas(apostas);
-  } 
-
-  catch(e) 
-  { 
-    toast('Erro ao carregar apostas: ' + e.message, true); 
   }
-  
+
+  catch(erro)
+  {
+    toast('Erro ao carregar apostas: ' + erro.message, true);
+  }
+
   document.getElementById('bets-loading').classList.add('hidden');
   document.getElementById('bets-content').classList.remove('hidden');
 }
 
 function labelPontos(aposta)
 {
-  if (!aposta.jogo.encerrado) 
+  if (!aposta.jogo.encerrado)
   {
     return `<span class="pts open">—</span>`;
   }
 
   const pontos = parseFloat(aposta.pontos);
 
-  if (Math.abs(pontos) < 0.01) 
+  if (Math.abs(pontos) < 0.01)
   {
     return `<span class="pts neutro">= R$ 0,00</span>`;
   }
 
-  if (pontos > 0) 
+  if (pontos > 0)
   {
     return `<span class="pts exact">+R$ ${formatarReais(pontos)} 🎯</span>`;
   }
@@ -797,9 +798,9 @@ function labelPontos(aposta)
   return `<span class="pts wrong">-R$ ${formatarReais(Math.abs(pontos))} ✗</span>`;
 }
 
-function renderizarApostas(apostas) 
+function renderizarApostas(apostas)
 {
-  if (!apostas.length) 
+  if (!apostas.length)
   {
     document.getElementById('bets-content').innerHTML = '<div class="empty">Nenhuma aposta encontrada</div>';
     return;
@@ -809,9 +810,9 @@ function renderizarApostas(apostas)
   apostas.forEach(aposta =>
   {
     const idFase = aposta.jogo.fase.id;
-    if (!porFase[idFase]) porFase[idFase] = 
-    { 
-      fase: aposta.jogo.fase, apostas: [] 
+    if (!porFase[idFase]) porFase[idFase] =
+    {
+      fase: aposta.jogo.fase, apostas: []
     };
 
     porFase[idFase].apostas.push(aposta);
@@ -820,15 +821,15 @@ function renderizarApostas(apostas)
 
   let html = '';
 
-  Object.values(porFase).sort((a, b) => a.fase.ordem - b.fase.ordem).forEach(({ fase, apostas: apostasFase }) => 
+  Object.values(porFase).sort((faseA, faseB) => faseA.fase.ordem - faseB.fase.ordem).forEach(({ fase, apostas: apostasFase }) =>
   {
     html += `<div class="phase-header" style="margin-top:1rem">${fase.nome}</div>`;
-    apostasFase.sort((a, b) => new Date(a.jogo.data) - new Date(b.jogo.data)).forEach(aposta => 
+    apostasFase.sort((apostaA, apostaB) => new Date(apostaA.jogo.data) - new Date(apostaB.jogo.data)).forEach(aposta =>
     {
       const casa = labelTime(aposta.jogo.time_casa);
       const fora = labelTime(aposta.jogo.time_fora);
       const placarStr = aposta.jogo.encerrado
-        ? ` (${aposta.jogo.gols_casa}–${aposta.jogo.gols_fora})` 
+        ? ` (${aposta.jogo.gols_casa}–${aposta.jogo.gols_fora})`
         : '';
 
       html += `
@@ -849,19 +850,19 @@ function renderizarApostas(apostas)
   document.getElementById('bets-content').innerHTML = html;
 }
 
-async function editarAposta(idAposta, idJogo, labelCasa, labelFora, palpiteCasa, palpiteFora, idParticipante) 
+async function editarAposta(idAposta, idJogo, labelCasa, labelFora, palpiteCasa, palpiteFora, idParticipante)
 {
   idJogoAposta = idJogo;
   idApostaEditando = idAposta;
 
-  if (!participantes.length) 
+  if (!participantes.length)
   {
     participantes = await api('/participantes');
   }
 
   const sel = document.getElementById('bet-modal-participant');
 
-  sel.innerHTML = participantes.map(p => `<option value="${p.id}" ${p.id==idParticipante?'selected':''}>${p.nome}</option>`).join('');
+  sel.innerHTML = participantes.map(participante => `<option value="${participante.id}" ${participante.id==idParticipante?'selected':''}>${participante.nome}</option>`).join('');
   sel.disabled = true;
   document.getElementById('bet-modal-title').textContent = `Editar Aposta: ${labelCasa} x ${labelFora}`;
   document.getElementById('bet-home-label').textContent = labelCasa;
@@ -871,33 +872,33 @@ async function editarAposta(idAposta, idJogo, labelCasa, labelFora, palpiteCasa,
   abrirModal('bet-modal');
 }
 
-document.getElementById('bet-modal').addEventListener('click', e => 
+document.getElementById('bet-modal').addEventListener('click', evento =>
 {
-  if (e.target === document.getElementById('bet-modal')) 
+  if (evento.target === document.getElementById('bet-modal'))
   {
     document.getElementById('bet-modal-participant').disabled = false;
   }
 
 });
 
-async function deletarAposta(idAposta) 
+async function deletarAposta(idAposta)
 {
 
-  if (!confirm('Remover aposta?')) 
+  if (!confirm('Remover aposta?'))
     {
       return;
     }
 
-  try 
+  try
   {
     await api(`/apostas/${idAposta}`, 'DELETE');
     toast('Aposta removida ❌');
     carregarApostas();
-  } 
+  }
 
-  catch(e) 
-  { 
-    toast('Erro: ' + e.message, true); 
+  catch(erro)
+  {
+    toast('Erro: ' + erro.message, true);
   }
 }
 
