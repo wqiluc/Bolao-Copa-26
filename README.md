@@ -89,7 +89,7 @@ Bolao-Copa-26⚽/
 | **Aposta** | `apostas` | Palpite de placar por participante/jogo com pontuação calculada |
 
 <h2 align="center">🌐 Endpoints da API (rotas) <br>
-<img src="https://img.shields.io/badge/REST_API-111827?style=flat-square&logo=swagger&logoColor=85EA2D"/></h2>
+<img src="https://img.shields.io/badge/REST_API-111827?style=flat-square&logo=swagger&logoColor=cyan"/></h2>
 
 | Método | Rota | Descrição |
 |---|---|---|
@@ -101,7 +101,7 @@ Bolao-Copa-26⚽/
 | `POST` | `/api/jogos/recalcular_tudo` | Re-aplica a pontuação em todos os jogos encerrados |
 | `GET` | `/api/apostas` | Lista apostas — filtros `?id_participante=` e `?id_jogo=` |
 | `POST` | `/api/apostas` | Cria aposta `{ id_participante, id_jogo, palpite_casa, palpite_fora }` |
-| `PUT` | `/api/apostas/{id}` | Atualiza palpite (somente antes do encerramento) |
+| `PUT` | `/api/apostas/{id}` | Atualiza palpite <b>(somente antes do encerramento)</b> |
 | `DELETE` | `/api/apostas/{id}` | Remove aposta |
 | `GET` | `/api/placar` | Ranking com breakdown financeiro por fase (saldo, ganho, devido, acertos) |
 | `GET` | `/api/classificacoes` | Classificação de todos os grupos (pontos FIFA: V=3, E=1, D=0) |

@@ -13,12 +13,14 @@ def carregar_aposta(bd: Session, id_aposta: int) -> modelos.Aposta | None:
             joinedload(modelos.Aposta.jogo).joinedload(modelos.Jogo.time_casa),
             joinedload(modelos.Aposta.jogo).joinedload(modelos.Jogo.time_fora),
         )
+
         .filter(modelos.Aposta.id == id_aposta)
         .first()
     )
 
 
 def listar_apostas(bd: Session, id_participante: int | None = None, id_jogo: int | None = None):
+
     q = bd.query(modelos.Aposta).options(
         joinedload(modelos.Aposta.participante),
         joinedload(modelos.Aposta.jogo).joinedload(modelos.Jogo.fase),
@@ -68,6 +70,7 @@ def criar_aposta(
     except IntegrityError:
         bd.rollback()
         raise
+    
     bd.refresh(aposta)
 
     return carregar_aposta(bd, aposta.id)

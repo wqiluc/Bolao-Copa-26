@@ -48,6 +48,7 @@ def criar_app() -> FastAPI:
     def classificacoes_grupos(bd: Session = Depends(obter_bd)):
         """Retorna a classificação de todos os grupos com pontos FIFA (V=3, E=1, D=0)."""
         grupos = bd.query(modelos.Grupo).order_by(modelos.Grupo.nome).all()
+
         resultado = []
 
         for grupo in grupos:
@@ -59,40 +60,53 @@ def criar_app() -> FastAPI:
             )
 
             times_map: dict[int, dict] = {}
+
             for jogo in jogos_grupo:
+
                 for time in (jogo.time_casa, jogo.time_fora):
-                    if time and time.id not in times_map:
+                    
+                    if (time and time.id not in times_map):
+
                         times_map[time.id] = {
-                            "id": time.id, "nome": time.nome, "bandeira": time.bandeira or "",
-                            "pj": 0, "v": 0, "e": 0, "d": 0, "gp": 0, "gc": 0, "pts": 0,
+                            "id": time.id, "nome": time.nome, "bandeira": time.bandeira or "", "pj": 0, "v": 0, "e": 0, "d": 0, "gp": 0, "gc": 0, "pts": 0,
                         }
 
-            for jogo in jogos_grupo:
-                if not jogo.encerrado or jogo.gols_casa is None or jogo.gols_fora is None:
-                    continue
-                tc, tf = jogo.time_casa, jogo.time_fora
-                if not tc or not tf:
-                    continue
-                gc, gf = jogo.gols_casa, jogo.gols_fora
+            for (jogo) in jogos_grupo:
 
-                for tid, gol_pro, gol_contra in [(tc.id, gc, gf), (tf.id, gf, gc)]:
-                    s = times_map[tid]
-                    s["pj"] += 1; s["gp"] += gol_pro; s["gc"] += gol_contra
+                if not (jogo.encerrado) or (jogo.gols_casa is None) or (jogo.gols_fora is None):
+                    continue
 
-                if gc > gf:
-                    times_map[tc.id]["v"] += 1; times_map[tc.id]["pts"] += 3
-                    times_map[tf.id]["d"] += 1
-                elif gc < gf:
-                    times_map[tf.id]["v"] += 1; times_map[tf.id]["pts"] += 3
-                    times_map[tc.id]["d"] += 1
+                time_casa, time_fora = jogo.time_casa, jogo.time_fora
+
+                if (not time_casa or not time_fora):
+                    continue
+
+                gols_casa, gols_fora = jogo.gols_casa, jogo.gols_fora
+
+                for time_id, gol_pro, gol_contra in [(time_casa.id, gols_casa, gols_fora), (time_fora.id, gols_fora, gols_casa)]:
+
+                    estat = times_map[time_id]
+                    estat["pj"] += 1; estat["gp"] += gol_pro; estat["gc"] += gol_contra
+
+                if (gols_casa > gols_fora):
+
+                    times_map[time_casa.id]["v"] += 1; times_map[time_casa.id]["pts"] += 3
+                    times_map[time_fora.id]["d"] += 1
+
+                elif (gols_casa < gols_fora):
+
+                    times_map[time_fora.id]["v"] += 1; times_map[time_fora.id]["pts"] += 3
+                    times_map[time_casa.id]["d"] += 1
+
                 else:
-                    times_map[tc.id]["e"] += 1; times_map[tc.id]["pts"] += 1
-                    times_map[tf.id]["e"] += 1; times_map[tf.id]["pts"] += 1
+                    times_map[time_casa.id]["e"] += 1; times_map[time_casa.id]["pts"] += 1
+                    times_map[time_fora.id]["e"] += 1; times_map[time_fora.id]["pts"] += 1
 
             classificacao = sorted(
                 times_map.values(),
                 key=lambda x: (-x["pts"], -(x["gp"] - x["gc"]), -x["gp"])
             )
+
             resultado.append({"grupo": grupo.nome, "times": classificacao})
 
         return resultado

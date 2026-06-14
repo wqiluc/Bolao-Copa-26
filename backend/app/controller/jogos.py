@@ -53,12 +53,14 @@ def atualizar_times(id_jogo: int, corpo: esquemas.AtualizarTimesJogo, bd: Sessio
 @roteador.post("/recalcular_tudo")
 def recalcular_todos_resultados(bd: Session = Depends(obter_bd)):
     """Re-aplica a lógica de pontuação em todos os jogos encerrados."""
+
     jogos = (
         bd.query(modelos.Jogo)
         .options(joinedload(modelos.Jogo.fase), joinedload(modelos.Jogo.apostas))
         .filter(modelos.Jogo.encerrado == True)
         .all()
     )
+
     for jogo in jogos:
         servico_jogos.recalcular_apostas(bd, jogo)
     return {"recalculados": len(jogos)}
@@ -68,12 +70,12 @@ def recalcular_todos_resultados(bd: Session = Depends(obter_bd)):
 def buscar_resultado_externo(id_jogo: int, bd: Session = Depends(obter_bd)):
     jogo = servico_jogos.obter_jogo(bd, id_jogo)
 
-    if not jogo:
+    if (not jogo):
         raise HTTPException(status_code=404, detail="Jogo não encontrado")
 
     resultado = resultado_externo.buscar_resultado(jogo.numero)
 
-    if resultado is None:
+    if (resultado is None):
         raise HTTPException(status_code=404, detail="Resultado ainda não disponível na fonte externa")
 
     return {"gols_casa": resultado[0], "gols_fora": resultado[1]}

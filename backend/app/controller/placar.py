@@ -8,28 +8,30 @@ roteador = APIRouter(prefix="/placar", tags=["placar"])
 
 @roteador.get("/", response_model=list[esquemas.PlacarParticipante])
 def obter_placar(bd: Session = Depends(obter_bd)):
+    
     bruto = servico_placar.calcular_placar(bd)
 
     return [
         esquemas.PlacarParticipante
         (
-            participante=esquemas.ParticipanteSaida.model_validate(r["participante"]),
+            participante=esquemas.ParticipanteSaida.model_validate(rota["participante"]),
             saldo_total=r["saldo_total"],
             total_ganho=r["total_ganho"],
             total_devido=r["total_devido"],
             acertos_exatos=r["acertos_exatos"],
+
             por_fase=[
                 esquemas.PlacarFase
                 (
                     fase=esquemas.FaseSaida.model_validate(f["fase"]),
-                    saldo=f["saldo"],
-                    ganho=f["ganho"],
-                    devido=f["devido"],
-                    acertos=f["acertos"],
+                    saldo=fase["saldo"],
+                    ganho=fase["ganho"],
+                    devido=fase["devido"],
+                    acertos=fase["acertos"],
                 )
 
-                for f in r["por_fase"]
+                for fase in rota["por_fase"]
             ],
         )
-        for r in bruto
+        for rota in bruto
     ]

@@ -10,9 +10,12 @@ const DATAS_FASE =
   final:    { inicio: '19/Jul', fim: null },
 };
 
-let participantes = [], fases = [], times = [], todosJogos = [], classificacoes = {};
+let participantes = [ ], fases = [ ], times = [ ], todosJogos = [ ], classificacoes = { };
+
 let idJogoResultado = null, idJogoAposta = null, idJogoTimes = null;
+
 let idApostaEditando = null;
+
 let termoBusca = '';
 let filtroData = '';
 
@@ -49,7 +52,6 @@ function toast(msg, erro = false)
   setTimeout(() => el.className = 'toast', 3000);
 }
 
-
 function mostrarAba(id) 
 {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -57,6 +59,7 @@ function mostrarAba(id)
   document.getElementById(id).classList.add('active');
   const idx = ['tab-scores','tab-matches','tab-bets'].indexOf(id);
   document.querySelectorAll('nav button')[idx].classList.add('active');
+
   if (id === 'tab-scores') 
   {
       carregarPlacar();
@@ -99,7 +102,11 @@ async function carregarPlacar()
 async function recalcularPontuacoes()
 {
   const btn = document.getElementById('btn-recalcular');
-  if (btn) { btn.disabled = true; btn.textContent = '⏳ Recalculando...'; }
+
+  if (btn) 
+  { 
+    btn.disabled = true; btn.textContent = '⏳ Recalculando...'; 
+  }
 
   try
   {
@@ -108,9 +115,14 @@ async function recalcularPontuacoes()
     carregarPlacar();
   }
 
-  catch(e) { toast('Erro ao recalcular: ' + e.message, true); }
+  catch(e) 
+  { 
+    toast('Erro ao recalcular: ' + e.message, true); 
+  }
+
   finally 
-  { if (btn) 
+  { 
+    if (btn) 
     { 
       btn.disabled = false; btn.textContent = '🔄 Recalcular Pontuações'; 
     } 
@@ -157,6 +169,7 @@ function renderizarPlacar(pontuacoes)
         </div>
       </div>`;
   });
+
   podio += `</div>`;
 
   let resumo = `
@@ -165,9 +178,11 @@ function renderizarPlacar(pontuacoes)
       <thead><tr>
         <th>Participante</th><th>Acertos</th><th>A receber</th><th>A pagar</th><th>Saldo Total</th>
       </tr></thead><tbody>`;
+
   pontuacoes.forEach(e => 
   {
     resumo += `<tr>
+
       <td>${e.participante.nome}</td>
       <td>${e.acertos_exatos}</td>
       <td><span class="saldo-positivo">R$ ${formatarReais(e.total_ganho)}</span></td>
@@ -175,9 +190,11 @@ function renderizarPlacar(pontuacoes)
       <td>${renderizarSaldo(e.saldo_total)}</td>
     </tr>`;
   });
+
   resumo += `</tbody></table>`;
 
   const fasesDoPlayar = pontuacoes.length > 0 ? pontuacoes[0].por_fase : [];
+
   let tabelasFases = '';
 
   fasesDoPlayar.forEach(fp0 =>
@@ -209,7 +226,9 @@ function renderizarPlacar(pontuacoes)
 
       pontuacoes.forEach(e => {
         const fp = e.por_fase.find(f => f.fase.id === faseId) || {acertos: 0, ganho: 0, devido: 0, saldo: 0};
+
         tabelasFases += `<tr>
+
           <td>${e.participante.nome}</td>
           <td>${fp.acertos}</td>
           <td><span class="saldo-positivo">R$ ${formatarReais(fp.ganho || 0)}</span></td>
@@ -242,13 +261,18 @@ async function carregarJogos()
   );
 
     todosJogos = jogos;
-    if (!fases.length) fases = fasesResp;
 
-    classificacoes = {};
+    if (!fases.length) 
+    {
+      fases = fasesResp;
+    }
+
+    classificacoes = { };
     clasResp.forEach(g => { classificacoes[g.grupo] = g.times; });
 
     renderizarJogos(todosJogos);
   }
+
   catch(e)
   {
     toast('Erro ao carregar jogos: ' + e.message, true);
@@ -361,13 +385,16 @@ function renderizarJogos(jogos)
 
     Object.entries(porGrupo).sort(([a], [b]) => a.localeCompare(b)).forEach(([chaveGrupo, jogosGrupo]) =>
     {
+
       if (chaveGrupo !== '_eliminatoria')
       {
         html += `<div class="group-label">Grupo ${chaveGrupo}</div>`;
         const clas = classificacoes[chaveGrupo] || [];
         html += renderizarClassificacao(chaveGrupo, clas);
       }
+
       jogosGrupo.forEach(jogo => { html += renderizarCartaoJogo(jogo); });
+
     });
     html += `</div></div>`;
   });
@@ -378,21 +405,41 @@ function renderizarJogos(jogos)
 
 function renderizarClassificacao(nomeGrupo, times)
 {
-  if (!times || times.length === 0)
+  if (!times || times.length === 0) 
+  {
     return '<div class="empty" style="padding:0.35rem 0.6rem;font-size:0.78rem;margin-bottom:0.4rem">Classificação disponível após início dos jogos</div>';
+  }
 
   let html = '<table class="standings-table"><thead><tr>'
     + '<th>#</th><th>Time</th><th>PJ</th><th>V</th><th>E</th><th>D</th><th>GP</th><th>GC</th><th>SG</th><th>Pts</th><th></th>'
     + '</tr></thead><tbody>';
 
-  times.forEach((time, i) => {
+  times.forEach((time, i) => 
+    {
     const sg = time.gp - time.gc;
     const sgTxt = sg > 0 ? '+' + sg : '' + sg;
     let statusCls = '', statusTxt = '';
-    if (time.pj === 0)           { statusCls = '';              statusTxt = '-'; }
-    else if (i === 0 || i === 1) { statusCls = 'passa-direto'; statusTxt = 'PASS'; }
-    else if (i === 2)            { statusCls = 'terceiro';      statusTxt = '?'; }
-    else                        { statusCls = 'eliminado';     statusTxt = 'X'; }
+
+    if (time.pj === 0)
+    { 
+      statusCls = ''; 
+      statusTxt = '-'; 
+    }
+
+    else if (i === 0 || i === 1) 
+    { 
+        statusCls = 'passa-direto'; statusTxt = 'PASS'; 
+    }
+
+    else if (i === 2) 
+    { 
+        statusCls = 'terceiro';      statusTxt = '?'; 
+    }
+
+    else 
+    { 
+      statusCls = 'eliminado';     statusTxt = 'X'; 
+    }
 
     const rowCls = time.pj === 0 ? 'sem-jogos' : '';
     const sgCls  = sg > 0 ? 'sg-pos' : sg < 0 ? 'sg-neg' : '';
@@ -443,7 +490,9 @@ function renderizarCartaoJogo(j)
     {
       acoes += `<button class="btn btn-blue btn-sm" onclick="abrirModalTimes(${j.id})">🔗 Times</button>`;
     }
+
     acoes += `<button class="btn btn-gold btn-sm" onclick="abrirModalAposta(${j.id})">🎯 Apostar R$${j.fase.valor}</button>`;
+
     acoes += `<button class="btn btn-green btn-sm" onclick="abrirModalResultado(${j.id})">✅ Resultado</button>`;
   }
 
@@ -464,7 +513,8 @@ function renderizarCartaoJogo(j)
 }
 
 
-function abrirModalResultado(idJogo) {
+function abrirModalResultado(idJogo) 
+{
   const j = todosJogos.find(x => x.id === idJogo);
 
   if (!j) 
@@ -484,7 +534,12 @@ function abrirModalResultado(idJogo) {
 async function buscarResultadoExterno()
 {
   const btn = document.getElementById('btn-buscar-resultado');
-  if (btn) { btn.disabled = true; btn.textContent = '⏳ Buscando...'; }
+
+  if (btn) 
+  { 
+    btn.disabled = true; btn.textContent = '⏳ Buscando...'; 
+  }
+
   try
   {
     const r = await api(`/jogos/${idJogoResultado}/buscar_resultado`);
@@ -492,13 +547,20 @@ async function buscarResultadoExterno()
     document.getElementById('result-away').value = r.gols_fora;
     toast('Placar carregado da API! Confirme antes de salvar.');
   }
+
   catch(e)
   {
     toast('Resultado ainda não disponível: ' + e.message, true);
   }
+
   finally
   {
-    if (btn) { btn.disabled = false; btn.textContent = '🌐 Buscar'; }
+
+    if (btn) 
+    { 
+      btn.disabled = false; btn.textContent = '🌐 Buscar'; 
+    }
+
   }
 }
 
@@ -526,6 +588,7 @@ async function enviarResultado()
 async function abrirModalAposta(idJogo)
 {
   const j = todosJogos.find(x => x.id === idJogo);
+
   if (!j)
   { 
       return;
@@ -533,6 +596,7 @@ async function abrirModalAposta(idJogo)
 
   idJogoAposta = idJogo;
   idApostaEditando = null;
+
   if (!participantes.length) 
   {
     participantes = await api('/participantes');
@@ -559,6 +623,7 @@ async function enviarAposta()
     if (idApostaEditando) 
       {
       await api(`/apostas/${idApostaEditando}`, 'PUT', { palpite_casa: casa, palpite_fora: fora });
+
       toast('Aposta atualizada!');
     } 
 
@@ -576,8 +641,13 @@ async function enviarAposta()
     }
 
     fecharModal('bet-modal');
-    if (document.getElementById('tab-bets').classList.contains('active')) carregarApostas();
+
+    if (document.getElementById('tab-bets').classList.contains('active')) 
+    { 
+      carregarApostas();
+    }
   } 
+
   catch(e) 
   { 
     toast('Erro: ' + e.message, true); 
@@ -654,6 +724,7 @@ async function carregarApostas()
 
     const idParticipante = filtroPart.value;
     const idFase = filtroFase.value;
+
     let url = '/apostas/?';
 
     if (idParticipante) 
@@ -721,7 +792,8 @@ function renderizarApostas(apostas)
   let html = '';
   Object.values(porFase).sort((a, b) => a.fase.ordem - b.fase.ordem).forEach(({ fase, apostas: apostasFase }) => {
     html += `<div class="phase-header" style="margin-top:1rem">${fase.nome}</div>`;
-    apostasFase.sort((a, b) => new Date(a.jogo.data) - new Date(b.jogo.data)).forEach(aposta => {
+    apostasFase.sort((a, b) => new Date(a.jogo.data) - new Date(b.jogo.data)).forEach(aposta => 
+    {
       const casa = labelTime(aposta.jogo.time_casa);
       const fora = labelTime(aposta.jogo.time_fora);
       const placarStr = aposta.jogo.encerrado
@@ -748,8 +820,14 @@ async function editarAposta(idAposta, idJogo, labelCasa, labelFora, palpiteCasa,
 {
   idJogoAposta = idJogo;
   idApostaEditando = idAposta;
-  if (!participantes.length) participantes = await api('/participantes');
+
+  if (!participantes.length) 
+  {
+    participantes = await api('/participantes');
+  }
+
   const sel = document.getElementById('bet-modal-participant');
+
   sel.innerHTML = participantes.map(p => `<option value="${p.id}" ${p.id==idParticipante?'selected':''}>${p.nome}</option>`).join('');
   sel.disabled = true;
   document.getElementById('bet-modal-title').textContent = `Editar Aposta: ${labelCasa} x ${labelFora}`;

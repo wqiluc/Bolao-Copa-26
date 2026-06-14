@@ -9,6 +9,7 @@ from app.service import apostas as servico_apostas
 roteador = APIRouter(prefix="/apostas", tags=["apostas"])
 
 @roteador.get("/", response_model=list[esquemas.ApostaSaida])
+
 def listar_apostas(
     id_participante: Optional[int] = None,
     id_jogo: Optional[int] = None,
