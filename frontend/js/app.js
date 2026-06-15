@@ -566,12 +566,12 @@ async function buscarResultadoExterno()
     const resultado = await api(`/jogos/${idJogoResultado}/buscar_resultado`);
     document.getElementById('result-home').value = resultado.gols_casa;
     document.getElementById('result-away').value = resultado.gols_fora;
-    toast('Placar carregado da API! Confirme antes de salvar.');
+    toast('Placar carregado! Confirme antes de salvar.✅');
   }
 
   catch(erro)
   {
-    toast('Resultado ainda não disponível: ' + erro.message, true);
+    toast(`Resultado ainda não disponível: ${erro.message}`, true);
   }
 
   finally
@@ -579,7 +579,8 @@ async function buscarResultadoExterno()
 
     if (btn)
     {
-      btn.disabled = false; btn.textContent = '🌐 Buscar';
+      btn.disabled = false; 
+      btn.textContent = '🌐 Buscar';
     }
 
   }

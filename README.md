@@ -178,23 +178,24 @@ service/resultado_externo.py
   └─────────────────────────────────────────┘
         │
         ▼
-  { gols_casa: N, gols_fora: M }
+  { gols_casa: X, gols_fora: Y }
         │
         ▼
-Frontend preenche os campos do modal automaticamente
-  result-home.value = gols_casa
-  result-away.value = gols_fora
-  toast("Placar carregado da API! Confirme antes de salvar.")
+Frontend preenche os campos do modal automaticamente:
+
+  result-home.value = gols_casa;
+  result-away.value = gols_fora;
+  toast('Placar carregado! Confirme antes de salvar.✅');
         │
         ▼
 [Usuário confere e clica ✅ Salvar]
-  PUT /api/jogos/{id}/resultado   ← persiste no banco + calcula pontos
+  PUT /api/jogos/{id}/resultado ← persiste no banco + calcula pontos
 ```
 
-**Detalhes importantes:**
+**Detalhes importantes 🔻:**
 - A fonte `openfootball/worldcup.json` indexa os jogos por posição no array (índice + 1 = número do jogo). O jogo de 3º lugar é excluído do mapeamento para manter a numeração compatível com o banco.
 - O cache é global por processo — a primeira requisição após 5 minutos baixa o JSON completo; as demais servem do cache sem custo de rede.
-- O botão **Buscar** apenas pré-preenche o modal. O resultado **não é salvo** até o usuário clicar em **Salvar** (`PUT /api/jogos/{id}/resultado`).
+- O botão **Buscar** apenas pré-preenche o modal. O resultado **não é salvo** até o usuário clicar em **Salvar** (`PUT /api/jogos/{id}/resultado`), por motivos de segurança e evitar possíveis falhas.
 
 <h2 align="center">🛠️ Scripts Utilitários (Automação GUI)<br>
 <img src="https://img.shields.io/badge/PyAutoGUI-111827?style=flat&logo=python&logoColor=F7DF1E" height="18"/>
@@ -296,7 +297,7 @@ Serve os arquivos estáticos do frontend via Nginx Alpine e faz proxy reverso da
 | Fase | Valor |
 |---|---|
 | Fase de Grupos | R$ 1,00 |
-| 16avos / 8avos / Quartas | R$ 2,00 |
+| 16avos / 8avos / 4as | R$ 2,00 |
 | Semifinal | R$ 5,00 |
 | Final | R$ 10,00 |
 
@@ -312,7 +313,7 @@ Ao registrar o resultado de um jogo eliminatório, o backend avança automaticam
 |---|---|---|
 | 16avos (jg 73–88) | → 8avos (jg 89–96) | slot `casa` ou `fora` do próximo jogo |
 | 8avos (jg 89–96) | → Quartas (jg 97–100) | |
-| Quartas (jg 97–100) | → Semis (jg 101–102) | |
+| 4as (jg 97–100) | → Semis (jg 101–102) | |
 | Semis (jg 101–102) | → Final (jg 103) | |
 
 > Em caso de empate no tempo regulamentar, o slot não é preenchido automaticamente — times devem ser atribuídos manualmente via `PUT /api/jogos/{id}/times`.
@@ -325,6 +326,12 @@ Ao registrar o resultado de um jogo eliminatório, o backend avança automaticam
 <img src="https://img.shields.io/badge/-PostgreSQL-111827?style=flat-square&logo=postgresql&logoColor=white"/>
 <img src="https://img.shields.io/badge/-Nginx-111827?style=flat-square&logo=nginx&logoColor=009639"/>
 </h3>
+
+<table align="center" width="780">
+  <tr><td align="center"><b>Rode</b> os Containers individualmente pelo Docker Desktop e acesse a <i>URL 🔗</i> — ou siga os comandos abaixo.</b></td></tr>
+  <tr><td align="center"><img src="img/docker_containers.jpeg" width="750" alt="Containers Docker em Execução"/></td></tr>
+</table>
+
 
 ```bash
 # Sobe banco, backend e frontend de uma vez (com rebuild das imagens):
@@ -356,6 +363,7 @@ docker compose -f docker/docker-compose.yml down -v
 | **Frontend** | http://localhost:3000 |
 | **API (Swagger)** | http://localhost:8000/docs |
 | **PostgreSQL** | localhost:5433 |
+
 
 <h2 align="center">Comandos Docker Úteis <br>
 <img src="https://img.shields.io/badge/-Docker-111827?style=flat-square&logo=docker&logoColor=2496ed"/>
