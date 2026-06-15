@@ -113,7 +113,7 @@ Bolao-Copa-26⚽/
 | `GET` | `/api/times` | Lista seleções ordenadas por nome |
 | `GET` | `/api/grupos` | Lista grupos |
 | `GET` | `/api/participantes` | Lista participantes |
-| `GET` | `/saude` | Health check `{ "status": "ok" }` |
+| `GET` | `/saude` | Health check `{ "status": "running❤️🏥" }` |
 
 > 📖 Documentação interativa disponível em **http://localhost:8000/docs** (Swagger UI) <br>
 > 📄 Spec completo em [`api/openapi.yml`](api/openapi.yml) — OpenAPI 3.1, gerado diretamente do FastAPI <br>
@@ -331,7 +331,6 @@ Ao registrar o resultado de um jogo eliminatório, o backend avança automaticam
   <tr><td align="center"><b>Rode</b> os Containers individualmente pelo Docker Desktop e acesse a <i>URL 🔗</i> — ou siga os comandos abaixo.</b></td></tr>
   <tr><td align="center"><img src="img/docker_containers.jpeg" width="750" alt="Containers Docker em Execução"/></td></tr>
 </table>
-
 
 ```bash
 # Sobe banco, backend e frontend de uma vez (com rebuild das imagens):
