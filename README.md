@@ -323,6 +323,7 @@ Ao registrar o resultado de um jogo eliminatório, o backend avança automaticam
 
 <h3 align="center">Rodar com Docker<br>
 <img src="https://img.shields.io/badge/-Docker-111827?style=flat-square&logo=docker&logoColor=2496ed"/>
+<img src="https://img.shields.io/badge/Docker_Desktop-2496ED?style=for-the-badge&logo=docker&logoColor=white" height="20"/>
 <img src="https://img.shields.io/badge/-PostgreSQL-111827?style=flat-square&logo=postgresql&logoColor=white"/>
 <img src="https://img.shields.io/badge/-Nginx-111827?style=flat-square&logo=nginx&logoColor=009639"/>
 </h3>

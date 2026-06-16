@@ -18,6 +18,7 @@ let idApostaEditando = null;
 
 let termoBusca = '';
 let filtroData = '';
+let filtroResultado = '';
 
 async function api(caminho, metodo = 'GET', corpo = null)
 {
@@ -316,6 +317,14 @@ function filtrarHoje()
   document.getElementById('date-filter').value = iso;
 
   renderizarJogos(todosJogos);
+}
+
+function selecionarFiltroResultado(btn)
+{
+  filtroResultado = btn.dataset.val;
+  document.querySelectorAll('#bet-result-pills .pill').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  carregarApostas();
 }
 
 function limparFiltros()
@@ -763,6 +772,20 @@ async function carregarApostas()
     if (idFase)
     {
       apostas = apostas.filter(aposta => aposta.jogo.fase.id === parseInt(idFase));
+    }
+
+    if (filtroResultado)
+    {
+      apostas = apostas.filter(aposta =>
+      {
+        if (filtroResultado === 'aberto') return !aposta.jogo.encerrado;
+        if (!aposta.jogo.encerrado) return false;
+        const pts = parseFloat(aposta.pontos);
+        if (filtroResultado === 'acerto') return pts > 0.01;
+        if (filtroResultado === 'errado') return pts < -0.01;
+        if (filtroResultado === 'neutro') return Math.abs(pts) < 0.01;
+        return true;
+      });
     }
 
     renderizarApostas(apostas);

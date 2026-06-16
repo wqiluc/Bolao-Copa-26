@@ -4,13 +4,15 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Bolão Copa do Mundo 2026 (Familia Paguetti)</title>
-  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="css/style.css?v=3"/>
 </head>
 <body>
 
 <header>
-  <span>⚽</span>
-  <h1 align="center">Bolão Copa do Mundo 2026 🏆</h1>
+  <div class="header-brand">
+    <h1>⚽ Bolão Copa do Mundo 2026 🏆</h1>
+    <p class="header-sub">Família Paguetti</p>
+  </div>
 </header>
 
 <nav>
@@ -58,6 +60,17 @@
         <select id="bet-phase-filter" onchange="carregarApostas()">
           <option value="">Todas</option>
         </select>
+      </div>
+
+      <div>
+        <label>Resultado</label>
+        <div class="result-pills" id="bet-result-pills">
+          <button class="pill active" data-val="" onclick="selecionarFiltroResultado(this)">Todos</button>
+          <button class="pill" data-val="acerto" onclick="selecionarFiltroResultado(this)">✅ Acerto</button>
+          <button class="pill" data-val="errado" onclick="selecionarFiltroResultado(this)">✗ Errado</button>
+          <button class="pill" data-val="neutro" onclick="selecionarFiltroResultado(this)">= Neutro</button>
+          <button class="pill" data-val="aberto" onclick="selecionarFiltroResultado(this)">— Aberto</button>
+        </div>
       </div>
 
     </div>
@@ -143,6 +156,6 @@
 
 <div id="toast" class="toast"></div>
 
-<script src="js/app.js?v=7"></script>
+<script src="js/app.js?v=8"></script>
 </body>
 </html>
