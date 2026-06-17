@@ -151,15 +151,15 @@ Camada de **mapeamento objeto-relacional (ORM)**. Define as tabelas do banco de 
 
 ### ![Python](https://img.shields.io/badge/resultado__externo.py-111827?style=flat-square&logo=python&logoColor=F7DF1E) `service/resultado_externo.py`
 
-Módulo de **integração com fonte externa de resultados**. Consulta o feed público [openfootball/worldcup.json](https://github.com/openfootball/worldcup.json) para obter placares reais da Copa 2026. Implementa cache em memória com TTL de 5 minutos para evitar requisições repetidas. Usado pelo endpoint `GET /api/jogos/{id}/buscar_resultado` e pelo botão **🌐 Buscar** no modal de registro de resultado do frontend.
+Módulo de **integração com fonte externa de resultados**. Consulta o feed público [openfootball/worldcup.json](https://github.com/openfootball/worldcup.json) para obter placares reais da Copa 2026. Implementa cache em memória com validade de 5 minutos (`VALIDADE_CACHE`) para evitar requisições repetidas. Usado pelo endpoint `GET /api/jogos/{id}/buscar_resultado` e pelo botão **🌐 Buscar** no modal de registro de resultado do frontend.
 
-#### 🌐 Fluxo de atualização automática de gols (botão Buscar)
+#### 🌐 = Fluxo de atualização automática de gols (botão "Buscar")
 
 ```
-[Usuário clica 🌐 Buscar no modal]
+[Usuário clica: "Buscar 🌐" no modal]
         │
         ▼
-buscarResultadoExterno()          ← app.js:555
+buscarResultadoExterno()          ← frontend/js/app.js:555
   GET /api/jogos/{id}/buscar_resultado
         │
         ▼
@@ -174,7 +174,7 @@ service/resultado_externo.py
   │         └─ GET openfootball GitHub JSON │
   │              filtra jogo de 3º lugar    │
   │              mapeia índice+1 → número   │
-  │              lê score.ft[0], score.ft[1]│
+  │              lê marcacao.ft[0], marcacao.ft[1]│
   └─────────────────────────────────────────┘
         │
         ▼
@@ -192,10 +192,10 @@ Frontend preenche os campos do modal automaticamente:
   PUT /api/jogos/{id}/resultado ← persiste no banco + calcula pontos
 ```
 
-**Detalhes importantes 🔻:**
-- A fonte `openfootball/worldcup.json` indexa os jogos por posição no array (índice + 1 = número do jogo). O jogo de 3º lugar é excluído do mapeamento para manter a numeração compatível com o banco.
-- O cache é global por processo — a primeira requisição após 5 minutos baixa o JSON completo; as demais servem do cache sem custo de rede.
-- O botão **Buscar** apenas pré-preenche o modal. O resultado **não é salvo** até o usuário clicar em **Salvar** (`PUT /api/jogos/{id}/resultado`), por motivos de segurança e evitar possíveis falhas.
+> [!CAUTION]
+> - A fonte `openfootball/worldcup.json` indexa os jogos por posição no array (índice + 1 = número do jogo). O jogo de 3º lugar é excluído do mapeamento para manter a numeração compatível com o banco.
+> - O cache é global por processo — a primeira requisição após 5 minutos baixa o JSON completo; as demais servem do cache sem custo de rede.
+> - O botão **Buscar** apenas pré-preenche o modal. O resultado **não é salvo** até o usuário clicar em **Salvar** (`PUT /api/jogos/{id}/resultado`), por motivos de segurança e evitar possíveis falhas.
 
 <h2 align="center">🛠️ Scripts Utilitários (Automação GUI)<br>
 <img src="https://img.shields.io/badge/PyAutoGUI-111827?style=flat&logo=python&logoColor=F7DF1E" height="18"/>
@@ -204,9 +204,14 @@ Frontend preenche os campos do modal automaticamente:
 
 Scripts independentes do servidor FastAPI — executados diretamente no terminal para auxiliar no desenvolvimento e uso do bolão.
 
-### ![Python](https://img.shields.io/badge/color/cores.py-111827?style=flat-square&logo=python&logoColor=3776AB) `color/cores.py`
+### ![Python](https://img.shields.io/badge/color/cores.py-111827?style=flat-square&logo=python&logoColor=3776AB)[![Referência ANSI](https://img.shields.io/badge/Tabela%20de%20Cores%20ANSI-raccoon.ninja-111827?style=flat-square&logo=python&logoColor=3776AB)](https://raccoon.ninja/pt/post/dev/tabela-de-cores-ansi-python/) `color/cores.py` <br>
 
 Módulo de **constantes de cores ANSI** para saída formatada no terminal. Define variáveis como `Verde`, `Amarelo`, `CinzaClaro`, `Reset`, etc., importadas pelos scripts de automação para colorir as mensagens impressas no console.
+
+<table align="center" width="780">
+  <tr><td align="center"><b>🥷🐼 Web Site Abaixo: </b></td></tr>
+  <tr><td align="center"><img src="img/racoon_ninja.jpeg" width="750" alt="Racoon Ninja"/></td></tr>
+</table>
 
 ### ![Python](https://img.shields.io/badge/apoio.py-111827?style=flat-square&logo=python&logoColor=F7DF1E) `apoio.py`
 
