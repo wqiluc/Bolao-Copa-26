@@ -69,14 +69,21 @@ def recalcular_apostas(bd: Session, jogo: modelos.Jogo) -> None:
 
     if (not ganhadores):
         for aposta in (jogo.apostas):
-
             aposta.pontos = 0
     else:
-        premio = round(valor * len(perdedores) / len(ganhadores), 2)
+        pool_cents = round(valor * len(perdedores) * 100)
+        n = len(ganhadores)
+        base_cents = pool_cents // n
+        extra = pool_cents % n
 
+        idx = 0
+        
         for aposta in (jogo.apostas):
+
             if (aposta in ganhadores):
-                aposta.pontos = premio
+                cents = base_cents + (1 if idx < extra else 0)
+                aposta.pontos = round(cents / 100, 2)
+                idx += 1
             else:
                 aposta.pontos = -valor
 
