@@ -66,13 +66,41 @@ header
   padding: 1.25rem 1.75rem;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   text-align: center;
   position: sticky;
   top: 0;
   z-index: 50;
   backdrop-filter: blur(12px);
   box-shadow: 0 2px 20px rgba(0,0,0,0.5), 0 1px 0 rgba(201,168,76,0.18);
+}
+
+.header-usuario
+{
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+#btn-sair
+{
+  background: transparent;
+  border: 1px solid var(--border-mid);
+  color: var(--text-muted);
+  padding: 0.3rem 0.7rem;
+  font-size: 0.75rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: border-color var(--transition), color var(--transition);
+}
+
+#btn-sair:hover
+{
+  border-color: var(--red);
+  color: var(--red);
 }
 
 .header-brand

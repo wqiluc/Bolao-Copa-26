@@ -1,0 +1,107 @@
+body.pagina-login 
+{
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-deep);
+  padding: 1rem;
+}
+
+.login-container 
+{
+  width: 100%;
+  max-width: 420px;
+}
+
+.login-card 
+{
+  background: var(--bg-card);
+  border: 1px solid var(--border-dim);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  padding: 2.5rem 2rem 2rem;
+  text-align: center;
+}
+
+.login-logo 
+{
+  font-size: 3.2rem;
+  line-height: 1;
+  margin-bottom: 0.5rem;
+}
+
+.login-titulo 
+{
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--gold);
+  margin: 0 0 0.2rem;
+  letter-spacing: 0.02em;
+}
+
+.login-sub 
+{
+  color: var(--text-muted);
+  font-size: 0.88rem;
+  margin: 0 0 2rem;
+}
+
+#form-login .field 
+{
+  text-align: left;
+  margin-bottom: 1rem;
+}
+
+#form-login .field label 
+{
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 0.35rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+#form-login .field input 
+{
+  width: 100%;
+  box-sizing: border-box;
+  background: var(--bg-base);
+  border: 1px solid var(--border-dim);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  padding: 0.65rem 0.85rem;
+  font-size: 0.95rem;
+  transition: border-color var(--transition), box-shadow var(--transition);
+  outline: none;
+}
+
+#form-login .field input:focus 
+{
+  border-color: var(--gold);
+  box-shadow: 0 0 0 2px rgba(201, 168, 76, 0.18);
+}
+
+#form-login .field input::placeholder 
+{
+  color: var(--text-muted);
+  opacity: 0.6;
+}
+
+.btn-login 
+{
+  width: 100%;
+  padding: 0.8rem;
+  font-size: 1rem;
+  font-weight: 700;
+  margin-top: 1.5rem;
+  letter-spacing: 0.04em;
+}
+
+.btn-login:disabled 
+{
+  opacity: 0.55;
+  cursor: not-allowed;
+}

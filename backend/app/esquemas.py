@@ -83,3 +83,12 @@ class PlacarParticipante(BaseModel):
     total_devido: float
     acertos_exatos: int
     por_fase: list[PlacarFase]
+
+class LoginEntrada(BaseModel):
+    nome: str
+    senha: str
+
+class LoginResposta(BaseModel):
+    id: int
+    nome: str
+    model_config = {"from_attributes": True}

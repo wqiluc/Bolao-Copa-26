@@ -63,6 +63,7 @@ class Participante(Base):
 
     id = Column(Integer, primary_key=True)
     nome = Column(String(100), nullable=False, unique=True)
+    senha_hash = Column(String(100), nullable=True)
 
     apostas = relationship("Aposta", back_populates="participante")
 

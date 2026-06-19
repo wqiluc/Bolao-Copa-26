@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login — Bolão Copa 2026</title>
+  <link rel="stylesheet" href="/css/style.css?v=3"/>
+  <link rel="stylesheet" href="/auth/css/login.css"/>
+</head>
+<body class="pagina-login">
+
+<div class="login-container">
+  <div class="login-card">
+    <div class="login-logo">⚽</div>
+    <h1 class="login-titulo">Bolão Copa 2026</h1>
+    <p class="login-sub">Família Paguetti</p>
+
+    <form id="form-login" onsubmit="realizarLogin(event)">
+      <div class="field">
+        <label for="campo-nome">Usuário</label>
+        <input
+          type="text"
+          id="campo-nome"
+          placeholder="Seu nome"
+          autocomplete="username"
+          required
+        />
+      </div>
+      <div class="field">
+        <label for="campo-senha">Senha</label>
+        <input
+          type="password"
+          id="campo-senha"
+          placeholder="••••••••"
+          autocomplete="current-password"
+          required
+        />
+      </div>
+      <button type="submit" class="btn btn-gold btn-login" id="btn-entrar">
+        Entrar
+      </button>
+    </form>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+<script src="/auth/js/login.js"></script>
+</body>
+</html>

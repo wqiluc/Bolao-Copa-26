@@ -21,7 +21,9 @@
   <img src="https://img.shields.io/badge/-CSS3-111827?style=flat-square&logo=css&logoColor=663399" height="25" alt="CSS3"/>
   <img src="https://img.shields.io/badge/JavaScript-111827?style=for-the-badge&logo=javascript&logoColor=F7DF1E" height="25" alt="JavaScript"/>
   <img src="https://img.shields.io/badge/-Swagger-111827?style=flat-square&logo=swagger&logoColor=85EA2D" height="25" alt="Swagger"/>
-  <img src="https://img.shields.io/badge/openapi.yml-111827?style=flat-square&logo=openapiinitiative&logoColor=green" height="25" alt="OpenApi"/> <br>
+  <img src="https://img.shields.io/badge/openapi.yml-111827?style=flat-square&logo=openapiinitiative&logoColor=green" height="25" alt="OpenApi"/>
+  <img src="https://img.shields.io/badge/-Auth-111827?style=flat&logo=python&logoColor=E0234E" height="25"/>
+  <img src="https://img.shields.io/badge/-Auth-111827?style=flat&logo=HTML5&logoColor=E0234E" height="25"/> <br>
   <img src="https://img.shields.io/badge/Git-111827?style=for-the-badge&logo=git&logoColor=F05032" height="25" alt="Git"/>
   <img src="https://img.shields.io/badge/GitHub-111827?style=for-the-badge&logo=github&logoColor=white" height="25" alt="GitHub"/>
   <img src="https://img.shields.io/badge/GitHub_Desktop-111827?style=for-the-badge&logo=github&logoColor=purple" height="25" alt="GitHub Desktop"/>
@@ -34,6 +36,9 @@
 Bolao-Copa-26⚽/
 ├── backend <img src="https://img.shields.io/badge/Python-111827?style=flat&logo=python&logoColor=3776AB" height="18"/> <img src="https://img.shields.io/badge/-FastAPI-111827?style=flat&logo=fastapi&logoColor=009688" height="18"/> <img src="https://img.shields.io/badge/-SQLAlchemy-111827?style=flat&logo=sqlalchemy&logoColor=D71F00" height="18"/>/
 │   ├── app <img src="https://img.shields.io/badge/src-8B0000?style=flat&logo=python&logoColor=white" height="18"/>/
+│   │   ├── auth <img src="https://img.shields.io/badge/-Auth-111827?style=flat&logo=python&logoColor=E0234E" height="18"/>/
+│   │   │   ├── auth_service.py <img src="https://img.shields.io/badge/bcrypt_saltround_12-111827?style=flat&logo=letsencrypt&logoColor=white" height="18"/>
+│   │   │   └── auth_controller.py <img src="https://img.shields.io/badge/POST_/api/auth/login-111827?style=flat&logo=fastapi&logoColor=009688" height="18"/>
 │   │   ├── controller <img src="https://img.shields.io/badge/-Controller-111827?style=flat&logo=fastapi&logoColor=009688" height="18"/>/
 │   │   │   ├── jogos.py <img src="https://img.shields.io/badge/Roteador_Jogos-111827?style=flat&logo=python&logoColor=F7DF1E" height="18"/>
 │   │   │   ├── apostas.py <img src="https://img.shields.io/badge/Roteador_Apostas-111827?style=flat&logo=python&logoColor=F7DF1E" height="18"/>
@@ -56,6 +61,13 @@ Bolao-Copa-26⚽/
 │   └── requirements.txt <img src="https://img.shields.io/badge/Dependências-111827?style=flat&logo=python&logoColor=3776AB" height="18"/>
 │
 ├── frontend <img src="https://img.shields.io/badge/HTML5-111827?style=flat&logo=html5&logoColor=E34F26" height="18"/> <img src="https://img.shields.io/badge/-CSS-111827?style=flat-square&logo=css&logoColor=663399" height="18"/> <img src="https://img.shields.io/badge/-JavaScript-111827?style=flat&logo=javascript&logoColor=F7DF1E" height="18"/>/
+│   ├── auth <img src="https://img.shields.io/badge/-Auth-111827?style=flat&logo=HTML5&logoColor=E0234E" height="18"/>/
+│   │   ├── html/
+│   │   │   └── login.html <img src="https://img.shields.io/badge/-HTML5-111827?style=flat&logo=html5&logoColor=E34F26" height="18"/>
+│   │   ├── css/
+│   │   │   └── login.css <img src="https://img.shields.io/badge/-CSS-111827?style=flat-square&logo=css&logoColor=663399" height="18"/>
+│   │   └── js/
+│   │       └── login.js <img src="https://img.shields.io/badge/-JavaScript-111827?style=flat&logo=javascript&logoColor=F7DF1E" height="18"/>
 │   ├── html/
 │   │   └── index.html <img src="https://img.shields.io/badge/-HTML5-111827?style=flat&logo=html5&logoColor=E34F26" height="18"/>
 │   ├── css/
@@ -89,7 +101,7 @@ Bolao-Copa-26⚽/
 | **Time** | `times` | Seleções com nome e bandeira emoji |
 | **Grupo** | `grupos` | Grupos A–L da fase de grupos |
 | **Jogo** | `jogos` | Partidas com times, data, local, placar e status de encerramento |
-| **Participante** | `participantes` | Apostadores do bolão |
+| **Participante** | `participantes` | Apostadores do bolão — campo `senha_hash` armazenado com bcrypt (saltround 12) |
 | **Aposta** | `apostas` | Palpite de placar por participante/jogo com pontuação calculada |
 
 <h2 align="center">🌐 Endpoints da API (rotas) <br>
@@ -97,6 +109,7 @@ Bolao-Copa-26⚽/
 
 | Método | Rota | Descrição |
 |---|---|---|
+| `POST` | `/api/auth/login` | Autentica participante `{ nome, senha }` → `{ id, nome }` — senha verificada com bcrypt |
 | `GET` | `/api/jogos` | Lista jogos — filtros `?id_fase=` e `?id_grupo=` |
 | `GET` | `/api/jogos/{id}` | Detalha um jogo |
 | `PUT` | `/api/jogos/{id}/resultado` | Registra placar, calcula pontos e avança vencedor no chaveamento |
@@ -118,6 +131,70 @@ Bolao-Copa-26⚽/
 > 📖 Documentação interativa disponível em **http://localhost:8000/docs** (Swagger UI) <br>
 > 📄 Spec completo em [`api/openapi.yml`](api/openapi.yml) — OpenAPI 3.1, gerado diretamente do FastAPI <br>
 > 📋 Documentação técnica detalhada (fluxo de computação de gols e pontos) em [`docs/API.md`](docs/API.md)
+
+<h2 align="center">🔒 Autenticação<br>
+<img src="https://img.shields.io/badge/bcrypt-saltround_12-111827?style=flat-square&logo=letsencrypt&logoColor=white"/>
+<img src="https://img.shields.io/badge/passlib-1.7.4-111827?style=flat-square&logo=python&logoColor=3776AB"/>
+</h2>
+
+O sistema usa autenticação por **nome + senha** para cada participante. A senha é armazenada como hash bcrypt com **saltround 12** via `passlib`.
+
+### Fluxo de login
+
+```
+[frontend/auth/login.html]
+        │
+        │  POST /api/auth/login  { nome, senha }
+        ▼
+[auth_controller.py]  →  [auth_service.py]
+                               │
+                               │  autenticar_participante(bd, nome, senha)
+                               │  verificar_senha(senha, participante.senha_hash)  ← bcrypt verify
+                               ▼
+                        ✅ 200 { id, nome }  /  ❌ 401 "Nome ou senha incorretos."
+        │
+        ▼
+[localStorage]  participante_auth = { id, nome }
+        │
+        ▼
+[index.html]  guard no <head>: redireciona para /auth/login.html se não autenticado
+        │
+        ▼
+[app.js]  toast "Bem-vindo de volta, {nome}!"  (flag recem_logado no localStorage)
+```
+
+### Detalhes técnicos
+
+| Item | Detalhe |
+|---|---|
+| Algoritmo | `bcrypt` via `passlib[bcrypt]==1.7.4` |
+| Salt rounds | **12** (`RODADAS_SALT = 12` em `auth_service.py`) |
+| Campo no banco | `participantes.senha_hash VARCHAR(100)` |
+| Migração automática | `popular.py` adiciona a coluna e popula hashes em bancos já existentes sem `senha_hash` |
+| Senha padrão | `03070203` — aplicada via `popular.py` no seed inicial |
+| Versão bcrypt | `bcrypt>=3.1.0,<4.0.0` — fixado em `requirements.txt` (versões ≥ 4 são incompatíveis com `passlib 1.7.4`) |
+| DTO de entrada | `LoginEntrada { nome: str, senha: str }` em `esquemas.py` |
+| DTO de saída | `LoginResposta { id: int, nome: str }` em `esquemas.py` |
+| Rota | `POST /api/auth/login` — registrada em `modulo.py` via `auth_controller.roteador` |
+| Persistência client | `localStorage.participante_auth` (JSON `{ id, nome }`) |
+| Logout | Botão **Sair** no header → limpa localStorage e redireciona para login |
+
+### Estrutura do módulo de auth
+
+```
+backend/app/auth/
+├── __init__.py
+├── auth_service.py      ← criar_hash_senha(), verificar_senha(), autenticar_participante()
+└── auth_controller.py   ← POST /api/auth/login
+
+frontend/auth/
+├── html/
+│   └── login.html       ← formulário nome + senha  →  servido em /auth/login.html
+├── css/
+│   └── login.css        ← estilos dark-theme (variáveis de style.css)  →  /auth/css/login.css
+└── js/
+    └── login.js         ← fetch + localStorage + toast + redirect  →  /auth/js/login.js
+```
 
 <h2 align="center">📂 Modularização CS (Controller & Service)<br>
 <img src="https://img.shields.io/badge/-FastAPI-111827?style=flat&logo=fastapi&logoColor=009688" height="18"/>
@@ -287,7 +364,7 @@ Novidades:
 
 ### ![Nginx](https://img.shields.io/badge/Nginx-009639?style=flat-square&logo=nginx&logoColor=black) `docker/nginx.conf`
 
-Serve os arquivos estáticos do frontend via Nginx Alpine e faz proxy reverso das requisições `/api/*` para o backend FastAPI.
+Serve os arquivos estáticos do frontend via Nginx Alpine e faz **proxy reverso** de todas as requisições `/api/*` para o backend FastAPI (`http://backend:8000`). Isso elimina CORS — o browser só conhece a porta 3000, e o nginx encaminha internamente para o backend dentro da rede Docker.
 
 <h2 align="center">🏆 Sistema de Pontuação <br>
 <img src="https://img.shields.io/badge/Pontuação-111827?style=flat-square&logo=fifa&logoColor=yellow"/></h2>

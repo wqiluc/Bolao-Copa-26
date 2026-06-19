@@ -1,6 +1,18 @@
 from datetime import datetime as dt
+from sqlalchemy import text
 from app.banco import SessaoLocal, engine
 import app.modelos as modelos
+from app.auth.auth_service import criar_hash_senha
+
+
+def _migrar_schema():
+    with engine.connect() as conn:
+        conn.execute(text(
+            "ALTER TABLE participantes ADD COLUMN IF NOT EXISTS senha_hash VARCHAR(100)"
+        ))
+        conn.commit()
+
+SENHA_PADRAO = "03070203"
 
 FASES = [
     {"id": 1, "nome": "Fase de Grupos",   "slug": "grupos",   "ordem": 1, "valor": 1},
@@ -171,12 +183,21 @@ def popular(reset: bool = False):
         print("Tabelas removidas.")
 
     modelos.Base.metadata.create_all(bind=engine)
+    _migrar_schema()
 
     bd = SessaoLocal()
 
     try:
         if not (reset) and (bd.query(modelos.Fase).count() > 0):
-            print("Banco já populado, pulando.")
+            sem_senha = bd.query(modelos.Participante).filter(modelos.Participante.senha_hash == None).all()
+            if sem_senha:
+                print(f"Adicionando senha padrão a {len(sem_senha)} participantes sem hash...")
+                hash_padrao = criar_hash_senha(SENHA_PADRAO)
+                for p in sem_senha:
+                    p.senha_hash = hash_padrao
+                bd.commit()
+            else:
+                print("Banco já populado, pulando.")
             return
         else:
             print("Populando o banco de dados...")
@@ -185,8 +206,10 @@ def popular(reset: bool = False):
             bd.add(modelos.Fase(**fase))
         bd.flush()
 
+        hash_padrao = criar_hash_senha(SENHA_PADRAO)
+
         for nome in PARTICIPANTES:
-            bd.add(modelos.Participante(nome=nome))
+            bd.add(modelos.Participante(nome=nome, senha_hash=hash_padrao))
         bd.flush()
 
         mapa_id_grupo: dict[str, int] = { }
@@ -242,7 +265,6 @@ def popular(reset: bool = False):
         raise
     finally:
         bd.close()
-
 
 if (__name__ == "__main__"):
     import sys

@@ -7,6 +7,7 @@ import app.esquemas as esquemas
 from app.controller import jogos as controlador_jogos
 from app.controller import apostas as controlador_apostas
 from app.controller import placar as controlador_placar
+from app.auth import auth_controller as controlador_auth
 
 def criar_app() -> FastAPI:
     modelos.Base.metadata.create_all(bind=engine)
@@ -20,6 +21,7 @@ def criar_app() -> FastAPI:
         allow_headers=["*"],
     )
 
+    app.include_router(controlador_auth.roteador, prefix="/api")
     app.include_router(controlador_jogos.roteador, prefix="/api")
     app.include_router(controlador_apostas.roteador, prefix="/api")
     app.include_router(controlador_placar.roteador, prefix="/api")
@@ -45,11 +47,12 @@ def criar_app() -> FastAPI:
         return bd.query(modelos.Participante).order_by(modelos.Participante.nome).all()
 
     @app.get("/api/classificacoes")
+
     def classificacoes_grupos(bd: Session = Depends(obter_bd)):
         """Retorna a classificação de todos os grupos com pontos FIFA (V=3, E=1, D=0)."""
         grupos = bd.query(modelos.Grupo).order_by(modelos.Grupo.nome).all()
 
-        resultado = []
+        resultado = [ ]
 
         for grupo in grupos:
             jogos_grupo = (

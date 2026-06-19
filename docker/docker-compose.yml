@@ -1,3 +1,5 @@
+name: bolao-copa-26
+
 services:
   db:
     image: postgres:16
@@ -5,10 +7,13 @@ services:
       POSTGRES_USER: bolao
       POSTGRES_PASSWORD: bolao123
       POSTGRES_DB: bolao_copa26
+
     ports:
       - "5433:5432"
     volumes:
+
       - pgdata:/var/lib/postgresql/data
+
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U bolao -d bolao_copa26"]
       interval: 5s
@@ -39,6 +44,7 @@ services:
       - ../frontend/html:/usr/share/nginx/html:ro
       - ../frontend/css:/frontend/css:ro
       - ../frontend/js:/frontend/js:ro
+      - ../frontend/auth:/frontend/auth:ro
       - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
     depends_on:
       - backend

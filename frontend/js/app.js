@@ -1,4 +1,31 @@
-const API = 'http://localhost:8000/api';
+const API = '/api';
+
+const _dadosAuth = JSON.parse(localStorage.getItem('participante_auth') || 'null');
+
+function _inicializarAuth() 
+{
+  const elNome = document.getElementById('nome-usuario');
+
+  if (elNome && _dadosAuth) 
+  { 
+    elNome.textContent = _dadosAuth.nome;
+  }
+
+  if (localStorage.getItem('recem_logado')) 
+  {
+    localStorage.removeItem('recem_logado');
+    setTimeout(() => toast(`Bem-vindo de volta, ${_dadosAuth?.nome || ''}!`), 300);
+  }
+}
+
+function sair() 
+{
+  localStorage.removeItem('participante_auth');
+  localStorage.removeItem('recem_logado');
+  window.location.href = '/auth/login.html';
+}
+
+_inicializarAuth();
 
 const DATAS_FASE =
 {
@@ -429,7 +456,7 @@ function renderizarJogos(jogos)
     html || `<div class="empty">Nenhum jogo encontrado${termoBusca ? ` para "${termoBusca}"` : ''}</div>`;
 }
 
-function renderizarClassificacao(nomeGrupo, times)
+function renderizarClassificacao(_nomeGrupo, times)
 {
   if (!times || times.length === 0)
   {
