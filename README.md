@@ -87,6 +87,7 @@ Bolao-Copa-26⚽/
 │   └── API.md <img src="https://img.shields.io/badge/Documentação_API-111827?style=flat&logo=swagger&logoColor=cyan" height="18"/>
 │
 ├── img/ <img src="https://img.shields.io/badge/Assets-green?style=flat&logo=image&logoColor=white" height="18"/>
+├── .dockerignore <img src="https://img.shields.io/badge/-DockerIgnore-111827?style=flat&logo=docker&logoColor=2496ED" height="18"/>
 ├── .gitignore <img src="https://img.shields.io/badge/-GitIgnore-111827?style=flat&logo=git&logoColor=F05032" height="18"/>
 ├── LICENSE <img src="https://img.shields.io/badge/License-MIT-FF8C00?style=flat&logo=opensource&logoColor=white" height="18"/>
 └── README.md <img src="https://img.shields.io/badge/-Markdown-111827?style=flat&logo=markdown&logoColor=white" height="18"/>
@@ -179,11 +180,10 @@ O sistema usa autenticação por **nome + senha** para cada participante. A senh
 | Persistência client | `localStorage.participante_auth` (JSON `{ id, nome }`) |
 | Logout | Botão **Sair** no header → limpa localStorage e redireciona para login |
 
-### Estrutura do módulo de auth
+### Estrutura do módulo de auth 🔐
 
 ```
 backend/app/auth/
-├── __init__.py
 ├── auth_service.py      ← criar_hash_senha(), verificar_senha(), autenticar_participante()
 └── auth_controller.py   ← POST /api/auth/login
 
@@ -366,6 +366,10 @@ Novidades:
 
 Serve os arquivos estáticos do frontend via Nginx Alpine e faz **proxy reverso** de todas as requisições `/api/*` para o backend FastAPI (`http://backend:8000`). Isso elimina CORS — o browser só conhece a porta 3000, e o nginx encaminha internamente para o backend dentro da rede Docker.
 
+### ![Docker](https://img.shields.io/badge/-DockerIgnore-111827?style=flat-square&logo=docker&logoColor=2496ED) `.dockerignore`
+
+Define o que **não entra no contexto de build** da imagem Docker. Exclui: `__pycache__/`, `.venv/`, `.env`, `pgdata/`, arquivos de IDE, logs, e as pastas `docs/` e `img/` — reduzindo o tamanho do contexto enviado ao Docker daemon e evitando que arquivos sensíveis ou desnecessários entrem na imagem.
+
 <h2 align="center">🏆 Sistema de Pontuação <br>
 <img src="https://img.shields.io/badge/Pontuação-111827?style=flat-square&logo=fifa&logoColor=yellow"/></h2>
 
@@ -440,11 +444,11 @@ docker compose -f docker/docker-compose.yml down
 docker compose -f docker/docker-compose.yml down -v
 ```
 
-| Serviço 🔑 | URL 🔗 |
-|---|---|
-| **Frontend** | http://localhost:3000 |
-| **API (Swagger)** | http://localhost:8000/docs |
-| **PostgreSQL** | localhost:5433 |
+| Serviço 🔑 | Container | URL 🔗 |
+|---|---|---|
+| **Frontend** | `bolao-frontend` | http://localhost:3000 |
+| **API (Swagger)** | `bolao-backend` | http://localhost:8000/docs |
+| **PostgreSQL** | `bolao-db` | localhost:5433 |
 
 
 <h2 align="center">Comandos Docker Úteis <br>
@@ -469,6 +473,8 @@ docker compose -f docker/docker-compose.yml ps
 
 # Executa shell dentro do container do backend
 docker compose -f docker/docker-compose.yml exec backend bash
+# ou diretamente pelo nome do container:
+docker exec -it bolao-backend bash
 
 # Reinicia um serviço específico
 docker compose -f docker/docker-compose.yml restart backend

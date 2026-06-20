@@ -3,17 +3,15 @@ name: bolao-copa-26
 services:
   db:
     image: postgres:16
+    container_name: bolao-db
     environment:
       POSTGRES_USER: bolao
       POSTGRES_PASSWORD: bolao123
       POSTGRES_DB: bolao_copa26
-
     ports:
       - "5433:5432"
     volumes:
-
       - pgdata:/var/lib/postgresql/data
-
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U bolao -d bolao_copa26"]
       interval: 5s
@@ -24,6 +22,7 @@ services:
     build:
       context: ../backend
       dockerfile: ../docker/Dockerfile
+    container_name: bolao-backend
     ports:
       - "8000:8000"
     environment:
@@ -38,6 +37,7 @@ services:
 
   frontend:
     image: nginx:alpine
+    container_name: bolao-frontend
     ports:
       - "3000:80"
     volumes:

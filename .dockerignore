@@ -1,0 +1,41 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+.eggs/
+.pytest_cache/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Env / secrets
+.env
+.env.local
+*.env
+
+# Docker volumes / data
+pgdata/
+
+# macOS
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+
+# Docs / imagens (não entram na imagem)
+docs/
+img/
+README.md
