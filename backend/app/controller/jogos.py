@@ -65,6 +65,21 @@ def recalcular_todos_resultados(bd: Session = Depends(obter_bd)):
         servico_jogos.recalcular_apostas(bd, jogo)
     return {"recalculados": len(jogos)}
 
+
+@roteador.post("/semear_todos_grupos")
+def semear_todos_grupos(bd: Session = Depends(obter_bd)):
+    """Semeia 1° e 2° de todos os grupos já concluídos nos jogos das 16avas."""
+    return servico_jogos.semear_todos_grupos(bd)
+
+
+@roteador.post("/semear_terceiros")
+def semear_terceiros(bd: Session = Depends(obter_bd)):
+    """
+    Calcula os 8 melhores 3° colocados e os distribui nos slots das 16avas.
+    Só funciona após todos os 12 grupos estarem encerrados.
+    """
+    return servico_jogos.semear_terceiros(bd)
+
 @roteador.get("/{id_jogo}/buscar_resultado")
 
 def buscar_resultado_externo(id_jogo: int, bd: Session = Depends(obter_bd)):

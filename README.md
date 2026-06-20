@@ -85,6 +85,7 @@ Bolao-Copa-26⚽/
 │
 ├── docs <img src="https://img.shields.io/badge/Docs-111827?style=flat&logo=markdown&logoColor=blue" height="18"/>/
 │   └── API.md <img src="https://img.shields.io/badge/Documentação_API-111827?style=flat&logo=swagger&logoColor=cyan" height="18"/>
+│   └── TRACKER_COLOCADOS.md <img src="https://img.shields.io/badge/Tracker_Colocados-111827?style=flat&logo=markdown&logoColor=red" height="18"/>
 │
 ├── img/ <img src="https://img.shields.io/badge/Assets-green?style=flat&logo=image&logoColor=white" height="18"/>
 ├── .dockerignore <img src="https://img.shields.io/badge/-DockerIgnore-111827?style=flat&logo=docker&logoColor=2496ED" height="18"/>
@@ -117,6 +118,8 @@ Bolao-Copa-26⚽/
 | `PUT` | `/api/jogos/{id}/times` | Atualiza times do jogo (fases eliminatórias) |
 | `GET` | `/api/jogos/{id}/buscar_resultado` | Busca placar na fonte externa (openfootball) com cache de 5 min |
 | `POST` | `/api/jogos/recalcular_tudo` | Re-aplica a pontuação em todos os jogos encerrados |
+| `POST` | `/api/jogos/semear_todos_grupos` | Semeia 1° e 2° de todos os grupos já concluídos nos slots das 16avas |
+| `POST` | `/api/jogos/semear_terceiros` | Calcula os 8 melhores 3° colocados e os distribui nas 16avas via matching bipartido |
 | `GET` | `/api/apostas` | Lista apostas — filtros `?id_participante=` e `?id_jogo=` |
 | `POST` | `/api/apostas` | Cria aposta `{ id_participante, id_jogo, palpite_casa, palpite_fora }` |
 | `PUT` | `/api/apostas/{id}` | Atualiza palpite <b>(somente antes do encerramento)</b> |
@@ -131,7 +134,8 @@ Bolao-Copa-26⚽/
 
 > 📖 Documentação interativa disponível em **http://localhost:8000/docs** (Swagger UI) <br>
 > 📄 Spec completo em [`api/openapi.yml`](api/openapi.yml) — OpenAPI 3.1, gerado diretamente do FastAPI <br>
-> 📋 Documentação técnica detalhada (fluxo de computação de gols e pontos) em [`docs/API.md`](docs/API.md)
+> 📋 Documentação técnica detalhada (fluxo de computação de gols e pontos) em [`docs/API.md`](docs/API.md) <br>
+> 🏅 Grupos, seeding, 3° colocados e chaveamento completo em [`docs/TRACKER_COLOCADOS.md`](docs/TRACKER_COLOCADOS.md)
 
 <h2 align="center">🔒 Autenticação<br>
 <img src="https://img.shields.io/badge/bcrypt-saltround_12-111827?style=flat-square&logo=letsencrypt&logoColor=white"/>
@@ -344,6 +348,8 @@ Novidades de interface:
 - **🔄 Recalcular Pontuações** — botão na aba de placar que chama `POST /api/jogos/recalcular_tudo` e recarrega o ranking
 - **🌐 Buscar** — botão no modal de resultado que preenche automaticamente o placar via `GET /api/jogos/{id}/buscar_resultado`
 - **Filtro por data** — seletor de data + botão **Hoje** + botão **✕ Limpar** na aba de jogos
+- **🌱 Semear Grupos** — botão na aba de jogos que chama `POST /api/jogos/semear_todos_grupos`, populando os slots das 16avas com 1° e 2° dos grupos já concluídos
+- **🥉 Semear 3° Lugares** — botão na aba de jogos que chama `POST /api/jogos/semear_terceiros`, distribuindo os 8 melhores 3° colocados nas 16avas após todos os grupos encerrarem
 
 ### ![CSS](https://img.shields.io/badge/CSS3-1572B6?style=flat-square&logo=css3&logoColor=white) `css/style.css`
 
@@ -361,6 +367,8 @@ Novidades:
 - `filtrarPorData()` / `filtrarHoje()` / `limparFiltros()` — filtros de data na listagem de jogos
 - `renderizarPlacar()` — exibe resumo geral + tabelas detalhadas por fase (acertos, ganho, a pagar, saldo)
 - Carregamento das classificações de grupos via `GET /api/classificacoes`
+- `semearGrupos()` — chama `POST /api/jogos/semear_todos_grupos` e recarrega a lista de jogos
+- `semearTerceiros()` — chama `POST /api/jogos/semear_terceiros` e recarrega a lista de jogos
 
 ### ![Nginx](https://img.shields.io/badge/Nginx-009639?style=flat-square&logo=nginx&logoColor=black) `docker/nginx.conf`
 
@@ -393,7 +401,24 @@ Define o que **não entra no contexto de build** da imagem Docker. Exclui: `__py
 <h2 align="center">⚙️ Chaveamento Eliminatório <br>
 <img src="https://img.shields.io/badge/Bracket-111827?style=flat-square&logo=fifa&logoColor=yellow"/></h2>
 
-Ao registrar o resultado de um jogo eliminatório, o backend avança automaticamente o time vencedor para o próximo jogo do chaveamento. O mapeamento `CHAVE_PROXIMO_JOGO` em `service/jogos.py` codifica o bracket completo da Copa 2026:
+O sistema de chaveamento funciona em duas etapas, ambas automáticas:
+
+### 1. Seeding: fase de grupos → 16avas
+
+Quando o resultado do **último jogo de um grupo** é registrado, o backend classifica 1° e 2° automaticamente (critérios: pontos → saldo de gols → gols marcados) e preenche os seus slots nos jogos das 16avas conforme o bracket oficial da FIFA. O mapeamento `SEEDING_1_2` em `service/jogos.py` cobre os 24 slots fixos (12 grupos × 1° e 2°).
+
+Os 8 melhores **3° colocados** são distribuídos após o encerramento de todos os 12 grupos, chamando `POST /api/jogos/semear_terceiros` (ou o botão **🥉 Semear 3° Lugares** no frontend). O algoritmo usa matching bipartido para garantir que cada 3° vai para um slot compatível com o bracket FIFA.
+
+| Ação | Trigger |
+|---|---|
+| Semear 1° e 2° de um grupo | Automático ao registrar o último jogo do grupo |
+| Semear grupos já concluídos | `POST /api/jogos/semear_todos_grupos` (ou botão 🌱) |
+| Semear 8 melhores 3° colocados | `POST /api/jogos/semear_terceiros` após todos os grupos (ou botão 🥉) |
+| Corrigir slot pontual | `PUT /api/jogos/{id}/times` |
+
+### 2. Avanço automático no mata-mata
+
+Ao registrar o resultado de um jogo eliminatório, o backend avança automaticamente o vencedor para o próximo jogo. O mapeamento `CHAVE_PROXIMO_JOGO` em `service/jogos.py` codifica o bracket completo:
 
 | Rodada | Jogos | → |
 |---|---|---|

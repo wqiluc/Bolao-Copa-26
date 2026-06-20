@@ -622,6 +622,54 @@ async function buscarResultadoExterno()
   }
 }
 
+async function semearGrupos()
+{
+  const btn = document.getElementById('btn-semear-grupos');
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ Semeando...'; }
+
+  try
+  {
+    const res = await api('/jogos/semear_todos_grupos', 'POST');
+    if (res.total === 0)
+      toast('Nenhum grupo completo para semear ainda.');
+    else
+      toast(`${res.total} grupo(s) semeado(s): ${res.semeados.join(', ')} ✅`);
+    carregarJogos();
+  }
+  catch (erro)
+  {
+    toast('Erro ao semear grupos: ' + erro.message, true);
+  }
+  finally
+  {
+    if (btn) { btn.disabled = false; btn.textContent = '🌱 Semear Grupos'; }
+  }
+}
+
+async function semearTerceiros()
+{
+  const btn = document.getElementById('btn-semear-terceiros');
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ Calculando...'; }
+
+  try
+  {
+    const res = await api('/jogos/semear_terceiros', 'POST');
+    if (res.erro)
+      toast(res.erro, true);
+    else
+      toast(`8 terceiros distribuídos! ✅`);
+    carregarJogos();
+  }
+  catch (erro)
+  {
+    toast('Erro ao semear terceiros: ' + erro.message, true);
+  }
+  finally
+  {
+    if (btn) { btn.disabled = false; btn.textContent = '🥉 Semear 3° Lugares'; }
+  }
+}
+
 async function enviarResultado()
 {
   try
