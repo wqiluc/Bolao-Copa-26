@@ -25,5 +25,8 @@ pgdata/
 .vscode/
 .idea/
 
+# Claude Code
+.claude/
+
 # Logs
 *.log
