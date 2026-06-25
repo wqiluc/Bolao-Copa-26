@@ -66,7 +66,7 @@ Os **12 terceiros colocados** são ordenados por pontos → saldo → gols. Os *
 
 ## ⚔️ Chaveamento das 16avas de Final
 
-> Jogos de 05 a 12 de julho de 2026 · Fonte: `CHAVE_PROXIMO_JOGO` em [`backend/app/service/jogos.py`](../backend/app/service/jogos.py)
+> Jogos de 28 jun a 03 jul 2026 · Fonte: `CHAVE_PROXIMO_JOGO` em [`backend/app/service/jogos.py`](../backend/app/service/jogos.py)
 
 ```
 Jogo 73  │ A2        vs  B2        │ → vencedor → Jogo 90 (casa)
@@ -90,7 +90,7 @@ Jogo 88  │ D2        vs  G2        │ → vencedor → Jogo 95 (fora)
 ## 🏟️ Chaveamento Completo — 16avas até a Final
 
 ```
-16avas (5–12/jul)        8avas (15–18/jul)        Quartas (21–22/jul)     Semis (25–26/jul)    Final (29/jul)
+16avas (28/jun–3/jul)    8avas (4–7/jul)          Quartas (9–10/jul)      Semis (14–15/jul)    Final (19/jul)
 ─────────────────────    ─────────────────────    ──────────────────────  ────────────────────  ──────────────
 Jogo 74 ──┐
           ├── Jogo 89 ──┐
@@ -130,11 +130,69 @@ Jogo 87 ──┘
 | Fase | Jogos | Datas |
 |---|---|---|
 | **Fase de Grupos** | 1–72 | 11–27 jun 2026 |
-| **16avas de Final** | 73–88 | 05–12 jul 2026 |
-| **8avas de Final** | 89–96 | 15–18 jul 2026 |
-| **Quartas de Final** | 97–100 | 21–22 jul 2026 |
-| **Semifinal** | 101–102 | 25–26 jul 2026 |
-| **Final** | 103 | 29 jul 2026 |
+| **16avas de Final** | 73–88 | 28 jun–03 jul 2026 |
+| **8avas de Final** | 89–96 | 04–07 jul 2026 |
+| **Quartas de Final** | 97–100 | 09–10 jul 2026 |
+| **Semifinal** | 101–102 | 14–15 jul 2026 |
+| **Final** | 103 | 19 jul 2026 |
+
+## 🎯 Estado Atual das 16avas — 25/06/2026
+
+> Atualizado com pesquisa em tempo real. ✅ = confronto/time confirmado · ⏳ = aguardando rodada final · — = adversário indefinido
+
+### Classificados por Grupo (fase de grupos)
+
+| Grupo | 1° Lugar | 2° Lugar | Status |
+|---|---|---|---|
+| **A** | 🇲🇽 México | 🇿🇦 África do Sul | ✅ Encerrado (24/jun) |
+| **B** | 🇨🇭 Suíça | 🇨🇦 Canadá | ✅ Encerrado (24/jun) |
+| **C** | 🇧🇷 Brasil | 🇲🇦 Marrocos | ✅ Encerrado (24/jun) |
+| **D** | 🇺🇸 EUA | ⏳ 🇦🇺 Austrália (GD +0) ou 🇵🇾 Paraguai (GD −3) | ⏳ Final: 25/jun 22h — Aus vs Par |
+| **E** | 🇩🇪 Alemanha | ⏳ 🇨🇮 Costa do Marfim (3pts, favorita) | ⏳ Final: 25/jun 16h — Ale vs Equ, CMF vs Cur |
+| **F** | ⏳ 🇳🇱 Holanda (4pts, favorita F1) | ⏳ 🇯🇵 Japão (4pts) ou 🇸🇪 Suécia (3pts) | ⏳ Final: 25/jun 19h — Jap vs Sue, Hol vs Tun |
+| **G** | ⏳ 🇪🇬 Egito (4pts, líder) ou 🇧🇪 Bélgica (2pts) | ⏳ ? | ⏳ Final: 26/jun |
+| **H** | 🇪🇸 Espanha | 🇺🇾 Uruguai | ✅ Encerrado |
+| **I** | ⏳ França ou Noruega | ⏳ Noruega ou França | ⏳ Final: 26/jun (Fra vs Nor) |
+| **J** | 🇦🇷 Argentina | ⏳ Áustria ou Argélia | ⏳ Final: 27/jun (Aut vs Alg) |
+| **K** | ⏳ Colômbia ou Portugal | ⏳ Portugal ou Colômbia | ⏳ Final: 27/jun (Col vs Por) |
+| **L** | ⏳ Inglaterra ou Gana | ⏳ ? | ⏳ Final: 27/jun (Ing vs Gana, Cro vs Pan) |
+
+> 3° colocados: 🇧🇦 Bósnia (Grupo B) é o primeiro 3° confirmado. Os demais slots serão definidos após o encerramento de todos os grupos.
+
+---
+
+### ⚔️ Chaveamento das 16avas — Times Confirmados
+
+> `✅` = ambos os times definidos · `🔸` = um time definido · `⏳` = aguardando grupos
+
+```
+Jogo 73  ✅ │ 🇿🇦 África do Sul   vs  🇨🇦 Canadá          │ → Jogo 90
+Jogo 74  🔸 │ 🇩🇪 Alemanha        vs  — (3°)              │ → Jogo 89
+Jogo 75  🔸 │ — (F1)              vs  🇲🇦 Marrocos         │ → Jogo 90
+Jogo 76  🔸 │ 🇧🇷 Brasil          vs  — (F2)              │ → Jogo 91
+Jogo 77  ⏳ │ — (I1: Fra/Nor)     vs  — (3°)              │ → Jogo 89
+Jogo 78  ⏳ │ — (E2)              vs  — (I2: Nor/Fra)     │ → Jogo 91
+Jogo 79  🔸 │ 🇲🇽 México          vs  — (3°)              │ → Jogo 92
+Jogo 80  ⏳ │ — (L1)              vs  — (3°)              │ → Jogo 92
+Jogo 81  🔸 │ 🇺🇸 EUA             vs  — (3°)              │ → Jogo 94
+Jogo 82  ⏳ │ — (G1)              vs  — (3°)              │ → Jogo 94
+Jogo 83  ⏳ │ — (K2)              vs  — (L2)              │ → Jogo 93
+Jogo 84  🔸 │ 🇪🇸 Espanha         vs  — (J2)              │ → Jogo 93
+Jogo 85  🔸 │ 🇨🇭 Suíça           vs  — (3°)              │ → Jogo 96
+Jogo 86  ✅ │ 🇦🇷 Argentina       vs  🇺🇾 Uruguai          │ → Jogo 95
+Jogo 87  ⏳ │ — (K1)              vs  — (3°)              │ → Jogo 96
+Jogo 88  ⏳ │ — (D2)              vs  — (G2)              │ → Jogo 95
+```
+
+**Confrontos já definidos:**
+- 🇿🇦 **África do Sul vs 🇨🇦 Canadá** (Jogo 73 · 05/jul)
+- 🇦🇷 **Argentina vs 🇺🇾 Uruguai** (Jogo 86 · 11/jul) — clássico sul-americano confirmado!
+
+**Times com slot definido mas sem adversário:**
+- 🇩🇪 Alemanha (Jogo 74 casa) · 🇲🇦 Marrocos (Jogo 75 fora) · 🇧🇷 Brasil (Jogo 76 casa)
+- 🇲🇽 México (Jogo 79 casa) · 🇺🇸 EUA (Jogo 81 casa) · 🇪🇸 Espanha (Jogo 84 casa) · 🇨🇭 Suíça (Jogo 85 casa)
+
+---
 
 ## 🔧 Endpoints Relevantes
 
