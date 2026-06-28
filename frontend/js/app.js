@@ -360,9 +360,13 @@ function renderizarCartaoBracket(jogo)
     ? `<div class="b-score-badge">${jogo.gols_casa} – ${jogo.gols_fora}</div>`
     : `<div class="b-vs">vs</div>`;
 
-  const acoes = (!jogo.encerrado && definido)
-    ? `<button class="btn btn-gold btn-sm" onclick="abrirModalAposta(${jogo.id})">🎯 Apostar R$${jogo.fase.valor}</button>`
-    : '';
+  let acoes = '';
+  if (!jogo.encerrado)
+  {
+    if (definido)
+      acoes += `<button class="btn btn-gold btn-sm" onclick="abrirModalAposta(${jogo.id})">🎯 Apostar R$${jogo.fase.valor}</button>`;
+    acoes += `<button class="btn btn-green btn-sm" onclick="abrirModalResultado(${jogo.id})">✅ Resultado</button>`;
+  }
 
   const classeHoje = ehHoje(jogo.data) ? 'today' : '';
   const classeEnc  = jogo.encerrado ? 'finished' : '';
