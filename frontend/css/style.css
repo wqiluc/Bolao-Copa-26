@@ -636,7 +636,7 @@ label { font-size: 0.82rem; color: var(--text-muted); font-weight: 600; letter-s
   border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
 }
 
-.fin-valor-badge 
+.fin-valor-badge
 {
   margin-left: auto;
   font-size: 0.73rem;
@@ -646,6 +646,18 @@ label { font-size: 0.82rem; color: var(--text-muted); font-weight: 600; letter-s
   border: 1px solid var(--border-dim);
   border-radius: 4px;
   padding: 0.1rem 0.45rem;
+}
+
+.fin-zero-badge
+{
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #7dd3fc;
+  background: rgba(56, 189, 248, 0.08);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  border-radius: 4px;
+  padding: 0.1rem 0.45rem;
+  letter-spacing: 0.02em;
 }
 
 .phase-date 

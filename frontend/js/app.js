@@ -240,6 +240,7 @@ function renderizarPlacar(pontuacoes)
       <div class="fin-section-title">
         ${fp0.fase.nome}${dataTxt ? `<span class="phase-date"> ${dataTxt}</span>` : ''}
         <span class="fin-valor-badge">R$ ${formatarReais(fp0.fase.valor)}/jogo</span>
+        <span class="fin-zero-badge">↩ zerado</span>
       </div>`;
 
     if (!temMovimento)
@@ -251,7 +252,7 @@ function renderizarPlacar(pontuacoes)
     {
       tabelasFases += `<table class="phase-table">
         <thead><tr>
-          <th>Participante</th><th>Acertos</th><th>A receber</th><th>A pagar</th><th>Saldo na fase</th>
+          <th>Participante</th><th>Acertos</th><th>A receber</th><th>A pagar</th><th>Saldo da fase (R$ 0,00 inicial)</th>
         </tr></thead><tbody>`;
 
       pontuacoes.forEach(entrada =>
