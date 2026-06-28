@@ -656,6 +656,134 @@ label { font-size: 0.82rem; color: var(--text-muted); font-weight: 600; letter-s
   margin-left: 0.5rem;
 }
 
+.outcome-btns
+{
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.4rem;
+}
+
+.outcome-btn
+{
+  padding: 0.8rem 1rem;
+  background: var(--bg-card);
+  border: 2px solid var(--border-mid);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--transition);
+  text-align: center;
+  width: 100%;
+}
+
+.outcome-btn:hover
+{
+  border-color: var(--border-glow);
+  background: var(--bg-card-hover);
+}
+
+.outcome-btn.selected
+{
+  border-color: var(--gold);
+  background: rgba(201,168,76,0.12);
+  color: var(--gold);
+  box-shadow: 0 0 14px rgba(201,168,76,0.22);
+}
+
+.bracket-round-games
+{
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 0.5rem;
+  padding: 0.4rem 0 0.8rem;
+}
+
+.bracket-card
+{
+  background: var(--bg-card);
+  border: 1px solid var(--border-dim);
+  border-radius: var(--radius-md);
+  padding: 0.65rem 0.85rem;
+  transition: border-color var(--transition), background var(--transition), box-shadow var(--transition);
+}
+
+.bracket-card:hover
+{
+  border-color: var(--border-glow);
+  background: var(--bg-card-hover);
+  box-shadow: var(--glow-blue);
+}
+
+.bracket-card.finished { border-color: #1a3d1a; background: #080f08; }
+.bracket-card.finished:hover { border-color: #2a5a2a; }
+
+.bracket-card.today
+{
+  border-color: var(--gold);
+  background: linear-gradient(90deg, rgba(201,168,76,0.04), var(--bg-card));
+  box-shadow: var(--shadow-gold);
+}
+
+.bracket-card-header
+{
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.bracket-matchup
+{
+  display: flex;
+  flex-direction: column;
+  gap: 0.18rem;
+}
+
+.bracket-team
+{
+  font-size: 0.87rem;
+  font-weight: 700;
+  padding: 0.22rem 0;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bracket-team.winner { color: var(--green); }
+.bracket-team.loser  { color: var(--text-dim); }
+.bracket-team.draw   { color: var(--orange); }
+
+.b-score-badge
+{
+  background: rgba(0,0,0,0.35);
+  border: 1px solid var(--border-glow);
+  border-radius: var(--radius-sm);
+  padding: 0.12rem 0.5rem;
+  font-weight: 800;
+  font-size: 0.92rem;
+  color: var(--green);
+  text-align: center;
+  letter-spacing: 0.06em;
+  font-variant-numeric: tabular-nums;
+  align-self: center;
+  margin: 0.15rem 0;
+}
+
+.b-vs
+{
+  text-align: center;
+  color: var(--text-dim);
+  font-size: 0.72rem;
+  padding: 0.1rem 0;
+  letter-spacing: 0.05em;
+}
+
+.bracket-card-actions { margin-top: 0.5rem; }
+
 @media (max-width: 600px)
 {
   header { padding: 0.9rem 1rem; }
@@ -665,4 +793,5 @@ label { font-size: 0.82rem; color: var(--text-muted); font-weight: 600; letter-s
   .match-teams { min-width: 100%; }
   .podium-card .pts { font-size: 1.7rem; }
   nav button { padding: 0.7rem 0.9rem; font-size: 0.82rem; }
+  .bracket-round-games { grid-template-columns: 1fr; }
 }

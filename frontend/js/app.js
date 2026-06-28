@@ -43,6 +43,9 @@ let idJogoResultado = null, idJogoAposta = null, idJogoTimes = null;
 
 let idApostaEditando = null;
 
+let modoKnockout = false;
+let palpiteKnockout = null;
+
 let termoBusca = '';
 let filtroData = '';
 let filtroResultado = '';
@@ -85,23 +88,13 @@ function mostrarAba(idAba)
   document.querySelectorAll('.tab').forEach(aba => aba.classList.remove('active'));
   document.querySelectorAll('nav button').forEach(botao => botao.classList.remove('active'));
   document.getElementById(idAba).classList.add('active');
-  const idx = ['tab-scores','tab-matches','tab-bets'].indexOf(idAba);
+  const idx = ['tab-scores','tab-matches','tab-bets','tab-bracket'].indexOf(idAba);
   document.querySelectorAll('nav button')[idx].classList.add('active');
 
-  if (idAba === 'tab-scores')
-  {
-      carregarPlacar();
-  }
-
-  if (idAba === 'tab-matches')
-  {
-    carregarJogos();
-  }
-
-  if (idAba === 'tab-bets')
-  {
-    carregarApostas();
-  }
+  if (idAba === 'tab-scores')  { carregarPlacar(); }
+  if (idAba === 'tab-matches') { carregarJogos(); }
+  if (idAba === 'tab-bets')    { carregarApostas(); }
+  if (idAba === 'tab-bracket') { carregarChaveamento(); }
 }
 
 function abrirModal(idModal)
@@ -280,6 +273,113 @@ function renderizarPlacar(pontuacoes)
   });
 
   document.getElementById('scores-content').innerHTML = podio + resumo + tabelasFases;
+}
+
+function selecionarOutcome(outcome)
+{
+  palpiteKnockout = outcome;
+  document.querySelectorAll('.outcome-btn').forEach(b => b.classList.remove('selected'));
+  document.getElementById('btn-outcome-' + outcome).classList.add('selected');
+}
+
+async function carregarChaveamento()
+{
+  document.getElementById('bracket-loading').classList.remove('hidden');
+  document.getElementById('bracket-content').classList.add('hidden');
+
+  try
+  {
+    const jogos = await api('/jogos/');
+    todosJogos = jogos;
+    renderizarChaveamento(jogos.filter(j => j.fase.id !== 1));
+  }
+  catch(erro)
+  {
+    toast('Erro ao carregar chaveamento: ' + erro.message, true);
+  }
+
+  document.getElementById('bracket-loading').classList.add('hidden');
+  document.getElementById('bracket-content').classList.remove('hidden');
+}
+
+function renderizarChaveamento(jogos)
+{
+  const porFase = {};
+  jogos.forEach(jogo =>
+  {
+    const id = jogo.fase.id;
+    if (!porFase[id]) porFase[id] = { fase: jogo.fase, jogos: [] };
+    porFase[id].jogos.push(jogo);
+  });
+
+  let html = '';
+
+  Object.values(porFase).sort((a, b) => a.fase.ordem - b.fase.ordem).forEach(({ fase, jogos: jogosFase }) =>
+  {
+    const datas   = DATAS_FASE[fase.slug];
+    const dataTxt = datas ? (datas.fim ? `${datas.inicio} – ${datas.fim}` : datas.inicio) : '';
+    const enc     = jogosFase.filter(j => j.encerrado).length;
+    const definidos = jogosFase.filter(j => j.time_casa && j.time_fora).length;
+
+    html += `
+      <div class="phase-section">
+        <div class="phase-header" onclick="alternarSecao('bracket-fase-${fase.id}')">
+          <span>${fase.nome}${dataTxt ? ` <span class="phase-date">${dataTxt}</span>` : ''}</span>
+          <span style="font-size:0.8rem;color:#8aabcc">${enc}/${jogosFase.length} encerrados ▾</span>
+        </div>
+        <div id="bracket-fase-${fase.id}" class="bracket-round-games">`;
+
+    jogosFase.sort((a, b) => a.numero - b.numero).forEach(jogo =>
+    {
+      html += renderizarCartaoBracket(jogo);
+    });
+
+    html += `</div></div>`;
+  });
+
+  document.getElementById('bracket-content').innerHTML =
+    html || '<div class="empty">Nenhum jogo de mata-mata encontrado</div>';
+}
+
+function renderizarCartaoBracket(jogo)
+{
+  const casaLabel = labelTime(jogo.time_casa);
+  const foraLabel = labelTime(jogo.time_fora);
+  const definido  = jogo.time_casa && jogo.time_fora;
+
+  let casaCls = '', foraCls = '';
+  if (jogo.encerrado)
+  {
+    if (jogo.gols_casa > jogo.gols_fora)      { casaCls = 'winner'; foraCls = 'loser'; }
+    else if (jogo.gols_fora > jogo.gols_casa) { casaCls = 'loser';  foraCls = 'winner'; }
+    else                                        { casaCls = 'draw';   foraCls = 'draw'; }
+  }
+
+  const scoreHtml = jogo.encerrado
+    ? `<div class="b-score-badge">${jogo.gols_casa} – ${jogo.gols_fora}</div>`
+    : `<div class="b-vs">vs</div>`;
+
+  const acoes = (!jogo.encerrado && definido)
+    ? `<button class="btn btn-gold btn-sm" onclick="abrirModalAposta(${jogo.id})">🎯 Apostar R$${jogo.fase.valor}</button>`
+    : '';
+
+  const classeHoje = ehHoje(jogo.data) ? 'today' : '';
+  const classeEnc  = jogo.encerrado ? 'finished' : '';
+
+  return `
+    <div class="bracket-card ${classeEnc} ${classeHoje}">
+      <div class="bracket-card-header">
+        <span class="match-num">#${jogo.numero}</span>
+        <span class="match-date">${formatarData(jogo.data)}</span>
+        ${jogo.local ? `<span class="match-local">${jogo.local}</span>` : ''}
+      </div>
+      <div class="bracket-matchup">
+        <div class="bracket-team ${casaCls}">${casaLabel}</div>
+        ${scoreHtml}
+        <div class="bracket-team ${foraCls}">${foraLabel}</div>
+      </div>
+      ${acoes ? `<div class="bracket-card-actions">${acoes}</div>` : ''}
+    </div>`;
 }
 
 async function carregarJogos()
@@ -701,8 +801,10 @@ async function abrirModalAposta(idJogo)
     return;
   }
 
-  idJogoAposta = idJogo;
+  idJogoAposta   = idJogo;
   idApostaEditando = null;
+  modoKnockout   = jogo.fase.id !== 1;
+  palpiteKnockout = null;
 
   if (!participantes.length)
   {
@@ -710,13 +812,29 @@ async function abrirModalAposta(idJogo)
   }
 
   const sel = document.getElementById('bet-modal-participant');
+  sel.innerHTML = participantes.map(p => `<option value="${p.id}">${p.nome}</option>`).join('');
+  sel.disabled = false;
 
-  sel.innerHTML = participantes.map(participante => `<option value="${participante.id}">${participante.nome}</option>`).join('');
   document.getElementById('bet-modal-title').textContent = `Apostar: ${labelTime(jogo.time_casa)} x ${labelTime(jogo.time_fora)}`;
-  document.getElementById('bet-home-label').textContent = labelTime(jogo.time_casa);
-  document.getElementById('bet-away-label').textContent = labelTime(jogo.time_fora);
-  document.getElementById('bet-home').value = 1;
-  document.getElementById('bet-away').value = 0;
+
+  if (modoKnockout)
+  {
+    document.getElementById('bet-score-inputs').classList.add('hidden');
+    document.getElementById('bet-outcome-btns').classList.remove('hidden');
+    document.getElementById('outcome-casa-label').textContent = labelTime(jogo.time_casa);
+    document.getElementById('outcome-fora-label').textContent = labelTime(jogo.time_fora);
+    document.querySelectorAll('.outcome-btn').forEach(b => b.classList.remove('selected'));
+  }
+  else
+  {
+    document.getElementById('bet-score-inputs').classList.remove('hidden');
+    document.getElementById('bet-outcome-btns').classList.add('hidden');
+    document.getElementById('bet-home-label').textContent = labelTime(jogo.time_casa);
+    document.getElementById('bet-away-label').textContent = labelTime(jogo.time_fora);
+    document.getElementById('bet-home').value = 1;
+    document.getElementById('bet-away').value = 0;
+  }
+
   abrirModal('bet-modal');
 }
 
@@ -726,16 +844,30 @@ async function enviarAposta()
   {
     const idParticipante = parseInt(document.getElementById('bet-modal-participant').value);
 
-    const casa = parseInt(document.getElementById('bet-home').value);
-    const fora = parseInt(document.getElementById('bet-away').value);
+    let casa, fora;
+
+    if (modoKnockout)
+    {
+      if (!palpiteKnockout)
+      {
+        toast('Selecione um resultado!', true);
+        return;
+      }
+      if (palpiteKnockout === 'casa')        { casa = 1; fora = 0; }
+      else if (palpiteKnockout === 'empate') { casa = 0; fora = 0; }
+      else                                   { casa = 0; fora = 1; }
+    }
+    else
+    {
+      casa = parseInt(document.getElementById('bet-home').value);
+      fora = parseInt(document.getElementById('bet-away').value);
+    }
 
     if (idApostaEditando)
     {
       await api(`/apostas/${idApostaEditando}`, 'PUT', { palpite_casa: casa, palpite_fora: fora });
-
       toast('Aposta atualizada! 🎰');
     }
-
     else
     {
       await api('/apostas/', 'POST',
@@ -745,7 +877,6 @@ async function enviarAposta()
         palpite_casa: casa,
         palpite_fora: fora,
       });
-
       toast('Aposta registrada! 🎰');
     }
 
@@ -756,7 +887,6 @@ async function enviarAposta()
       carregarApostas();
     }
   }
-
   catch(erro)
   {
     toast('Erro: ' + erro.message, true);
@@ -875,6 +1005,21 @@ async function carregarApostas()
   document.getElementById('bets-content').classList.remove('hidden');
 }
 
+function labelPalpite(aposta)
+{
+  if (aposta.jogo.fase.id === 1)
+  {
+    return `${aposta.palpite_casa}–${aposta.palpite_fora}`;
+  }
+  const pc = parseInt(aposta.palpite_casa);
+  const pf = parseInt(aposta.palpite_fora);
+  const bc = aposta.jogo.time_casa?.bandeira || '🏠';
+  const bf = aposta.jogo.time_fora?.bandeira || '✈️';
+  if (pc > pf) return `${bc} Vence`;
+  if (pc < pf) return `${bf} Vence`;
+  return 'Empate';
+}
+
 function labelPontos(aposta)
 {
   if (!aposta.jogo.encerrado)
@@ -936,10 +1081,10 @@ function renderizarApostas(apostas)
         <div class="bet-row">
           <span class="teams">${casa} x ${fora}${placarStr}</span>
           <span style="color:#8aabcc;font-size:0.8rem">${aposta.participante.nome}</span>
-          <span class="pred">${aposta.palpite_casa}–${aposta.palpite_fora}</span>
+          <span class="pred">${labelPalpite(aposta)}</span>
           ${labelPontos(aposta)}
           ${!aposta.jogo.encerrado ? `
-            <button class="btn btn-blue btn-sm" onclick="editarAposta(${aposta.id}, ${aposta.jogo.id}, '${casa}', '${fora}', ${aposta.palpite_casa}, ${aposta.palpite_fora}, ${aposta.participante.id})">✏️</button>
+            <button class="btn btn-blue btn-sm" onclick="editarAposta(${aposta.id}, ${aposta.jogo.id}, '${casa}', '${fora}', ${aposta.palpite_casa}, ${aposta.palpite_fora}, ${aposta.participante.id}, ${aposta.jogo.fase.id})">✏️</button>
             <button class="btn btn-red btn-sm" onclick="deletarAposta(${aposta.id})">🗑</button>
           ` : ''}
         </div>`;
@@ -949,10 +1094,12 @@ function renderizarApostas(apostas)
   document.getElementById('bets-content').innerHTML = html;
 }
 
-async function editarAposta(idAposta, idJogo, labelCasa, labelFora, palpiteCasa, palpiteFora, idParticipante)
+async function editarAposta(idAposta, idJogo, labelCasa, labelFora, palpiteCasa, palpiteFora, idParticipante, idFase)
 {
-  idJogoAposta = idJogo;
+  idJogoAposta     = idJogo;
   idApostaEditando = idAposta;
+  modoKnockout     = idFase !== 1;
+  palpiteKnockout  = null;
 
   if (!participantes.length)
   {
@@ -960,14 +1107,31 @@ async function editarAposta(idAposta, idJogo, labelCasa, labelFora, palpiteCasa,
   }
 
   const sel = document.getElementById('bet-modal-participant');
-
-  sel.innerHTML = participantes.map(participante => `<option value="${participante.id}" ${participante.id==idParticipante?'selected':''}>${participante.nome}</option>`).join('');
+  sel.innerHTML = participantes.map(p => `<option value="${p.id}" ${p.id==idParticipante?'selected':''}>${p.nome}</option>`).join('');
   sel.disabled = true;
+
   document.getElementById('bet-modal-title').textContent = `Editar Aposta: ${labelCasa} x ${labelFora}`;
-  document.getElementById('bet-home-label').textContent = labelCasa;
-  document.getElementById('bet-away-label').textContent = labelFora;
-  document.getElementById('bet-home').value = palpiteCasa;
-  document.getElementById('bet-away').value = palpiteFora;
+
+  if (modoKnockout)
+  {
+    document.getElementById('bet-score-inputs').classList.add('hidden');
+    document.getElementById('bet-outcome-btns').classList.remove('hidden');
+    document.getElementById('outcome-casa-label').textContent = labelCasa;
+    document.getElementById('outcome-fora-label').textContent = labelFora;
+    document.querySelectorAll('.outcome-btn').forEach(b => b.classList.remove('selected'));
+    const outcome = palpiteCasa > palpiteFora ? 'casa' : (palpiteCasa < palpiteFora ? 'fora' : 'empate');
+    selecionarOutcome(outcome);
+  }
+  else
+  {
+    document.getElementById('bet-score-inputs').classList.remove('hidden');
+    document.getElementById('bet-outcome-btns').classList.add('hidden');
+    document.getElementById('bet-home-label').textContent = labelCasa;
+    document.getElementById('bet-away-label').textContent = labelFora;
+    document.getElementById('bet-home').value = palpiteCasa;
+    document.getElementById('bet-away').value = palpiteFora;
+  }
+
   abrirModal('bet-modal');
 }
 

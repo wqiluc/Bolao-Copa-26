@@ -4,7 +4,7 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Bolão Copa do Mundo 2026 (Familia Paguetti)</title>
-  <link rel="stylesheet" href="css/style.css?v=3"/>
+  <link rel="stylesheet" href="css/style.css?v=4"/>
   <script>
     if (!localStorage.getItem('participante_auth')) {
       window.location.replace('/auth/login.html');
@@ -28,6 +28,7 @@
   <button class="active" onclick="mostrarAba('tab-scores')">🏆 Placar</button>
   <button onclick="mostrarAba('tab-matches')">📅 Jogos</button>
   <button onclick="mostrarAba('tab-bets')">🎯 Apostas</button>
+  <button onclick="mostrarAba('tab-bracket')">🗺️ Chaveamento</button>
 </nav>
 
 <main>
@@ -56,6 +57,11 @@
 
     <div class="loading" id="matches-loading">Carregando...</div>
     <div id="matches-content" class="hidden"></div>
+  </div>
+
+  <div id="tab-bracket" class="tab">
+    <div class="loading" id="bracket-loading">Carregando...</div>
+    <div id="bracket-content" class="hidden"></div>
   </div>
 
   <div id="tab-bets" class="tab">
@@ -117,7 +123,7 @@
 </div>
 
 <div id="bet-modal" class="modal-overlay hidden">
-  
+
   <div class="modal">
     <span class="close" onclick="fecharModal('bet-modal')">✕</span>
     <h3 id="bet-modal-title">Registrar Aposta</h3>
@@ -126,14 +132,32 @@
       <select id="bet-modal-participant" style="width:100%"></select>
     </div>
 
-    <div class="field">
-      <label id="bet-home-label">Casa</label>
-      <input type="number" id="bet-home" min="0" max="30" value="1" />
+    <div id="bet-score-inputs">
+      <div class="field">
+        <label id="bet-home-label">Casa</label>
+        <input type="number" id="bet-home" min="0" max="30" value="1" />
+      </div>
+      <div class="field">
+        <label id="bet-away-label">Fora</label>
+        <input type="number" id="bet-away" min="0" max="30" value="0" />
+      </div>
     </div>
 
-    <div class="field">
-      <label id="bet-away-label">Fora</label>
-      <input type="number" id="bet-away" min="0" max="30" value="0" />
+    <div id="bet-outcome-btns" class="hidden">
+      <div class="field">
+        <label>Quem vence?</label>
+        <div class="outcome-btns">
+          <button id="btn-outcome-casa" class="outcome-btn" onclick="selecionarOutcome('casa')">
+            <span id="outcome-casa-label">Time Casa</span> ganha
+          </button>
+          <button id="btn-outcome-empate" class="outcome-btn" onclick="selecionarOutcome('empate')">
+            Empate
+          </button>
+          <button id="btn-outcome-fora" class="outcome-btn" onclick="selecionarOutcome('fora')">
+            <span id="outcome-fora-label">Time Fora</span> ganha
+          </button>
+        </div>
+      </div>
     </div>
 
     <div class="actions">
@@ -169,6 +193,6 @@
 
 <div id="toast" class="toast"></div>
 
-<script src="js/app.js?v=8"></script>
+<script src="js/app.js?v=9"></script>
 </body>
 </html>

@@ -220,7 +220,14 @@ def recalcular_apostas(bd: Session, jogo: modelos.Jogo) -> None:
 
     valor = float(jogo.fase.valor)
 
-    ganhadores = [a for a in jogo.apostas if a.palpite_casa == jogo.gols_casa and a.palpite_fora == jogo.gols_fora]
+    def _sinal(n: int) -> int:
+        return 0 if n == 0 else (1 if n > 0 else -1)
+
+    if jogo.id_fase == 1:
+        ganhadores = [a for a in jogo.apostas if a.palpite_casa == jogo.gols_casa and a.palpite_fora == jogo.gols_fora]
+    else:
+        resultado = _sinal(jogo.gols_casa - jogo.gols_fora)
+        ganhadores = [a for a in jogo.apostas if _sinal(a.palpite_casa - a.palpite_fora) == resultado]
 
     perdedores  = [a for a in jogo.apostas if a not in ganhadores]
 
