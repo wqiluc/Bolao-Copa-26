@@ -323,15 +323,17 @@ def registrar_resultado(bd: Session, id_jogo: int, gols_casa: int, gols_fora: in
 
     return jogo
 
-def atualizar_times(bd: Session, id_jogo: int, id_time_casa: int, id_time_fora: int) -> modelos.Jogo | None:
-    
+def atualizar_times(bd: Session, id_jogo: int, id_time_casa: int | None, id_time_fora: int | None) -> modelos.Jogo | None:
+
     jogo = bd.query(modelos.Jogo).filter(modelos.Jogo.id == id_jogo).first()
 
     if not (jogo):
         return None
-    
-    jogo.id_time_casa = id_time_casa
-    jogo.id_time_fora = id_time_fora
+
+    if id_time_casa is not None:
+        jogo.id_time_casa = id_time_casa
+    if id_time_fora is not None:
+        jogo.id_time_fora = id_time_fora
 
     bd.commit()
 

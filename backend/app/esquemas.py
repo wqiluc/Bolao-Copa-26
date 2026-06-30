@@ -46,8 +46,8 @@ class ResultadoJogo(BaseModel):
     gols_fora: int
 
 class AtualizarTimesJogo(BaseModel):
-    id_time_casa: int
-    id_time_fora: int
+    id_time_casa: int | None = None
+    id_time_fora: int | None = None
 
 class ApostaEntrada(BaseModel):
     id_participante: int
